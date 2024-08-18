@@ -1,16 +1,22 @@
 import './index.css'
+import { BrowserRouter, Routes, Route } from "react-router-dom"
 import { GoogleOAuthProvider } from '@react-oauth/google'
-import GoogleLogIn from './components/GoogleLogIn'
-import LogOut from './components/LogOut'
+import SignupPage from './components/SignupPage'
+import SignupCreateAccount from './components/SignupCreateAccount'
+import Home from './components/Home'
+
 const CLIENT_ID = process.env.REACT_APP_GOOGLE_OAUTH2_CLIENT_ID
 
 function App() {
   return (
     <GoogleOAuthProvider clientId={CLIENT_ID}>
-      <div>
-        <p className="text-green-600 text-center font-bold text-8xl">hello</p>
-        <GoogleLogIn/>
-      </div>  
+      <BrowserRouter>
+        <Routes>
+          <Route path='/' element={<SignupPage/>}/>
+          <Route path='create-account' element={<SignupCreateAccount/>}/>
+          <Route path='home' element={<Home/>}/>
+        </Routes>
+      </BrowserRouter>
     </GoogleOAuthProvider>
 
   );

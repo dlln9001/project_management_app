@@ -4,6 +4,8 @@ function LogOut() {
     function logout() {
         googleLogout()
         localStorage.removeItem('userInfo')
+        localStorage.removeItem('userToken')
+        window.location = '/'
     }
     return (
         <button onClick={() => logout()}>

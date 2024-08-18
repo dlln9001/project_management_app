@@ -20,6 +20,8 @@ function GoogleLogIn() {
                     // Handle successful login (e.g., update app state, redirect)
                     console.log(data)
                     localStorage.setItem('userInfo', JSON.stringify(data.user))
+                    localStorage.setItem('userToken', JSON.stringify(data.token))
+                    window.location = 'home'
                   } 
                 else {
                     console.error('Login failed');
@@ -34,10 +36,10 @@ function GoogleLogIn() {
     
     return (
         <>
-            <button onClick={() => login()} className="flex mx-auto p-2 border rounded-md px-28 gap-x-3 border-slate-300 hover:bg-slate-100 items-center">
+            <div onClick={() => login()} className="flex mx-auto p-2 border rounded-md px-28 gap-x-3 border-slate-300 hover:bg-slate-100 items-center cursor-pointer">
                 <img src={process.env.PUBLIC_URL + '/svgs/google-color.svg'} alt="" className="max-h-5"/>
                 <p>Continue with Google</p>
-            </button>
+            </div>
         </>
     )
 }

@@ -2,10 +2,11 @@ from django.contrib.auth import logout
 import requests
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.decorators import api_view
 from rest_framework import status
+from rest_framework.authtoken.models import Token
 from ..models import User
 from .serializers import UserSerializer
-
 
 class GoogleSignInView(APIView):
     def post(self, request):
@@ -40,11 +41,26 @@ class GoogleSignInView(APIView):
                 user.save()
 
             serializer = UserSerializer(user)
-            return Response({'status': 'success', 'user': serializer.data})
-        
+            # deletes old token if it already exists
+            Token.objects.filter(user=user).delete()
+            token = Token.objects.create(user=user)
+            return Response({'status': 'success', 'user': serializer.data, 'token': token.key})
+
         except Exception as e:
             return Response(
                 {'status': 'unsuccessful', 'error': str(e)},
                 status=status.HTTP_400_BAD_REQUEST
             )
-            
+
+
+@api_view(['POST', 'GET'])
+def signup(request):
+    serializer = UserSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        user = User.objects.get(username=request.data['username'])
+        user.set_password(request.data['password'])
+        user.save()
+        token = Token.objects.create(user=user)
+        return Response({'status': 'success', 'user': serializer.data, 'token': token.key})
+    return Response({'username': 'A user with that email already exists'})
