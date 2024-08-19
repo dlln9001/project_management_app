@@ -1,22 +1,24 @@
 import GoogleLogIn from "./GoogleLogIn"
 import { useState, useRef } from "react"
+import { useNavigate } from "react-router-dom"
 
 function SigninPage() {
     const [username, setUsername] = useState('')
     const emailForm = useRef('')
+    const navigate = useNavigate()
 
     function continueSignin(e) {
         e.preventDefault()
         const form = e.target
         if (form.checkValidity()) {
-            window.location = `create-account?email=${encodeURIComponent(username)}`
+            navigate(`/create-account?email=${encodeURIComponent(username)}`)
         }
         
     }
 
     return (
         <>
-            <form className="flex flex-col items-center justify-center min-h-screen w-fit mx-auto" onSubmit={continueSignin} ref={emailForm}>
+            <form className="flex flex-col items-center min-h-screen w-fit mx-auto mt-44" onSubmit={continueSignin} ref={emailForm}>
                 <h1 className="text-center text-3xl mb-10">Welcome to TaskTrack</h1>
                 <GoogleLogIn/>
                 <div className="flex items-end gap-3 mt-5 w-full justify-center mb-5">
@@ -36,7 +38,7 @@ function SigninPage() {
                 </div>
                 <div className="flex gap-2 mt-6">
                     <p>Already have an account?</p>
-                    <p className=" text-sky-600 cursor-pointer">Log in</p>
+                    <p className=" text-sky-600 cursor-pointer" onClick={() => navigate('/')}>Log in</p>
                 </div>
             </form>  
         </>

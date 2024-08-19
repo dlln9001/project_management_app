@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework.authtoken.models import Token
+from django.shortcuts import get_object_or_404
 from ..models import User
 from .serializers import UserSerializer
 
@@ -63,4 +64,18 @@ def signup(request):
         user.save()
         token = Token.objects.create(user=user)
         return Response({'status': 'success', 'user': serializer.data, 'token': token.key})
-    return Response({'username': 'A user with that email already exists'})
+    return Response({'username_taken': 'A user with that email already exists'})
+
+
+@api_view(['POST', 'GET'])
+def login(request):
+    try:
+        user = get_object_or_404(User, username=request.data['username'])
+    except:
+        return Response({'incorrect_email_or_password': 'true'})
+    if not user.check_password(request.data['password']):
+        return Response({'incorrect_email_or_password': 'true'}, status=status.HTTP_400_BAD_REQUEST)
+    Token.objects.filter(user=user).delete()
+    token = Token.objects.create(user=user)
+    serializer = UserSerializer(instance=user)
+    return Response({'status': 'success', 'user': serializer.data, 'token': token.key})

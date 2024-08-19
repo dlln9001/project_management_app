@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react"
 import { useLocation } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 
 function SignupCreateAccount() {
     const fullNameElement = useRef('')
@@ -7,8 +8,10 @@ function SignupCreateAccount() {
     const [fullName, setFullName] = useState('')
     const [password, setPassword] = useState('')
     const [shortPass, setShortPass] = useState(false)
+    const [emailTaken, setEmailTaken] = useState(false)
     const query = new URLSearchParams(useLocation().search)
     const email = query.get('email')
+    const navigate = useNavigate()
     
     useEffect(() => {
         fullNameElement.current.focus()
@@ -47,12 +50,16 @@ function SignupCreateAccount() {
         })
         .then(res => res.json())
         .then(data => {
-            console.log(data)
-            localStorage.setItem('userInfo', JSON.stringify(data.user))
-            localStorage.setItem('userToken', JSON.stringify(data.token))
-            window.location = 'home'
+            if (data.username_taken) {
+                setEmailTaken(true)
+            }
+            else {
+                localStorage.setItem('userInfo', JSON.stringify(data.user))
+                localStorage.setItem('userToken', JSON.stringify(data.token))
+                navigate('/home')
+            }
         })
-    }
+    }   
 
     return (
         <div className="flex flex-col w-1/3 mx-auto h-screen mt-44">
@@ -85,6 +92,9 @@ function SignupCreateAccount() {
                         <p className=" text-red-600 text-sm mt-1">Password must be 8 characters or more</p>
                     }
                 </div>
+                {emailTaken &&
+                    <p className=" text-red-600 text-sm mt-1">A user with that email already exists</p>
+                }
                 {(fullName && !(password.length < 8)) 
                 ? <button className=" bg-sky-600 cursor-pointer hover:bg-sky-700 text-white rounded-md px-10 p-2 mt-4 w-fit">Sign up</button>
                 : <button className=" bg-slate-200 text-slate-400 rounded-md px-10 p-2 mt-4 w-fit cursor-default" disabled>Sign up</button>

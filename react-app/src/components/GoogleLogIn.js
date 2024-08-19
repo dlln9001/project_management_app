@@ -1,6 +1,8 @@
 import { useGoogleLogin } from "@react-oauth/google"
+import { useNavigate } from "react-router-dom"
 
 function GoogleLogIn() {
+    const navigate = useNavigate()
 
     const login = useGoogleLogin({
         onSuccess: async tokenResponse => {
@@ -21,7 +23,7 @@ function GoogleLogIn() {
                     console.log(data)
                     localStorage.setItem('userInfo', JSON.stringify(data.user))
                     localStorage.setItem('userToken', JSON.stringify(data.token))
-                    window.location = 'home'
+                    navigate('/home')
                   } 
                 else {
                     console.error('Login failed');
