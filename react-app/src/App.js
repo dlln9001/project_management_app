@@ -5,6 +5,7 @@ import SignupPage from './components/SignupPage'
 import SignupCreateAccount from './components/SignupCreateAccount'
 import Home from './components/Home'
 import LoginPage from './components/LoginPage'
+import Layout from './components/Layout'
 
 const CLIENT_ID = process.env.REACT_APP_GOOGLE_OAUTH2_CLIENT_ID
 
@@ -16,7 +17,9 @@ function App() {
           <Route path='/' element={<LoginPage/>}/>
           <Route path='signup' element={<SignupPage/>}/>
           <Route path='create-account' element={<SignupCreateAccount/>}/>
-          <Route path='home' element={<Home/>}/>
+          <Route element={<Layout/>}>
+            <Route path='home' element={<Home/>}/>
+          </Route>
         </Routes>
       </BrowserRouter>
     </GoogleOAuthProvider>

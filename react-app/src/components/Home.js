@@ -7,7 +7,7 @@ function Home() {
     const [token, setToken] = useState(localStorage.getItem('userToken'))
 
     return (
-        <div>
+        <div className=" bg-white h-screen rounded-tl-lg p-5">
             home!
             <p>username: {username}</p>
             <p>name: {name}</p>

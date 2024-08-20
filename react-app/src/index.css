@@ -5,3 +5,10 @@
 body {
   @apply font-sans
 }
+
+@layer components {
+  .side-bar-button {
+    @apply rounded-sm p-2 cursor-pointer mx-2 my-1;
+    @apply hover:bg-slate-200;
+  }
+}

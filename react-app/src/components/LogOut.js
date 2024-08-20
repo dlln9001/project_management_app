@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 
 function LogOut() {
     const navigate = useNavigate()
-
+    
     function logout() {
         googleLogout()
         localStorage.removeItem('userInfo')
@@ -12,9 +12,9 @@ function LogOut() {
     }
     return (
         <button onClick={() => logout()}>
-            Log out
-        </button>
-    )
-}
-
-export default LogOut
+            Log out 
+        </button> 
+    ) 
+} 
+ 
+export default LogOut 
