@@ -1,5 +1,5 @@
 import { useState } from "react"
-import LogOut from "./LogOut"
+import LogOut from "./authorization/LogOut"
 
 function Home() {
     const [username, setUsername] = useState(JSON.parse(localStorage.getItem('userInfo')).username)

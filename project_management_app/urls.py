@@ -21,5 +21,7 @@ from django.views.generic import TemplateView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', TemplateView.as_view(template_name='index.html')),
-    path('authorize/', include('user_authentication.api.urls'))
+    path('authorize/', include('user_authentication.api.urls')),
+    path('workspace-element/', include('workspace_elements.api.urls')),
+    path('board/', include('boards.api.urls')),
 ]

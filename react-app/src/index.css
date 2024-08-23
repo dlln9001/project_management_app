@@ -7,8 +7,16 @@ body {
 }
 
 @layer components {
-  .side-bar-button {
-    @apply rounded-sm p-2 cursor-pointer mx-2 my-1;
+  .bar-button {
+    @apply rounded-md p-2 cursor-pointer mx-2 my-1;
     @apply hover:bg-slate-200;
+  }
+}
+
+@layer utilities {
+  .shadow-all-sides {
+    box-shadow: 
+    0 2px 18px rgba(0, 0, 0, 0.1), 
+    0 8px 16px rgba(0, 0, 0, 0.1);
   }
 }

@@ -1,16 +1,18 @@
-from django.contrib.auth import logout
 import requests
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework import status
 from rest_framework.authtoken.models import Token
+from rest_framework.permissions import AllowAny
 from django.shortcuts import get_object_or_404
 from ..models import User
 from .serializers import UserSerializer
 
 class GoogleSignInView(APIView):
-    def post(self, request):
+    authentication_classes = []
+    permission_classes = [AllowAny]
+    def post(self, request):    
         token = request.data.get('token')
         try:
             user_info_response = requests.get(
@@ -55,6 +57,7 @@ class GoogleSignInView(APIView):
 
 
 @api_view(['POST', 'GET'])
+@permission_classes([AllowAny])
 def signup(request):
     serializer = UserSerializer(data=request.data)
     if serializer.is_valid():
@@ -68,6 +71,7 @@ def signup(request):
 
 
 @api_view(['POST', 'GET'])
+@permission_classes([AllowAny])
 def login(request):
     try:
         user = get_object_or_404(User, username=request.data['username'])
