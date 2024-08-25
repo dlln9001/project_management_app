@@ -9,7 +9,7 @@ def create_element(request):
     element_name = request.data['element_name']
     user = request.user
     if element_type == 'board':
-        board = Board.objects.create(user=user, title=element_name)
+        board = Board.objects.create(user=user, name=element_name)
         board.save()
     return Response({'status': 'success'})
 
