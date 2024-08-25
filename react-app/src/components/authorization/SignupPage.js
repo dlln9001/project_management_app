@@ -40,7 +40,7 @@ function SigninPage() {
                     <p>Already have an account?</p>
                     <p className=" text-sky-600 cursor-pointer" onClick={() => navigate('/')}>Log in</p>
                 </div>
-            </form>  
+            </form>
         </>
     )
 }

@@ -15,13 +15,13 @@ function CreateWorkspaceItem() {
                 'Authorization': `Token ${userToken}`,
             },
             body: JSON.stringify({
-                    element_title: itemName,
+                    element_name: itemName,
                     element_type: lowerItemType,
                 }
             )
         })
         .then(res => res.json())
-        .then(data => console.log(data))
+        .then(data => setShowCreateWorkspaceItem(false))
     }
 
     return (

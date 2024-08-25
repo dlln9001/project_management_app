@@ -22,7 +22,7 @@ function App() {
             <Route path='create-account' element={<SignupCreateAccount />} />
               <Route element={<Layout />}>
                 <Route path='home' element={<Home />} />
-                <Route path='/board/:id' element={<Board />}/>
+                <Route path='board' element={<Board />}/>
               </Route>
           </Routes>
         </BrowserRouter>

@@ -6,6 +6,7 @@ import { FaRegStar } from "react-icons/fa";
 import { CiSearch } from "react-icons/ci";
 import AddWorkspaceItem from "../AddWorkspaceItem";
 import { useNavigate } from "react-router-dom";
+import { useCreateElement } from "../../contexts/CreateWorkspaceItemContext";
 
 
 function Sidebar() {
@@ -16,6 +17,7 @@ function Sidebar() {
     const [workspaceElementsHtml, setWorkspaceElementsHtml] = useState('')
     const userToken = JSON.parse(localStorage.getItem('userToken'))
     const navigate = useNavigate()
+    const { showCreateWorkspaceItem, setShowCreateWorkspaceItem } = useCreateElement()
 
     useEffect(() => {
         document.addEventListener('click', handleDocumentClick)
@@ -28,20 +30,19 @@ function Sidebar() {
         })
         .then(res => res.json())
         .then(data => {
-            console.log(data)
             let tempWorkspaceElementsHtml = []
             for (let i=0; i<data.boards.length; i++) {
                 let boardId = data.boards[i].id
                 tempWorkspaceElementsHtml.push(
-                    <div key={i} className="bar-button text-sm flex items-center gap-2" onClick={() => navigate(`board/${boardId}`)}>
+                    <div key={i} className="bar-button text-sm flex items-center gap-2" onClick={() => navigate(`board?id=${encodeURIComponent(boardId)}`)}>
                         <img src={process.env.PUBLIC_URL + 'images/boardsIcon.png'} alt="" className="h-4"/>
-                        <p>{data.boards[i].title}</p>
+                        <p>{data.boards[i].name}</p>
                     </div>
                 )
             }
             setWorkspaceElementsHtml(tempWorkspaceElementsHtml)
-        })
-    }, [])
+        }) 
+    }, [showCreateWorkspaceItem])
 
     function handleDocumentClick(e) {
         if (addWorkspaceItemRef.current && !addWorkspaceItemRef.current.contains(e.target) && !addWorkspaceItemButton.current.contains(e.target)) {
