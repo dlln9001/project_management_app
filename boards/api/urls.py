@@ -5,4 +5,5 @@ urlpatterns = [
     path('get/', views.get_board),
     path('create-group/', views.create_group),
     path('get-groups/', views.get_groups),
+    path('create-item/', views.create_item)
 ]
