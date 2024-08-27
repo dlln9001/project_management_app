@@ -18,6 +18,9 @@ function Board() {
     const [focusedAddItem, setFocusedAddItem] = useState('')
     const [groupsData, setGroupsData] = useState('')
 
+    const [focusedItem, setFocusedItem] = useState([])
+    const [editingItemContents, setEditingItemContents] = useState('')
+
     useEffect(() => {
         fetch('http://127.0.0.1:8000/board/get/', {
             method: 'POST',
@@ -48,9 +51,9 @@ function Board() {
         .then(data => {
             setGroupsData(data)
             setRenderGroups(!renderGroups)
-            console.log(data)
         })
     }, [boardId, renderComponent])
+
 
     // renders all the groups in a separate use effect than the fetch
     useEffect(() => {
@@ -61,8 +64,28 @@ function Board() {
             for (let i=0; i<groupsData.itemsInfo.length; i++) {
                 for (let j=0; j<groupsData.itemsInfo[i].length; j++) {
                     itemHtml.push(
-                        <div key={j} className="border-t border-t-slate-300 border-r border-r-slate-300 w-1/5 text-sm text-slate-600 p-1 px-5">
-                            {groupsData.itemsInfo[i][j].name}
+                        <div key={j} className="border-t border-t-slate-300 border-r border-r-slate-300 w-1/5 text-sm text-slate-600 p-1 px-5 hover:bg-slate-100">
+                            <input type="text" 
+                                onFocus={() => {
+                                    setFocusedItem([i, j])
+                                    setEditingItemContents(groupsData.itemsInfo[i][j].name)
+                                    setRenderGroups(!renderGroups)
+                                }}
+                                onBlur={(e) => editItem(e.target.value, groupsData.itemsInfo[i][j].id)}
+                                onChange={(e) => {
+                                    setEditingItemContents(e.target.value)
+                                    setRenderGroups(!renderGroups)
+                                }}
+                                value={(focusedItem[0] === i && focusedItem[1] === j) ? editingItemContents : groupsData.itemsInfo[i][j].name}
+                                tabIndex={0}
+                                className={`border border-transparent focus:outline-none hover:border hover:border-slate-300 rounded-sm px-1 focus:bg-white 
+                                           truncate text-ellipsis min-w-8 w-full focus:border-sky-600`}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        editItem(editingItemContents, groupsData.itemsInfo[i][j].id)
+                                    }
+                                }}
+                            />
                         </div>
                     )
                 }
@@ -77,8 +100,8 @@ function Board() {
                 let currentGroup = groupsData.groupsInfo[i]  
                 let groupId = currentGroup.id
                 tempGroupHtml.push(
-                    <div key={i} className="mt-5">
-                        <p>{currentGroup.name}</p>
+                    <div key={i} className="mt-10">
+                        <p className="mb-1">{currentGroup.name}</p>
                         <div className="border border-slate-300 rounded-md border-r-0 rounded-r-none">
                             <div className="w-1/5 border-r border-r-slate-300 flex flex-col">
                                 <p className=" self-center p-1 text-sm text-slate-600">Item</p>
@@ -94,6 +117,7 @@ function Board() {
                                 value={focusedAddItem === i ? addItemContent : ''}
                                 onChange={(e) => changeFocusedAddItem(e.target.value)}
                                 onBlur={() => createItem(groupId, addItemContent)}
+                                onKeyDown={(e) => enterAddItem(e, groupId, addItemContent)}
                                 /> 
                             </div>
                         </div>
@@ -103,6 +127,28 @@ function Board() {
             setGroupHtml(tempGroupHtml)
         }
     }, [renderGroups])
+
+    function editItem(itemContent, itemId) {
+        fetch('http://127.0.0.1:8000/board/edit-item/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${userToken}`
+            },
+            body: JSON.stringify({
+                item_id: itemId,
+                item_name: itemContent,
+            })
+        })
+        .then(res => res.json())
+        .then(data => setRenderComponent(!renderComponent))
+    }
+
+    function enterAddItem(e, groupId, addItemContent) {
+        if (e.key === 'Enter') {
+            createItem(groupId, addItemContent)
+        }
+    }
 
     function changeFocusedAddItem(value) {
         setAddItemContent(value)
@@ -168,7 +214,7 @@ function Board() {
     return (
         <div className="bg-white h-screen rounded-tl-lg pl-10 py-5 pr-1">
             <p className="text-2xl hover:bg-slate-100 w-fit p-1 py-0 rounded-md cursor-pointer">{boardTitle}</p>
-            <button onClick={() => createItemButton()} className="bg-sky-700 p-[6px] px-4 rounded-sm text-white text-sm hover:bg-sky-800 mt-5">New item</button>
+            <button onClick={() => createItemButton()} className="bg-sky-600 p-[6px] px-4 rounded-sm text-white text-sm hover:bg-sky-700 mt-5">New item</button>
             {groupHtml &&
                     groupHtml
             }

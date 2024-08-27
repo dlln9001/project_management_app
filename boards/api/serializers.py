@@ -21,4 +21,4 @@ class GroupSerializer(serializers.ModelSerializer):
 class ItemSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = Item
-        fields = ['name', 'id']
+        fields = ['name', 'id', 'order']

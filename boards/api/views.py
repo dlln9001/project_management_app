@@ -31,17 +31,27 @@ def get_groups(request):
     groups = Group.objects.filter(board=board)
     items_list = []
     for x in groups:
-        items = Item.objects.filter(group=x)
+        items = Item.objects.filter(group=x).order_by('order')
         items_serialized = ItemSerializer(items, many=True)
         items_list.append(items_serialized.data)
     serialized = GroupSerializer(groups, many=True)
-    # items and groups are linked by their index in their respective lists, not their foreign key
     return Response({'status': 'success', 'groupsInfo': serialized.data, 'itemsInfo': items_list})
 
 
 @api_view(['GET', 'POST'])
 def create_item(request):
     group = Group.objects.get(id=request.data['group_id'])
-    item = Item.objects.create(group=group, name=request.data['name'])
+    all_items = Item.objects.filter(group=group)
+    number_of_items = len(all_items)
+    item = Item.objects.create(group=group, name=request.data['name'], order=number_of_items)
+    item.save()
+    return Response({'status': 'success'})
+
+
+@api_view(['GET', 'POST'])
+def edit_item(request):
+    item = Item.objects.get(id=request.data['item_id'])
+    item_name = request.data['item_name']
+    item.name = item_name
     item.save()
     return Response({'status': 'success'})

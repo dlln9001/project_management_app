@@ -15,3 +15,4 @@ class Group(models.Model):
 class Item(models.Model):
     name = models.CharField(max_length=2550, default='New item')
     group = models.ForeignKey(Group, models.CASCADE)
+    order = models.IntegerField()
