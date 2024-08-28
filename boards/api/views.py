@@ -55,3 +55,10 @@ def edit_item(request):
     item.name = item_name
     item.save()
     return Response({'status': 'success'})
+
+
+@api_view(['GET', 'POST'])
+def delete_item(request):
+    items = Item.objects.filter(id__in=request.data['item_ids'])
+    items.delete()
+    return Response({'status': 'success'})
