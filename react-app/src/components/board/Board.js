@@ -28,6 +28,9 @@ function Board() {
     const [isItemSelected, setIsItemSelected] = useState(false)
     const [numberOfItemsSelected, setNumberOfItemsSelected] = useState('')
 
+    // list of groups where all of their items have been selected
+    const [groupsAllSelected, setGroupsAllSelected] = useState([])
+
     useEffect(() => {
         fetch('http://127.0.0.1:8000/board/get/', {
             method: 'POST',
@@ -134,7 +137,13 @@ function Board() {
                             <div className="w-1/3 border-r border-r-slate-300 flex">
                                 <div className="bg-black w-[6px] justify-self-start rounded-tl-md"></div>
                                 <div className="p-2 flex items-center border-r border-r-slate-300">
-                                    <div className="w-4 h-4 border border-slate-300 hover:border-slate-600 cursor-pointer rounded-sm"></div>
+                                    <div className={`w-4 h-4 border border-slate-300 hover:border-slate-600 cursor-pointer rounded-sm 
+                                        ${groupsAllSelected.includes(groupId) ? `bg-sky-600` : `bg-white`}`} 
+                                        onClick={() => selectAllItems(groupId)}>
+                                            { groupsAllSelected.includes(groupId) && 
+                                                <FaCheck color="white" className="h-4/5 w-4/5 mx-auto my-[1px]"/>
+                                            }
+                                    </div>
                                 </div>
                                 <p className="p-1 text-sm text-slate-600 mx-auto self-center">Item</p>
                             </div>
@@ -166,23 +175,80 @@ function Board() {
         }
     }, [renderGroups])
 
+    function selectAllItems(groupId) {
+    let amountSelected = 0
+    for (let i=0; i < groupsData.itemsInfo.length; i++) {
+        // go through items, if they match the group that was clicked to select all items, they'll be added to selected items
+        if (groupsData.itemsInfo[i].length != 0 && groupsData.itemsInfo[i][0].group === groupId) {
+            let allItemsSelected = true
+            let itemsInTheGroup = []
+            for (let j=0; j<groupsData.itemsInfo[i].length; j++) {
+                itemsInTheGroup.push(groupsData.itemsInfo[i][j].id)
+                if (!itemSelected.includes(groupsData.itemsInfo[i][j].id)) {
+                    setItemSelected(oldArr => [...oldArr, groupsData.itemsInfo[i][j].id])
+                    amountSelected += 1
+                    allItemsSelected = false
+                }
+            }
+            // if in the group, all the items were already selected, deselect all of the items
+            if (allItemsSelected) {
+                let tempItemSelected = itemSelected
+                // so we don't have issues with the for loop while removing elements
+                let newItemSelected = []
+
+                let groupIndex = groupsAllSelected.indexOf(groupId)
+                let tempGroupsAllSelected = [...groupsAllSelected]
+
+                tempGroupsAllSelected.splice(groupIndex, 1)
+                setGroupsAllSelected(tempGroupsAllSelected)
+
+                for (let k=0; k<tempItemSelected.length; k++) {
+                    if (!itemsInTheGroup.includes(tempItemSelected[k])) {
+                        newItemSelected.push(tempItemSelected[k])
+                    }
+                    else {
+                        amountSelected -= 1
+                    }
+                }
+
+                setItemSelected(newItemSelected)
+            }
+
+            else {
+            setGroupsAllSelected(oldArr => [...oldArr, groupId])
+            }
+            setRenderGroups(!renderGroups)
+            setIsItemSelected(true)
+            setNumberOfItemsSelected(itemSelected.length + amountSelected)
+            return
+        }
+    }
+    }
+
     function handleItemSelect(groupIndex, itemIndex) {
         let tempItemSelected = itemSelected
-        if (tempItemSelected.includes(groupsData.itemsInfo[groupIndex][itemIndex].id)) {
+        let itemId = groupsData.itemsInfo[groupIndex][itemIndex].id
+        if (tempItemSelected.includes(itemId)) {
             for (let i=0; i<tempItemSelected.length; i++) {
-                if (tempItemSelected[i] === groupsData.itemsInfo[groupIndex][itemIndex].id) {
+                if (tempItemSelected[i] === itemId) {
                     tempItemSelected.splice(i, 1)
                 }
             }
             if (tempItemSelected.length === 0) {
                 setIsItemSelected(false)
             }
+            // removes the group so it doesn't show the entire group is selected anymore, if it was.
+            let groupId = groupsData.itemsInfo[groupIndex][itemIndex].group
+            if (groupsAllSelected.includes(groupId)) {
+                let index = groupsAllSelected.indexOf(groupId)
+                groupsAllSelected.splice(index, 1)
+            }
             setNumberOfItemsSelected(tempItemSelected.length)
             setItemSelected(tempItemSelected)
         }
         else {
             setNumberOfItemsSelected(itemSelected.length + 1)
-            setItemSelected(oldArr => [...oldArr, groupsData.itemsInfo[groupIndex][itemIndex].id])
+            setItemSelected(oldArr => [...oldArr, itemId])
             setIsItemSelected(true)
         }
         setRenderGroups(!renderGroups)
@@ -287,7 +353,7 @@ function Board() {
     }
 
     return (
-        <div className="bg-white h-screen rounded-tl-lg pl-10 py-5 pr-1 relative">
+        <div className="bg-white h-full rounded-tl-lg pl-10 py-5 pr-1 relative">
             <p className="text-2xl hover:bg-slate-100 w-fit p-1 py-0 rounded-md cursor-pointer">{boardTitle}</p>
             <button onClick={() => createItemButton()} className="bg-sky-600 p-[6px] px-4 rounded-sm text-white text-sm hover:bg-sky-700 mt-5">New item</button>
             {groupHtml &&
@@ -310,7 +376,11 @@ function Board() {
                         : <p>Items selected</p>
                         }
                     </div>
-                    <div className="flex flex-col justify-center w-16 items-center gap-1 ml-auto cursor-pointer group" onClick={deleteSelectedItems}>
+                    <div className="flex flex-col justify-center w-16 items-center gap-1 ml-auto cursor-pointer group" 
+                        onClick={() => {
+                            deleteSelectedItems()
+                            setGroupsAllSelected([])
+                        }}>
                         <IoTrashOutline className="text-2xl group-hover:text-sky-600"/>
                         <p className="text-xs">Delete</p>
                     </div>
@@ -318,6 +388,7 @@ function Board() {
                     onClick={() => {
                         setIsItemSelected(false)
                         setItemSelected([])
+                        setGroupsAllSelected([])
                         setRenderGroups(!renderGroups)
                     }}>
                         <IoMdClose />
