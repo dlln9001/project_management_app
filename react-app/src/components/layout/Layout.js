@@ -9,13 +9,17 @@ function Layout() {
     const {showCreateWorkspaceItem, setShowCreateWorkspaceItem} = useCreateElement()
     return (
         <>
-            <div className="bg-gradient-to-b from-indigo-100 to-slate-50 relative">
-                <Topbar />
-                <div className="flex h-screen overflow-x-hidden">
-                        <Sidebar />
-                    <main className="w-full">
-                        <Outlet />
-                    </main>
+            <div className="bg-gradient-to-b from-indigo-100 to-slate-50 relative h-screen">
+                <div className="h-full flex flex-col">
+                    <div className="flex-none">
+                        <Topbar />
+                    </div>
+                    <div className="flex overflow-hidden">
+                            <Sidebar />
+                        <main className="w-full">
+                            <Outlet />
+                        </main>
+                    </div>
                 </div>
                 {showCreateWorkspaceItem && 
                 <>

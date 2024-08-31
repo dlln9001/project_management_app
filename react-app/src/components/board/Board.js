@@ -134,7 +134,7 @@ function Board() {
                     <div key={i} className="mt-10">
                         <p className="mb-1">{currentGroup.name}</p>
                         <div className="border border-slate-300 rounded-md border-r-0 border-l-0 rounded-r-none">
-                            <div className="w-1/3 border-r border-r-slate-300 flex">
+                            <div className="w-1/3 border-r border-r-slate-300 flex sticky top-0 bg-white">
                                 <div className="bg-black w-[6px] justify-self-start rounded-tl-md"></div>
                                 <div className="p-2 flex items-center border-r border-r-slate-300">
                                     <div className={`w-4 h-4 border border-slate-300 hover:border-slate-600 cursor-pointer rounded-sm 
@@ -353,18 +353,24 @@ function Board() {
     }
 
     return (
-        <div className="bg-white h-full rounded-tl-lg pl-10 py-5 pr-1 relative">
-            <p className="text-2xl hover:bg-slate-100 w-fit p-1 py-0 rounded-md cursor-pointer">{boardTitle}</p>
-            <button onClick={() => createItemButton()} className="bg-sky-600 p-[6px] px-4 rounded-sm text-white text-sm hover:bg-sky-700 mt-5">New item</button>
-            {groupHtml &&
-                    groupHtml
-            }
-            <button className="flex gap-2 items-center border p-1 rounded-md px-2 border-slate-300 hover:bg-slate-100 mt-14" onClick={createGroup}>
-                <div> 
-                    <AiOutlinePlus />
+        <div className="bg-white rounded-tl-lg relative flex flex-col overflow-auto h-full">
+            <div className="ml-10 mb-5 mr-1">
+                <div className="sticky top-0 bg-white z-10 pt-5">
+                    <p className="text-2xl hover:bg-slate-100 w-fit p-1 py-0 rounded-md cursor-pointer">{boardTitle}</p>
+                    <button onClick={() => createItemButton()} className="bg-sky-600 p-[6px] px-4 rounded-sm text-white text-sm hover:bg-sky-700 mt-5">New item</button>
                 </div>
-                <p className="text-sm text-slate-600">Add new group</p>
-            </button>
+                <div>
+                    {groupHtml &&
+                            groupHtml
+                    }
+                    <button className="flex gap-2 items-center border p-1 rounded-md px-2 border-slate-300 hover:bg-slate-100 mt-14" onClick={createGroup}>
+                        <div> 
+                            <AiOutlinePlus />
+                        </div>
+                        <p className="text-sm text-slate-600">Add new group</p>
+                    </button>
+                </div>
+            </div>
             {isItemSelected && 
                 <div className=" shadow-all-sides flex rounded-md h-16 fixed mx-auto left-1/2 transform -translate-x-1/3 w-1/3 bottom-10 bg-white">
                     <div className="w-16 bg-sky-600 rounded-l-md text-white text-3xl flex justify-center items-center">
