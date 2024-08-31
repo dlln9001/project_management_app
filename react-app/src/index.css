@@ -6,6 +6,23 @@ body {
   @apply font-sans
 }
 
+.custom-scrollbar::-webkit-scrollbar {
+  width: 10px; 
+  height: 10px; 
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.3); /* Customize scrollbar color */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.5); /* Darker on hover */
+}
+
+.custom-scrollbar::-webkit-scrollbar-button {
+  display: none; /* Hides the arrows */
+}
+
 @layer components {
   .bar-button {
     @apply rounded-md p-2 cursor-pointer mx-2 my-1;

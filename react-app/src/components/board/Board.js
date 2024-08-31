@@ -31,6 +31,7 @@ function Board() {
     // list of groups where all of their items have been selected
     const [groupsAllSelected, setGroupsAllSelected] = useState([])
 
+
     useEffect(() => {
         fetch('http://127.0.0.1:8000/board/get/', {
             method: 'POST',
@@ -132,9 +133,13 @@ function Board() {
                 let groupId = currentGroup.id
                 tempGroupHtml.push(
                     <div key={i} className="mt-10">
-                        <p className="mb-1">{currentGroup.name}</p>
+                        <div className="inline-flex">
+                            <input type="text" className="mb-2 text-lg w-auto" value={currentGroup.name} 
+/>
+
+                        </div>
                         <div className="border border-slate-300 rounded-md border-r-0 border-l-0 rounded-r-none">
-                            <div className="w-1/3 border-r border-r-slate-300 flex sticky top-0 bg-white">
+                            <div className="w-1/3 border-r border-r-slate-300 flex bg-white">
                                 <div className="bg-black w-[6px] justify-self-start rounded-tl-md"></div>
                                 <div className="p-2 flex items-center border-r border-r-slate-300">
                                     <div className={`w-4 h-4 border border-slate-300 hover:border-slate-600 cursor-pointer rounded-sm 
@@ -353,9 +358,9 @@ function Board() {
     }
 
     return (
-        <div className="bg-white rounded-tl-lg relative flex flex-col overflow-auto h-full">
+        <div className="bg-white rounded-tl-lg relative flex flex-col overflow-auto h-full custom-scrollbar">
             <div className="ml-10 mb-5 mr-1">
-                <div className="sticky top-0 bg-white z-10 pt-5">
+                <div className="sticky top-0 bg-white z-10 py-5">
                     <p className="text-2xl hover:bg-slate-100 w-fit p-1 py-0 rounded-md cursor-pointer">{boardTitle}</p>
                     <button onClick={() => createItemButton()} className="bg-sky-600 p-[6px] px-4 rounded-sm text-white text-sm hover:bg-sky-700 mt-5">New item</button>
                 </div>
