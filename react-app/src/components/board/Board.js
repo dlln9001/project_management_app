@@ -5,6 +5,8 @@ import { FaCheck } from "react-icons/fa6";
 import { IoMdClose } from "react-icons/io";
 import { IoTrashOutline } from "react-icons/io5";
 import { GoTriangleDown } from "react-icons/go";
+import { BsThreeDots } from "react-icons/bs";
+import { FiTrash } from "react-icons/fi";
 
 
 function Board() {
@@ -42,6 +44,10 @@ function Board() {
     const [editingGroupId, setEditingGroupId] = useState('')
     const [isEditingGroupName, setIsEditingGroupName] = useState(false)
 
+    const [showGroupOptions, setShowGroupOptions] = useState(false)
+    const [groupOptionsId, setGroupOptionsId] = useState('')
+    const groupOptionsRef = useRef('')
+
     useEffect(() => {
         fetch('http://127.0.0.1:8000/board/get/', {
             method: 'POST',
@@ -76,7 +82,18 @@ function Board() {
 
         // when a new board is clicked, you want the group's name's html to be set to the right width. Reload a second time.
         setReloadGroupsInitial(true)
+
+        document.addEventListener('click', handleDocumentClick)
     }, [boardId, renderComponent])
+
+    function handleDocumentClick(e) {
+        // closes out the group options
+        if (groupOptionsRef.current && !groupOptionsRef.current.contains(e.target)) {
+            setShowGroupOptions(false)
+            setGroupOptionsId('')
+            setRenderGroups(!renderGroups)
+        }
+    }
 
     // renders all the groups in a separate use effect than the fetch
     useEffect(() => {
@@ -150,48 +167,68 @@ function Board() {
 
                 tempGroupHtml.push(
                     <div key={i} className="mt-10">
-                        <div className={`flex mb-2 items-center gap-1 group ${isEditingGroupName && `w-full`} w-fit relative`}>
-                            <input type="text" 
-                            className="text-lg border px-1 py-0 text-center rounded-md border-transparent hover:border-slate-300 focus:outline-none focus:border-sky-600 focus:min-w-[70%] focus:text-start peer" 
-                            value={(isEditingGroupName && editingGroupId === groupId) ? editingGroupName : currentGroup.name} 
-                            ref={(el) => el && groupInputRef.current.push(el)}
-                            onFocus={(e) => {
-                                setEditingGroupName(e.target.value)
-                                setEditingGroupId(groupId)
-                                setIsEditingGroupName(true)
-                                setRenderGroups(!renderGroups)
-                            }}
-                            onChange={(e) => {
-                                setEditingGroupName(e.target.value)
-                                setRenderGroups(!renderGroups)
+                        <div className="flex items-center mb-2 group">
+                            <div className={`absolute left-3 group-hover:text-inherit  p-1 rounded-md cursor-pointer 
+                                 ${showGroupOptions && groupOptionsId === groupId ? `bg-sky-200 text-inherit` : `hover:bg-slate-300 text-white`}`}
+                                 onClick={() => {
+                                    setShowGroupOptions(true)
+                                    setGroupOptionsId(groupId)
+                                    setRenderGroups(!renderGroups)
+                                }}>
+                                <BsThreeDots />
+                                {(showGroupOptions && groupOptionsId === groupId) && 
+                                    <div ref={groupOptionsId === groupId ? groupOptionsRef : null}
+                                        className="absolute left-7 top-0 bg-white z-10 shadow-all-sides w-60 text-slate-600 text-sm p-2 rounded-lg">
+                                        <div className="group-options-button" onClick={() => deleteGroup(groupId)}>
+                                            <FiTrash className="mx-2 my-1"/>
+                                            <p>Delete</p>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            <div className={`flex items-center gap-1 group ${isEditingGroupName && `w-full`} w-fit relative`}>
+                                <input type="text" 
+                                className="text-lg border px-1 py-0 text-center rounded-md border-transparent hover:border-slate-300 focus:outline-none focus:border-sky-600 focus:min-w-[70%] focus:text-start peer" 
+                                value={(isEditingGroupName && editingGroupId === groupId) ? editingGroupName : currentGroup.name} 
+                                ref={(el) => el && groupInputRef.current.push(el)}
+                                onFocus={(e) => {
+                                    setEditingGroupName(e.target.value)
+                                    setEditingGroupId(groupId)
+                                    setIsEditingGroupName(true)
+                                    setRenderGroups(!renderGroups)
                                 }}
-                            onBlur={() => {
-                                setIsEditingGroupName(false)
-                                setEditingGroupName('')
-                                editGroupName(groupId)
-                                setRenderGroups(!renderGroups)
-                            }}
-                            onKeyDown={(e) => {
-                                if(e.key === 'Enter') {
-                                    e.target.blur()
+                                onChange={(e) => {
+                                    setEditingGroupName(e.target.value)
+                                    setRenderGroups(!renderGroups)
+                                    }}
+                                onBlur={() => {
                                     setIsEditingGroupName(false)
                                     setEditingGroupName('')
                                     editGroupName(groupId)
-                                }
-                            }}/>
-                            {!isEditingGroupName && 
-                                <div 
-                                    className="absolute scale-0 justify-center bg-slate-700 py-[7px] px-4 rounded-md bottom-10 z-10 
-                                            peer-hover:flex peer-hover:scale-100 transition ease-in duration-0 peer-hover:duration-100 peer-hover:delay-500">
-                                    <p className="bg-slate-700 text-white m-0 text-sm">Click to Edit</p>
-                                    <div className="text-slate-700 absolute top-[25px] text-2xl">
-                                        <GoTriangleDown/>
+                                    setRenderGroups(!renderGroups)
+                                }}
+                                onKeyDown={(e) => {
+                                    if(e.key === 'Enter') {
+                                        e.target.blur()
+                                        setIsEditingGroupName(false)
+                                        setEditingGroupName('')
+                                        editGroupName(groupId)
+                                    }
+                                }}/>
+                                {!isEditingGroupName && 
+                                    <div 
+                                        className="absolute scale-0 justify-center bg-slate-700 py-[7px] px-4 rounded-md bottom-10 z-10 min-w-28
+                                                peer-hover:flex peer-hover:scale-100 transition ease-in duration-0 peer-hover:duration-100 peer-hover:delay-500">
+                                        <p className="bg-slate-700 text-white m-0 text-sm">Click to Edit</p>
+                                        <div className="text-slate-700 absolute top-[25px] text-2xl">
+                                            <GoTriangleDown/>
+                                        </div>
                                     </div>
-                                </div>
-                            }
-                            <p className={`transition ease-in group-hover:text-slate-400 text-sm text-white w-fit peer-focus:hidden `}>{currentGroupsItems.length} Items</p>
-                            {/* hidden span to measure the length of the input so we can manually set the width */}
-                            <span ref={(el) => el && measureGroupInputRef.current.push(el)} className="text-lg p-1 px-2 invisible absolute min-w-3"></span>
+                                }
+                                <p className={`transition ease-in group-hover:text-slate-400 text-sm text-white w-fit peer-focus:hidden `}>{currentGroupsItems.length} Items</p>
+                                {/* hidden span to measure the length of the input so we can manually set the width */}
+                                <span ref={(el) => el && measureGroupInputRef.current.push(el)} className="text-lg p-1 px-2 invisible absolute min-w-3"></span>
+                            </div>
                         </div>
                         <div className="border border-slate-300 rounded-md border-r-0 border-l-0 rounded-r-none">
                             <div className="w-1/3 border-r border-r-slate-300 flex bg-white">
@@ -416,6 +453,21 @@ function Board() {
             }
             setRenderComponent(!renderComponent)
         })
+    }
+
+    function deleteGroup(groupId) {
+        fetch('http://127.0.0.1:8000/board/delete-group/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${userToken}`,
+            },
+            body: JSON.stringify({
+                group_id: groupId
+            })
+        })
+        .then(res => res.json())
+        .then(data => setRenderComponent(!renderComponent))
     }
 
     function editGroupName(groupId) {

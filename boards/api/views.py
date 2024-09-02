@@ -23,6 +23,12 @@ def create_group(request):
     group.save()
     return Response({'status': 'success'})
 
+@api_view(['GET', 'POST'])
+def delete_group(request):
+    group = Group.objects.get(id=request.data['group_id'])
+    group.delete()
+    return Response({'status': 'success'})
+
 
 @api_view(['GET', 'POST'])
 def get_groups(request):

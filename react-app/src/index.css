@@ -28,6 +28,10 @@ body {
     @apply rounded-md p-2 cursor-pointer mx-2 my-1;
     @apply hover:bg-slate-200;
   }
+
+  .group-options-button {
+    @apply hover:bg-slate-200 p-1 rounded-md flex items-center;
+  }
 }
 
 @layer utilities {
