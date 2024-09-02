@@ -78,6 +78,7 @@ function Board() {
         .then(data => {
             setGroupsData(data)
             setRenderGroups(!renderGroups)
+            console.log(data)
         })
 
         // when a new board is clicked, you want the group's name's html to be set to the right width. Reload a second time.
