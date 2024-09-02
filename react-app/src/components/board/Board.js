@@ -4,6 +4,7 @@ import { AiOutlinePlus } from "react-icons/ai";
 import { FaCheck } from "react-icons/fa6";
 import { IoMdClose } from "react-icons/io";
 import { IoTrashOutline } from "react-icons/io5";
+import { GoTriangleDown } from "react-icons/go";
 
 
 function Board() {
@@ -31,6 +32,15 @@ function Board() {
     // list of groups where all of their items have been selected
     const [groupsAllSelected, setGroupsAllSelected] = useState([])
 
+    const groupInputRef = useRef([])
+    const measureGroupInputRef = useRef([])
+
+    // the width of the group names doesn't adjust until after the html has been set, so it needs to re render the groups
+    const [reloadGroupsInitial, setReloadGroupsInitial] = useState(true)
+    
+    const [editingGroupName, setEditingGroupName] = useState('')
+    const [editingGroupId, setEditingGroupId] = useState('')
+    const [isEditingGroupName, setIsEditingGroupName] = useState(false)
 
     useEffect(() => {
         fetch('http://127.0.0.1:8000/board/get/', {
@@ -63,6 +73,9 @@ function Board() {
             setGroupsData(data)
             setRenderGroups(!renderGroups)
         })
+
+        // when a new board is clicked, you want the group's name's html to be set to the right width. Reload a second time.
+        setReloadGroupsInitial(true)
     }, [boardId, renderComponent])
 
     // renders all the groups in a separate use effect than the fetch
@@ -73,6 +86,7 @@ function Board() {
             let itemHtml = []
             // this variable is so that when a user clicks on a new board, when items are selected, that the item menu doesn't show up on separate boards
             let itemIdCheck = false
+            // sets all the items html
             for (let i=0; i<groupsData.itemsInfo.length; i++) {
                 for (let j=0; j<groupsData.itemsInfo[i].length; j++) {
                     if (itemSelected.includes(groupsData.itemsInfo[i][j].id)) {
@@ -128,15 +142,56 @@ function Board() {
                 setIsItemSelected(false)
                 setItemSelected([])
             }
+            // set the group html
             for (let i=0; i<groupsData.groupsInfo.length; i++) {
                 let currentGroup = groupsData.groupsInfo[i]  
                 let groupId = currentGroup.id
+                let currentGroupsItems = groupsData.itemsInfo[i]
+
                 tempGroupHtml.push(
                     <div key={i} className="mt-10">
-                        <div className="inline-flex">
-                            <input type="text" className="mb-2 text-lg w-auto" value={currentGroup.name} 
-/>
-
+                        <div className={`flex mb-2 items-center gap-1 group ${isEditingGroupName && `w-full`} w-fit relative`}>
+                            <input type="text" 
+                            className="text-lg border px-1 py-0 text-center rounded-md border-transparent hover:border-slate-300 focus:outline-none focus:border-sky-600 focus:min-w-[70%] focus:text-start peer" 
+                            value={(isEditingGroupName && editingGroupId === groupId) ? editingGroupName : currentGroup.name} 
+                            ref={(el) => el && groupInputRef.current.push(el)}
+                            onFocus={(e) => {
+                                setEditingGroupName(e.target.value)
+                                setEditingGroupId(groupId)
+                                setIsEditingGroupName(true)
+                                setRenderGroups(!renderGroups)
+                            }}
+                            onChange={(e) => {
+                                setEditingGroupName(e.target.value)
+                                setRenderGroups(!renderGroups)
+                                }}
+                            onBlur={() => {
+                                setIsEditingGroupName(false)
+                                setEditingGroupName('')
+                                editGroupName(groupId)
+                                setRenderGroups(!renderGroups)
+                            }}
+                            onKeyDown={(e) => {
+                                if(e.key === 'Enter') {
+                                    e.target.blur()
+                                    setIsEditingGroupName(false)
+                                    setEditingGroupName('')
+                                    editGroupName(groupId)
+                                }
+                            }}/>
+                            {!isEditingGroupName && 
+                                <div 
+                                    className="absolute scale-0 justify-center bg-slate-700 py-[7px] px-4 rounded-md bottom-10 z-10 
+                                            peer-hover:flex peer-hover:scale-100 transition ease-in duration-0 peer-hover:duration-100 peer-hover:delay-500">
+                                    <p className="bg-slate-700 text-white m-0 text-sm">Click to Edit</p>
+                                    <div className="text-slate-700 absolute top-[25px] text-2xl">
+                                        <GoTriangleDown/>
+                                    </div>
+                                </div>
+                            }
+                            <p className={`transition ease-in group-hover:text-slate-400 text-sm text-white w-fit peer-focus:hidden `}>{currentGroupsItems.length} Items</p>
+                            {/* hidden span to measure the length of the input so we can manually set the width */}
+                            <span ref={(el) => el && measureGroupInputRef.current.push(el)} className="text-lg p-1 px-2 invisible absolute min-w-3"></span>
                         </div>
                         <div className="border border-slate-300 rounded-md border-r-0 border-l-0 rounded-r-none">
                             <div className="w-1/3 border-r border-r-slate-300 flex bg-white">
@@ -175,59 +230,80 @@ function Board() {
                         </div>
                     </div>
                 )
+
+                if (!editingGroupName) {
+                    adjustGroupNameWidth(i)
+                }
             }
+
             setGroupHtml(tempGroupHtml)
+
+            if (reloadGroupsInitial) {
+                setRenderGroups(!renderGroups)
+                setReloadGroupsInitial(false)
+            }
+
+            groupInputRef.current = []
+            measureGroupInputRef.current = []
         }
     }, [renderGroups])
 
-    function selectAllItems(groupId) {
-    let amountSelected = 0
-    for (let i=0; i < groupsData.itemsInfo.length; i++) {
-        // go through items, if they match the group that was clicked to select all items, they'll be added to selected items
-        if (groupsData.itemsInfo[i].length != 0 && groupsData.itemsInfo[i][0].group === groupId) {
-            let allItemsSelected = true
-            let itemsInTheGroup = []
-            for (let j=0; j<groupsData.itemsInfo[i].length; j++) {
-                itemsInTheGroup.push(groupsData.itemsInfo[i][j].id)
-                if (!itemSelected.includes(groupsData.itemsInfo[i][j].id)) {
-                    setItemSelected(oldArr => [...oldArr, groupsData.itemsInfo[i][j].id])
-                    amountSelected += 1
-                    allItemsSelected = false
-                }
-            }
-            // if in the group, all the items were already selected, deselect all of the items
-            if (allItemsSelected) {
-                let tempItemSelected = itemSelected
-                // so we don't have issues with the for loop while removing elements
-                let newItemSelected = []
-
-                let groupIndex = groupsAllSelected.indexOf(groupId)
-                let tempGroupsAllSelected = [...groupsAllSelected]
-
-                tempGroupsAllSelected.splice(groupIndex, 1)
-                setGroupsAllSelected(tempGroupsAllSelected)
-
-                for (let k=0; k<tempItemSelected.length; k++) {
-                    if (!itemsInTheGroup.includes(tempItemSelected[k])) {
-                        newItemSelected.push(tempItemSelected[k])
-                    }
-                    else {
-                        amountSelected -= 1
-                    }
-                }
-
-                setItemSelected(newItemSelected)
-            }
-
-            else {
-            setGroupsAllSelected(oldArr => [...oldArr, groupId])
-            }
-            setRenderGroups(!renderGroups)
-            setIsItemSelected(true)
-            setNumberOfItemsSelected(itemSelected.length + amountSelected)
-            return
+    // this is so we can change the group name's input's width dynamically, will fit the width 
+    function adjustGroupNameWidth(index) {
+        if (groupInputRef.current[index] && measureGroupInputRef.current[index]) {
+            measureGroupInputRef.current[index].textContent = groupInputRef.current[index].value
+            groupInputRef.current[index].style.width = `${measureGroupInputRef.current[index].offsetWidth }px`
         }
     }
+
+    function selectAllItems(groupId) {
+        let amountSelected = 0
+        for (let i=0; i < groupsData.itemsInfo.length; i++) {
+            // go through items, if they match the group that was clicked to select all items, they'll be added to selected items
+            if (groupsData.itemsInfo[i].length != 0 && groupsData.itemsInfo[i][0].group === groupId) {
+                let allItemsSelected = true
+                let itemsInTheGroup = []
+                for (let j=0; j<groupsData.itemsInfo[i].length; j++) {
+                    itemsInTheGroup.push(groupsData.itemsInfo[i][j].id)
+                    if (!itemSelected.includes(groupsData.itemsInfo[i][j].id)) {
+                        setItemSelected(oldArr => [...oldArr, groupsData.itemsInfo[i][j].id])
+                        amountSelected += 1
+                        allItemsSelected = false
+                    }
+                }
+                // if in the group, all the items were already selected, deselect all of the items
+                if (allItemsSelected) {
+                    let tempItemSelected = itemSelected
+                    // so we don't have issues with the for loop while removing elements
+                    let newItemSelected = []
+
+                    let groupIndex = groupsAllSelected.indexOf(groupId)
+                    let tempGroupsAllSelected = [...groupsAllSelected]
+
+                    tempGroupsAllSelected.splice(groupIndex, 1)
+                    setGroupsAllSelected(tempGroupsAllSelected)
+
+                    for (let k=0; k<tempItemSelected.length; k++) {
+                        if (!itemsInTheGroup.includes(tempItemSelected[k])) {
+                            newItemSelected.push(tempItemSelected[k])
+                        }
+                        else {
+                            amountSelected -= 1
+                        }
+                    }
+
+                    setItemSelected(newItemSelected)
+                }
+
+                else {
+                setGroupsAllSelected(oldArr => [...oldArr, groupId])
+                }
+                setRenderGroups(!renderGroups)
+                setIsItemSelected(true)
+                setNumberOfItemsSelected(itemSelected.length + amountSelected)
+                return
+            }
+        }
     }
 
     function handleItemSelect(groupIndex, itemIndex) {
@@ -338,6 +414,24 @@ function Board() {
             if (!data.status === 'success') {
                 console.log(data)
             }
+            setRenderComponent(!renderComponent)
+        })
+    }
+
+    function editGroupName(groupId) {
+        fetch('http://127.0.0.1:8000/board/edit-group-name/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${userToken}`
+            },
+            body: JSON.stringify({
+                group_name: editingGroupName,
+                group_id: groupId
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
             setRenderComponent(!renderComponent)
         })
     }

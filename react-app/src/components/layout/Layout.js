@@ -14,7 +14,7 @@ function Layout() {
                     <div className="flex-none">
                         <Topbar />
                     </div>
-                    <div className="flex overflow-hidden">
+                    <div className="flex overflow-hidden h-full">
                             <Sidebar />
                         <main className="w-full">
                             <Outlet />
