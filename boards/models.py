@@ -12,6 +12,7 @@ class Group(models.Model):
     name = models.CharField(max_length=255, default='New Group')
     board = models.ForeignKey(Board, on_delete=models.CASCADE)
     order = models.IntegerField()
+    color = models.CharField(max_length=255, default='bg-sky-400')
 
 class Item(models.Model):
     name = models.CharField(max_length=2550, default='New item')

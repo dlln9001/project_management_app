@@ -45,8 +45,15 @@ function Board() {
     const [isEditingGroupName, setIsEditingGroupName] = useState(false)
 
     const [showGroupOptions, setShowGroupOptions] = useState(false)
-    const [groupOptionsId, setGroupOptionsId] = useState('')
+    const [groupOptionsId, setGroupOptionsId] = useState('') // id of the group
     const groupOptionsRef = useRef('')
+
+    const [showColorOptions, setShowColorOptions] = useState(false)
+    const [colorOptionsHtml, setColorOptionsHtml] = useState('')
+    const colorOptions = ['bg-emerald-600', 'bg-green-500', 'bg-lime-500', 'bg-yellow-500', 'bg-amber-400', 'bg-violet-600', 'bg-purple-500', 'bg-blue-500', 'bg-sky-400', 
+                         'bg-cyan-300', 'bg-rose-700', 'bg-red-500', 'bg-pink-600', 'bg-pink-300', 'bg-orange-600', 'bg-amber-500', 'bg-yellow-800', 'bg-gray-300', 
+                         'bg-gray-500', 'bg-slate-600']
+
 
     useEffect(() => {
         fetch('http://127.0.0.1:8000/board/get/', {
@@ -78,7 +85,7 @@ function Board() {
         .then(data => {
             setGroupsData(data)
             setRenderGroups(!renderGroups)
-            console.log(data)
+            // console.log(data)
         })
 
         // when a new board is clicked, you want the group's name's html to be set to the right width. Reload a second time.
@@ -106,13 +113,14 @@ function Board() {
             let itemIdCheck = false
             // sets all the items html
             for (let i=0; i<groupsData.itemsInfo.length; i++) {
+                let currentGroup = groupsData.groupsInfo[i]
                 for (let j=0; j<groupsData.itemsInfo[i].length; j++) {
                     if (itemSelected.includes(groupsData.itemsInfo[i][j].id)) {
                         itemIdCheck = true
                     }
                     itemHtml.push(
                         <div key={j} className="border-r border-r-slate-300 w-1/3 text-sm text-slate-600 hover:bg-slate-100 flex">
-                                <div className="bg-black w-[6px] justify-self-start min-w-[6px]"></div>
+                                <div className={`${currentGroup.color} w-[6px] justify-self-start min-w-[6px]`}></div>
                                 <div className="p-2 flex items-center border-r border-r-slate-300 border-t border-t-slate-300">
                                     <div className={`w-4 h-4 border  cursor-pointer rounded-sm
                                          ${itemSelected.includes(groupsData.itemsInfo[i][j].id) ? `bg-sky-600 hover:bg-sky-700` : `bg-white border-slate-300 hover:border-slate-600`}`}
@@ -188,8 +196,27 @@ function Board() {
                                 }
                             </div>
                             <div className={`flex items-center gap-1 group ${isEditingGroupName && `w-full`} w-fit relative`}>
+                                {/* for color options */}
+                                {(isEditingGroupName && editingGroupId === groupId) && 
+                                   <>
+                                   <div className={`absolute w-[15px] h-[15px] rounded-[4px] left-2 cursor-pointer ${currentGroup.color} hover:opacity-80`} onMouseDown={(e) => {
+                                        e.preventDefault()
+                                        setShowColorOptions(true)
+                                        createColorOptionsHtml(groupId)
+                                        setRenderGroups(!renderGroups)
+                                    }}>
+                                    </div>
+                                   {showColorOptions &&
+                                        <div className="absolute top-9 bg-white border border-slate-300 rounded-[5px] flex p-1 gap-[1px] flex-wrap w-[164px] z-10"
+                                            onMouseDown={(e) => e.preventDefault()}>
+                                            {colorOptionsHtml}
+                                        </div>
+                                   }
+                                   </>
+                                }
                                 <input type="text" 
-                                className="text-lg border px-1 py-0 text-center rounded-md border-transparent hover:border-slate-300 focus:outline-none focus:border-sky-600 focus:min-w-[70%] focus:text-start peer" 
+                                className={`text-lg border px-1 py-0 text-center rounded-[4px] border-transparent hover:border-slate-300 focus:outline-none focus:border-sky-600 focus:min-w-[70%] 
+                                           focus:text-start peer ${(isEditingGroupName && editingGroupId === groupId) && `pl-8`}`}
                                 value={(isEditingGroupName && editingGroupId === groupId) ? editingGroupName : currentGroup.name} 
                                 ref={(el) => el && groupInputRef.current.push(el)}
                                 onFocus={(e) => {
@@ -203,6 +230,7 @@ function Board() {
                                     setRenderGroups(!renderGroups)
                                     }}
                                 onBlur={() => {
+                                    setShowColorOptions(false)
                                     setIsEditingGroupName(false)
                                     setEditingGroupName('')
                                     editGroupName(groupId)
@@ -233,7 +261,7 @@ function Board() {
                         </div>
                         <div className="border border-slate-300 rounded-md border-r-0 border-l-0 rounded-r-none">
                             <div className="w-1/3 border-r border-r-slate-300 flex bg-white">
-                                <div className="bg-black w-[6px] justify-self-start rounded-tl-md"></div>
+                                <div className={`${currentGroup.color} w-[6px] justify-self-start rounded-tl-md`}></div>
                                 <div className="p-2 flex items-center border-r border-r-slate-300">
                                     <div className={`w-4 h-4 border border-slate-300 hover:border-slate-600 cursor-pointer rounded-sm 
                                         ${groupsAllSelected.includes(groupId) ? `bg-sky-600` : `bg-white`}`} 
@@ -249,7 +277,7 @@ function Board() {
                                 {itemsHtml[i]}
 
                             <div className={`flex`}>
-                                <div className="bg-black w-[6px] justify-self-start rounded-bl-md"></div>
+                                <div className={`${currentGroup.color} w-[6px] justify-self-start rounded-bl-md`}></div>
                                 <div className="p-2 flex items-center border-r border-r-slate-300 border-t border-t-slate-300">
                                     <div className="w-4 h-4 border border-slate-300 rounded-sm"></div>
                                 </div>
@@ -285,6 +313,24 @@ function Board() {
             measureGroupInputRef.current = []
         }
     }, [renderGroups])
+    
+
+    function createColorOptionsHtml(groupId) {
+        let tempColorOptionsHtml = []
+        for (let i=0; i<colorOptions.length; i++) {
+            tempColorOptionsHtml.push(
+                <div className="p-1 hover:bg-slate-100 rounded-md cursor-pointer" key={i} 
+                    onMouseDown={() => {
+                        setShowColorOptions(false)
+                        editGroupColor(groupId, colorOptions[i])
+                        setRenderComponent(!renderComponent)
+                    }}>
+                    <div className={`w-[22px] h-[22px] ${colorOptions[i]} rounded-[4px]`}></div>
+                </div>
+            )
+        }
+        setColorOptionsHtml(tempColorOptionsHtml)
+    }
 
     // this is so we can change the group name's input's width dynamically, will fit the width 
     function adjustGroupNameWidth(index) {
@@ -487,6 +533,22 @@ function Board() {
         .then(data => {
             setRenderComponent(!renderComponent)
         })
+    }
+
+    function editGroupColor(groupId, groupColor) {
+        fetch('http://127.0.0.1:8000/board/edit-group-color/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${userToken}`
+            },
+            body: JSON.stringify({
+                group_id: groupId,
+                group_color: groupColor
+            })
+        })
+        .then(res => res.json())
+        .then(data => console.log(data))
     }
 
     function deleteSelectedItems() {

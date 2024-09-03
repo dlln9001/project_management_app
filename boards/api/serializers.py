@@ -16,7 +16,7 @@ class BoardFullSerializer(serializers.ModelSerializer):
 class GroupSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = Group
-        fields = ['name', 'id', 'order']
+        fields = ['name', 'id', 'order', 'color']
 
 class ItemSerializer(serializers.ModelSerializer):
     class Meta(object):

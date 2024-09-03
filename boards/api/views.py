@@ -55,6 +55,14 @@ def edit_group_name(request):
 
 
 @api_view(['GET', 'POST'])
+def edit_group_color(request):
+    group = Group.objects.get(id=request.data['group_id'])
+    group.color = request.data['group_color']
+    group.save()
+    return Response({'status': 'success'})
+
+
+@api_view(['GET', 'POST'])
 def create_item(request):
     group = Group.objects.get(id=request.data['group_id'])
     all_items = Item.objects.filter(group=group)
