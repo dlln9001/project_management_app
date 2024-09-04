@@ -85,7 +85,6 @@ function Board() {
         .then(data => {
             setGroupsData(data)
             setRenderGroups(!renderGroups)
-            // console.log(data)
         })
 
         // when a new board is clicked, you want the group's name's html to be set to the right width. Reload a second time.
@@ -336,7 +335,7 @@ function Board() {
     function adjustGroupNameWidth(index) {
         if (groupInputRef.current[index] && measureGroupInputRef.current[index]) {
             measureGroupInputRef.current[index].textContent = groupInputRef.current[index].value
-            groupInputRef.current[index].style.width = `${measureGroupInputRef.current[index].offsetWidth }px`
+            groupInputRef.current[index].style.width = `${measureGroupInputRef.current[index].offsetWidth + 10}px`
         }
     }
 
@@ -510,7 +509,8 @@ function Board() {
                 'Authorization': `Token ${userToken}`,
             },
             body: JSON.stringify({
-                group_id: groupId
+                group_id: groupId,
+                board_id: boardId
             })
         })
         .then(res => res.json())

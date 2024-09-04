@@ -19,6 +19,7 @@ def get_board(request):
 def create_group(request):
     board_id = request.data['board_id']
     board = Board.objects.get(id=board_id)
+    # all groups of that board
     all_groups = Group.objects.filter(board=board)
     num_of_groups = len(all_groups)
     group = Group.objects.create(board=board, order=num_of_groups)
@@ -29,6 +30,15 @@ def create_group(request):
 def delete_group(request):
     group = Group.objects.get(id=request.data['group_id'])
     group.delete()
+    # now reorder the groups
+    board = Board.objects.get(id=request.data['board_id'])
+    # all groups of that board
+    all_groups = Group.objects.filter(board=board).order_by('order')
+    index = 0
+    for group in all_groups:
+        group.order = index
+        group.save()
+        index += 1
     return Response({'status': 'success'})
 
 
