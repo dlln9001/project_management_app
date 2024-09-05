@@ -7,6 +7,7 @@ import { IoTrashOutline } from "react-icons/io5";
 import { GoTriangleDown } from "react-icons/go";
 import { BsThreeDots } from "react-icons/bs";
 import { FiTrash } from "react-icons/fi";
+import { IoIosAdd } from "react-icons/io";
 
 
 function Board() {
@@ -53,6 +54,10 @@ function Board() {
     const colorOptions = ['bg-emerald-600', 'bg-green-500', 'bg-lime-500', 'bg-yellow-500', 'bg-amber-400', 'bg-violet-600', 'bg-purple-500', 'bg-blue-500', 'bg-sky-400', 
                          'bg-cyan-300', 'bg-rose-700', 'bg-red-500', 'bg-pink-600', 'bg-pink-300', 'bg-orange-600', 'bg-amber-500', 'bg-yellow-800', 'bg-gray-300', 
                          'bg-gray-500', 'bg-slate-600']
+    
+    const [showAddColumns, setShowAddColumn] = useState(false)
+    const [addColumnsId, setAddColumnsId] = useState('')
+    const addColumnsRef = useRef('')
 
 
     useEffect(() => {
@@ -100,6 +105,12 @@ function Board() {
             setGroupOptionsId('')
             setRenderGroups(!renderGroups)
         }
+
+        if (addColumnsRef.current && !addColumnsRef.current.contains(e.target)) {
+            setShowAddColumn(false)
+            setAddColumnsId('')
+            setRenderGroups(!renderGroups)
+        }
     }
 
     // renders all the groups in a separate use effect than the fetch
@@ -118,7 +129,7 @@ function Board() {
                         itemIdCheck = true
                     }
                     itemHtml.push(
-                        <div key={j} className="border-r border-r-slate-300 w-1/3 text-sm text-slate-600 hover:bg-slate-100 flex">
+                        <div key={j} className=" w-full text-sm text-slate-600 hover:bg-slate-100 flex">
                                 <div className={`${currentGroup.color} w-[6px] justify-self-start min-w-[6px]`}></div>
                                 <div className="p-2 flex items-center border-r border-r-slate-300 border-t border-t-slate-300">
                                     <div className={`w-4 h-4 border  cursor-pointer rounded-sm
@@ -130,7 +141,7 @@ function Board() {
                                         }
                                     </div>
                                 </div>
-                            <div className="px-2 border-t flex border-t-slate-300 w-full">
+                            <div className="px-2 border-t flex border-t-slate-300 min-w-[33%] border-r border-r-slate-300">
                                 <input type="text" 
                                     onFocus={() => {
                                         setFocusedItem([i, j])
@@ -153,6 +164,7 @@ function Board() {
                                     }}
                                 />
                             </div>
+                            <div className=" w-full border-t border-t-slate-300"></div>
                         </div>
                     )
                 }   
@@ -245,7 +257,7 @@ function Board() {
                                 }}/>
                                 {!isEditingGroupName && 
                                     <div 
-                                        className="absolute scale-0 justify-center bg-slate-700 py-[7px] px-4 rounded-md bottom-10 z-10 min-w-28
+                                        className="absolute scale-0 justify-center bg-slate-700 py-[7px] px-4 rounded-md bottom-10 z-10 min-w-28 shadow-lg
                                                 peer-hover:flex peer-hover:scale-100 transition ease-in duration-0 peer-hover:duration-100 peer-hover:delay-500">
                                         <p className="bg-slate-700 text-white m-0 text-sm">Click to Edit</p>
                                         <div className="text-slate-700 absolute top-[25px] text-2xl">
@@ -259,8 +271,8 @@ function Board() {
                             </div>
                         </div>
                         <div className="border border-slate-300 rounded-md border-r-0 border-l-0 rounded-r-none">
-                            <div className="w-1/3 border-r border-r-slate-300 flex bg-white">
-                                <div className={`${currentGroup.color} w-[6px] justify-self-start rounded-tl-md`}></div>
+                            <div className="w-full flex bg-white">
+                                <div className={`${currentGroup.color} min-w-[6px] justify-self-start rounded-tl-md`}></div>
                                 <div className="p-2 flex items-center border-r border-r-slate-300">
                                     <div className={`w-4 h-4 border border-slate-300 hover:border-slate-600 cursor-pointer rounded-sm 
                                         ${groupsAllSelected.includes(groupId) ? `bg-sky-600` : `bg-white`}`} 
@@ -270,13 +282,45 @@ function Board() {
                                             }
                                     </div>
                                 </div>
-                                <p className="p-1 text-sm text-slate-600 mx-auto self-center">Item</p>
+                                <div className="min-w-[33%] px-2 border-r border-r-slate-300 flex items-center justify-center">
+                                    <p className="text-sm text-slate-600 self-center  text-center">Item</p>
+                                </div>
+                                <div className="text-2xl flex items-center justify-center mx-1 h-fit self-center group relative" 
+                                    onClick={() => {
+                                        setShowAddColumn(true)
+                                        setAddColumnsId(groupId)
+                                        setRenderGroups(!renderGroups)
+                                    }}>
+                                    {(showAddColumns && addColumnsId === groupId) && 
+                                        // this is the menu to add different columns
+                                        <div className="absolute text-sm w-80 bg-white shadow-all-sides p-6 rounded-md right-[26px] top-0 z-10"
+                                            ref={addColumnsRef}>
+                                            <p className="text-slate-500 mb-1 p-1">Essentials</p>
+                                            <div className="hover:bg-slate-100 rounded-md p-2 cursor-pointer flex items-center gap-2">
+                                                <img src={process.env.PUBLIC_URL + 'images/statusColumn.png'} alt="" className="w-[7%] h-fit rounded-sm" />
+                                                <p>Status</p>
+                                            </div>
+                                        </div>
+                                    }
+                                    <IoIosAdd className={`hover:bg-slate-100   rounded-sm cursor-pointer peer 
+                                            ${(showAddColumns && addColumnsId === groupId) ? `bg-slate-100 text-sky-600` : `text-slate-500 hover:text-slate-700`}`}/>
+                                    <div 
+                                        className={`absolute scale-0 justify-center bg-slate-700 py-[7px] px-4 rounded-md z-10 min-w-28 bottom-10 shadow-lg
+                                                peer-hover:flex peer-hover:scale-100 transition ease-in duration-0 peer-hover:duration-100 peer-hover:delay-300
+                                                `}>
+                                        <p className="bg-slate-700 text-white m-0 text-sm">Add column</p>
+                                        <div className="text-slate-700 absolute top-[25px] text-2xl
+                                        " >
+                                            <GoTriangleDown/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="w-full"></div>
                             </div>
-
                                 {itemsHtml[i]}
 
                             <div className={`flex`}>
-                                <div className={`${currentGroup.color} w-[6px] justify-self-start rounded-bl-md`}></div>
+                                <div className={`${currentGroup.color} w-[6px] justify-self-start rounded-bl-md opacity-50`}></div>
                                 <div className="p-2 flex items-center border-r border-r-slate-300 border-t border-t-slate-300">
                                     <div className="w-4 h-4 border border-slate-300 rounded-sm"></div>
                                 </div>
