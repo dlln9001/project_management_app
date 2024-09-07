@@ -25,6 +25,7 @@ class Column(models.Model):
     # name is for user's reference (if the user wants to name it something else), while column type is for application's reference
     name = models.CharField(max_length=200)
     column_type = models.CharField(max_length=200)
+    order = models.IntegerField()
 
 class ColumnValue(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
@@ -34,3 +35,6 @@ class ColumnValue(models.Model):
     value_color = models.CharField(max_length=255, null=True, blank=True, default='bg-neutral-400')
     value_date = models.DateField(null=True, blank=True) # for date values
     value_person = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True) # for person columns
+
+    class Meta:
+        ordering = ['column__order']

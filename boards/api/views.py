@@ -54,7 +54,7 @@ def get_groups(request):
     # get groups
     groups = Group.objects.filter(board=board).order_by('order')
     # get columns
-    columns = Column.objects.filter(board=board)
+    columns = Column.objects.filter(board=board).order_by('order')
     columns_serialized = ColumnSerializer(columns, many=True)
     # get items and column values
     items_list = []
@@ -124,7 +124,9 @@ def delete_item(request):
 @api_view(['GET', 'POST'])
 def create_column(request):
     board = Board.objects.get(id=request.data['board_id'])
-    column = Column.objects.create(name=request.data['column_type'], column_type=request.data['column_type'], board=board)
+    all_columns = Column.objects.filter(board=board)
+    num_of_columns = len(all_columns)
+    column = Column.objects.create(name=request.data['column_type'], column_type=request.data['column_type'], board=board, order=num_of_columns)
     column.save()
     all_items = Item.objects.filter(board=board)
     for item in all_items:

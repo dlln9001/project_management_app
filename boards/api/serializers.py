@@ -28,7 +28,7 @@ class ItemSerializer(serializers.ModelSerializer):
 class ColumnSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = Column
-        fields = ['name', 'column_type', 'id']
+        fields = ['name', 'column_type', 'id', 'order']
 
 class ColumnValueSerializer(serializers.ModelSerializer):
     class Meta(object):
