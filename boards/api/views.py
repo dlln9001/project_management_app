@@ -131,3 +131,12 @@ def create_column(request):
         column_value = ColumnValue.objects.create(item=item, column=column)
         column_value.save()
     return Response({'status': 'success'})
+
+
+@api_view(['GET', 'POST'])
+def edit_column_value(request):
+    column_value = ColumnValue.objects.get(id=request.data['column_value_id'])
+    column_value.value_color = request.data['color']
+    column_value.value_text = request.data['text']
+    column_value.save()
+    return Response({'status': 'success'})

@@ -33,4 +33,4 @@ class ColumnSerializer(serializers.ModelSerializer):
 class ColumnValueSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = ColumnValue
-        fields = ['value_text', 'value_color', 'value_date', 'value_person', 'item', 'column']
+        fields = ['value_text', 'value_color', 'value_date', 'value_person', 'item', 'column', 'id']

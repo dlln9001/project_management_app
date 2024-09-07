@@ -5,6 +5,7 @@ import { FaCheck } from "react-icons/fa6";
 import { IoMdClose } from "react-icons/io";
 import { IoTrashOutline } from "react-icons/io5";
 import { GoTriangleDown } from "react-icons/go";
+import { GoTriangleUp } from "react-icons/go";
 import { BsThreeDots } from "react-icons/bs";
 import { FiTrash } from "react-icons/fi";
 import { IoIosAdd } from "react-icons/io";
@@ -59,6 +60,10 @@ function Board() {
     const [addColumnsId, setAddColumnsId] = useState('')
     const addColumnsRef = useRef('')
 
+    const [setColumnValueItemId, setSetColumnValueItemId] = useState('')
+    const setColumnValueRef = useRef('')
+
+
 
     useEffect(() => {
         fetch('http://127.0.0.1:8000/board/get/', {
@@ -112,6 +117,11 @@ function Board() {
             setAddColumnsId('')
             setRenderGroups(!renderGroups)
         }
+
+        if (setColumnValueRef.current && !setColumnValueRef.current.contains(e.target)) {
+            setSetColumnValueItemId('')
+            setRenderGroups(!renderGroups)
+        }
     }
 
     // renders all the groups in a separate use effect than the fetch
@@ -125,9 +135,8 @@ function Board() {
             // set the column type html
             let columnHtml = []
             for (let i=0; i<groupsData.columnsInfo.length; i++) {
-                console.log(groupsData.columnsInfo)
                 columnHtml.push(
-                    <div key={i} className="min-w-36 text-sm border-r border-r-slate-300 flex justify-center items-center">
+                    <div key={i} className="min-w-36 text-sm border-r border-r-slate-300 flex justify-center items-center text-slate-600">
                         <p>{groupsData.columnsInfo[i].name}</p>
                     </div>
                 )
@@ -144,8 +153,31 @@ function Board() {
                     // set columnValues html for each item
                     for (let k=0; k<columnValues.length; k++) {
                         columnValuesHtml.push(
-                            <div key={k} className={`${columnValues[k].value_color} min-w-36 border-t border-t-slate-300 cursor-pointer`}>
+                            <div key={k} className={`${columnValues[k].value_color} min-w-36  cursor-pointer flex relative justify-center items-center
+                                  text-white 
+                                  ${(setColumnValueItemId[0] === i && setColumnValueItemId[1] === j && setColumnValueItemId[2] === k) 
+                                    ? `border border-sky-600` 
+                                    : `border-t border-t-slate-300 border-r border-r-slate-300`}`}
+                                onClick={() => {
+                                        setSetColumnValueItemId([i, j, k])
+                                        setRenderGroups(!renderGroups)
+                                }}>
                                 <p>{columnValues[k].value_text}</p>
+                                {/* set labels menu */}
+                                {(setColumnValueItemId[0] === i && setColumnValueItemId[1] === j && setColumnValueItemId[2] === k) && 
+                                    <div className="absolute bg-white z-10 top-9 flex flex-col items-center p-6 w-48 shadow-all-sides rounded-md text-center gap-2 cursor-default"
+                                        ref={setColumnValueRef}>
+                                        <GoTriangleUp className="absolute bottom-[189px] text-white text-3xl"/>
+                                        <div className="w-full bg-green-500 text-white p-[6px] rounded-sm cursor-pointer" 
+                                             onClick={() => editColumnValue(columnValues[k].id, 'bg-green-500', 'Done')}>Done</div>
+                                        <div className="w-full bg-orange-300 text-white p-[6px] rounded-sm cursor-pointer"
+                                             onClick={() => editColumnValue(columnValues[k].id, 'bg-orange-300', 'Working on it')}>Working on it</div>
+                                        <div className="w-full bg-red-500 text-white p-[6px] rounded-sm cursor-pointer"
+                                             onClick={() => editColumnValue(columnValues[k].id, 'bg-red-500', 'Stuck')}>Stuck</div>
+                                        <div className="w-full bg-neutral-400 text-white p-[6px] rounded-sm min-h-[32px] cursor-pointer"
+                                             onClick={() => editColumnValue(columnValues[k].id, 'bg-neutral-400', '')}></div>
+                                    </div>
+                                }
                             </div>
                         )
                     }
@@ -385,23 +417,7 @@ function Board() {
             groupInputRef.current = []
             measureGroupInputRef.current = []
         }
-    }, [renderGroups])
-
-    function addColumn(columnType) {
-        fetch('http://127.0.0.1:8000/board/create-column/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${userToken}`
-            },
-            body: JSON.stringify({
-                column_type: columnType,
-                board_id: boardId
-            })
-        })
-        .then(res => res.json())
-        .then(data => console.log(data))
-    }    
+    }, [renderGroups])   
 
     function createColorOptionsHtml(groupId) {
         let tempColorOptionsHtml = []
@@ -654,6 +670,46 @@ function Board() {
         })
         .then(res => res.json())
         .then(data => setRenderComponent(!renderComponent))
+    }
+
+    function addColumn(columnType) {
+        fetch('http://127.0.0.1:8000/board/create-column/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${userToken}`
+            },
+            body: JSON.stringify({
+                column_type: columnType,
+                board_id: boardId
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            setShowAddColumn(false)
+            setAddColumnsId('')
+            setRenderComponent(!renderComponent)
+        })
+    } 
+
+    function editColumnValue(columnValueId, color, text) {
+        fetch('http://127.0.0.1:8000/board/edit-column-value/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${userToken}`
+            },
+            body: JSON.stringify({
+                column_value_id: columnValueId,
+                color: color,
+                text: text
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            setSetColumnValueItemId('')
+            setRenderComponent(!renderComponent)
+        })
     }
 
     return (
