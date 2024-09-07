@@ -90,6 +90,7 @@ function Board() {
         .then(data => {
             setGroupsData(data)
             setRenderGroups(!renderGroups)
+            console.log(data)
         })
 
         // when a new board is clicked, you want the group's name's html to be set to the right width. Reload a second time.
@@ -117,19 +118,43 @@ function Board() {
     useEffect(() => {
         if (groupsData) {
             let tempGroupHtml = []
+
             let itemsHtml = []
             let itemHtml = []
+
+            // set the column type html
+            let columnHtml = []
+            for (let i=0; i<groupsData.columnsInfo.length; i++) {
+                console.log(groupsData.columnsInfo)
+                columnHtml.push(
+                    <div key={i} className="min-w-36 text-sm border-r border-r-slate-300 flex justify-center items-center">
+                        <p>{groupsData.columnsInfo[i].name}</p>
+                    </div>
+                )
+            }
             // this variable is so that when a user clicks on a new board, when items are selected, that the item menu doesn't show up on separate boards
             let itemIdCheck = false
             // sets all the items html
             for (let i=0; i<groupsData.itemsInfo.length; i++) {
                 let currentGroup = groupsData.groupsInfo[i]
                 for (let j=0; j<groupsData.itemsInfo[i].length; j++) {
+                    let columnValues = groupsData.columnValues[i][j]
+                    let columnValuesHtml = []
+                    // currently not tied to the columns, only items
+                    // set columnValues html for each item
+                    for (let k=0; k<columnValues.length; k++) {
+                        columnValuesHtml.push(
+                            <div key={k} className={`${columnValues[k].value_color} min-w-36 border-t border-t-slate-300 cursor-pointer`}>
+                                <p>{columnValues[k].value_text}</p>
+                            </div>
+                        )
+                    }
                     if (itemSelected.includes(groupsData.itemsInfo[i][j].id)) {
                         itemIdCheck = true
                     }
                     itemHtml.push(
                         <div key={j} className=" w-full text-sm text-slate-600 hover:bg-slate-100 flex">
+                                {/* here allows for selecting icons */}
                                 <div className={`${currentGroup.color} w-[6px] justify-self-start min-w-[6px]`}></div>
                                 <div className="p-2 flex items-center border-r border-r-slate-300 border-t border-t-slate-300">
                                     <div className={`w-4 h-4 border  cursor-pointer rounded-sm
@@ -141,6 +166,7 @@ function Board() {
                                         }
                                     </div>
                                 </div>
+                            {/* this is where the user inputs the item content */}
                             <div className="px-2 border-t flex border-t-slate-300 min-w-[33%] border-r border-r-slate-300">
                                 <input type="text" 
                                     onFocus={() => {
@@ -164,6 +190,7 @@ function Board() {
                                     }}
                                 />
                             </div>
+                            {columnValuesHtml}
                             <div className=" w-full border-t border-t-slate-300"></div>
                         </div>
                     )
@@ -184,7 +211,6 @@ function Board() {
                 let currentGroup = groupsData.groupsInfo[i]  
                 let groupId = currentGroup.id
                 let currentGroupsItems = groupsData.itemsInfo[i]
-
                 tempGroupHtml.push(
                     <div key={i} className="mt-10">
                         <div className="flex items-center mb-2 group">
@@ -285,6 +311,9 @@ function Board() {
                                 <div className="min-w-[33%] px-2 border-r border-r-slate-300 flex items-center justify-center">
                                     <p className="text-sm text-slate-600 self-center  text-center">Item</p>
                                 </div>
+
+                                {columnHtml}
+
                                 <div className="text-2xl flex items-center justify-center mx-1 h-fit self-center group relative" 
                                     onClick={() => {
                                         setShowAddColumn(true)
@@ -296,7 +325,8 @@ function Board() {
                                         <div className="absolute text-sm w-80 bg-white shadow-all-sides p-6 rounded-md right-[26px] top-0 z-10"
                                             ref={addColumnsRef}>
                                             <p className="text-slate-500 mb-1 p-1">Essentials</p>
-                                            <div className="hover:bg-slate-100 rounded-md p-2 cursor-pointer flex items-center gap-2">
+                                            <div className="hover:bg-slate-100 rounded-md p-2 cursor-pointer flex items-center gap-2"
+                                                 onClick={() => addColumn('Status')}>
                                                 <img src={process.env.PUBLIC_URL + 'images/statusColumn.png'} alt="" className="w-[7%] h-fit rounded-sm" />
                                                 <p>Status</p>
                                             </div>
@@ -322,7 +352,7 @@ function Board() {
                             <div className={`flex`}>
                                 <div className={`${currentGroup.color} w-[6px] justify-self-start rounded-bl-md opacity-50`}></div>
                                 <div className="p-2 flex items-center border-r border-r-slate-300 border-t border-t-slate-300">
-                                    <div className="w-4 h-4 border border-slate-300 rounded-sm"></div>
+                                    <div className="w-4 h-4 border border-slate-200 rounded-sm"></div>
                                 </div>
                                 <div className="w-full flex items-center pl-2 border-t border-t-slate-300">
                                     <input type="text" placeholder="+ Add item"   
@@ -356,7 +386,22 @@ function Board() {
             measureGroupInputRef.current = []
         }
     }, [renderGroups])
-    
+
+    function addColumn(columnType) {
+        fetch('http://127.0.0.1:8000/board/create-column/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${userToken}`
+            },
+            body: JSON.stringify({
+                column_type: columnType,
+                board_id: boardId
+            })
+        })
+        .then(res => res.json())
+        .then(data => console.log(data))
+    }    
 
     function createColorOptionsHtml(groupId) {
         let tempColorOptionsHtml = []
@@ -504,7 +549,8 @@ function Board() {
                 },
                 body: JSON.stringify({
                     group_id: groupId,
-                    name: addItemContent
+                    name: addItemContent,
+                    board_id: boardId
                 })
             })
             .then(res => res.json())

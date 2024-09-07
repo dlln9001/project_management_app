@@ -6,6 +6,11 @@ from ..models import Group
 from .serializers import GroupSerializer
 from ..models import Item
 from .serializers import ItemSerializer
+from ..models import Column
+from .serializers import ColumnSerializer
+from ..models import ColumnValue
+from .serializers import ColumnValueSerializer
+
 
 @api_view(['GET', 'POST'])
 def get_board(request):
@@ -46,14 +51,26 @@ def delete_group(request):
 def get_groups(request):
     board_id = request.data['board_id']
     board = Board.objects.get(id=board_id)
+    # get groups
     groups = Group.objects.filter(board=board).order_by('order')
+    # get columns
+    columns = Column.objects.filter(board=board)
+    columns_serialized = ColumnSerializer(columns, many=True)
+    # get items and column values
     items_list = []
-    for x in groups:
-        items = Item.objects.filter(group=x).order_by('order')
+    all_column_values = []
+    for group in groups:
+        group_column_values = [] # will store the column values of the current group
+        items = Item.objects.filter(group=group).order_by('order')
+        for item in items:
+            column_values = ColumnValue.objects.filter(item=item) # one item can have multiple column values
+            column_values_serialized = ColumnValueSerializer(column_values, many=True)
+            group_column_values.append(column_values_serialized.data)
         items_serialized = ItemSerializer(items, many=True)
         items_list.append(items_serialized.data)
+        all_column_values.append(group_column_values)
     serialized = GroupSerializer(groups, many=True)
-    return Response({'status': 'success', 'groupsInfo': serialized.data, 'itemsInfo': items_list})
+    return Response({'status': 'success', 'groupsInfo': serialized.data, 'itemsInfo': items_list, 'columnValues': all_column_values, 'columnsInfo': columns_serialized.data})
 
 
 @api_view(['GET', 'POST'])
@@ -75,10 +92,16 @@ def edit_group_color(request):
 @api_view(['GET', 'POST'])
 def create_item(request):
     group = Group.objects.get(id=request.data['group_id'])
+    board = Board.objects.get(id=request.data['board_id'])
     all_items = Item.objects.filter(group=group)
     number_of_items = len(all_items)
-    item = Item.objects.create(group=group, name=request.data['name'], order=number_of_items)
+    item = Item.objects.create(group=group, name=request.data['name'], order=number_of_items, board=board)
     item.save()
+    # make column values for the newly created item
+    all_columns = Column.objects.filter(board=board)
+    for column in all_columns:
+        column_value = ColumnValue.objects.create(column=column, item=item)
+        column_value.save()
     return Response({'status': 'success'})
 
 
@@ -95,4 +118,16 @@ def edit_item(request):
 def delete_item(request):
     items = Item.objects.filter(id__in=request.data['item_ids'])
     items.delete()
+    return Response({'status': 'success'})
+
+
+@api_view(['GET', 'POST'])
+def create_column(request):
+    board = Board.objects.get(id=request.data['board_id'])
+    column = Column.objects.create(name=request.data['column_type'], column_type=request.data['column_type'], board=board)
+    column.save()
+    all_items = Item.objects.filter(board=board)
+    for item in all_items:
+        column_value = ColumnValue.objects.create(item=item, column=column)
+        column_value.save()
     return Response({'status': 'success'})
