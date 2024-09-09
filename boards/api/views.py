@@ -136,6 +136,21 @@ def create_column(request):
 
 
 @api_view(['GET', 'POST'])
+def delete_column(request):
+    column = Column.objects.get(id=request.data['column_id'])
+    column.delete()
+    # now reorder the columns
+    board = Board.objects.get(id=request.data['board_id'])
+    all_columns = Column.objects.filter(board=board).order_by('order')
+    index = 0
+    for column in all_columns:
+        column.order = index
+        column.save()
+        index += 1
+    return Response({'status': 'success'})
+
+
+@api_view(['GET', 'POST'])
 def edit_column_value(request):
     column_value = ColumnValue.objects.get(id=request.data['column_value_id'])
     column_value.value_color = request.data['color']

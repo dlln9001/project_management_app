@@ -63,6 +63,8 @@ function Board() {
     const [setColumnValueItemId, setSetColumnValueItemId] = useState('')
     const setColumnValueRef = useRef('')
 
+    const [columnOptionsSelectedId, setColumnOptionsSelectedId] = useState('')
+    const columnOptionsSelectedRef = useRef('')
 
 
     useEffect(() => {
@@ -122,6 +124,11 @@ function Board() {
             setSetColumnValueItemId('')
             setRenderGroups(!renderGroups)
         }
+
+        if (columnOptionsSelectedRef.current && !columnOptionsSelectedRef.current.contains(e.target)) {
+            setColumnOptionsSelectedId('')
+            setRenderGroups(!renderGroups)
+        }
     }
 
     // renders all the groups in a separate use effect than the fetch
@@ -132,15 +139,6 @@ function Board() {
             let itemsHtml = []
             let itemHtml = []
 
-            // set the column type html
-            let columnHtml = []
-            for (let i=0; i<groupsData.columnsInfo.length; i++) {
-                columnHtml.push(
-                    <div key={i} className="min-w-36 text-sm border-r border-r-slate-300 flex justify-center items-center text-slate-600">
-                        <p>{groupsData.columnsInfo[i].name}</p>
-                    </div>
-                )
-            }
             // this variable is so that when a user clicks on a new board, when items are selected, that the item menu doesn't show up on separate boards
             let itemIdCheck = false
             // sets all the items html
@@ -243,6 +241,39 @@ function Board() {
                 let currentGroup = groupsData.groupsInfo[i]  
                 let groupId = currentGroup.id
                 let currentGroupsItems = groupsData.itemsInfo[i]
+
+                // set the column type html. In the group for loop so it can know which group it is on to open column options on the right group
+                let columnHtml = []
+                for (let j=0; j<groupsData.columnsInfo.length; j++) {
+                    columnHtml.push(
+                        <div key={j} className={`min-w-36 text-sm border-r border-r-slate-300 flex justify-center items-center text-slate-600  relative group
+                            ${(columnOptionsSelectedId[0] === groupsData.columnsInfo[j].id && columnOptionsSelectedId[1] === i)
+                                ? `bg-slate-100`
+                                : `hover:bg-slate-100`
+                            }`}>
+                            <p>{groupsData.columnsInfo[j].name}</p>
+                            <div className={`absolute right-0 mr-2  p-1 rounded-[4px] cursor-pointer  
+                                ${(columnOptionsSelectedId[0] === groupsData.columnsInfo[j].id && columnOptionsSelectedId[1] === i) 
+                                    ? `text-slate-600 bg-sky-100` 
+                                    : `group-hover:text-inherit hover:bg-slate-200 text-white`}`}
+                                onClick={() => {
+                                setColumnOptionsSelectedId([groupsData.columnsInfo[j].id, i])
+                                setRenderGroups(!renderGroups)
+                            }}>
+                                <BsThreeDots />
+                            {(columnOptionsSelectedId[0] === groupsData.columnsInfo[j].id && columnOptionsSelectedId[1]) === i &&
+                                <div ref={columnOptionsSelectedRef} className="absolute bg-white shadow-all-sides rounded-md w-48 z-10 left-7 top-0 text-slate-700">
+                                    <div className="flex px-2 py-1 hover:bg-slate-100 m-2 rounded-md cursor-pointer" onClick={() => deleteColumn(groupsData.columnsInfo[j].id)}>
+                                        <FiTrash className="mx-2 my-1"/>
+                                        <p>Delete</p>
+                                    </div>
+                                </div>
+                            }
+                            </div>
+                        </div>
+                    )
+                }
+
                 tempGroupHtml.push(
                     <div key={i} className="mt-10">
                         <div className="flex items-center mb-2 group">
@@ -379,6 +410,7 @@ function Board() {
                                 </div>
                                 <div className="w-full"></div>
                             </div>
+
                                 {itemsHtml[i]}
 
                             <div className={`flex`}>
@@ -690,7 +722,26 @@ function Board() {
             setAddColumnsId('')
             setRenderComponent(!renderComponent)
         })
-    } 
+    }
+    
+    function deleteColumn(columnId) {
+        fetch('http://127.0.0.1:8000/board/delete-column/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${userToken}`
+            },
+            body: JSON.stringify({
+                column_id: columnId,
+                board_id: boardId
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            setColumnOptionsSelectedId('')
+            setRenderComponent(!renderComponent)
+        })
+    }
 
     function editColumnValue(columnValueId, color, text) {
         fetch('http://127.0.0.1:8000/board/edit-column-value/', {
