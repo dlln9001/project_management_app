@@ -249,6 +249,9 @@ function Board() {
                 let groupId = currentGroup.id
                 let currentGroupsItems = groupsData.itemsInfo[i]
 
+                let groupNameTextColor = currentGroup.color.replace('bg', 'text')
+                console.log(groupNameTextColor)
+
                 // set the column type html. In the group for loop so it can know which group it is on to open column options on the right group
                 let columnHtml = []
                 for (let j=0; j<groupsData.columnsInfo.length; j++) {
@@ -362,7 +365,7 @@ function Board() {
                                 }
                                 <input type="text" 
                                 className={`text-lg border px-1 py-0 text-center rounded-[4px] border-transparent hover:border-slate-300 focus:outline-none focus:border-sky-600 focus:min-w-[70%] 
-                                           focus:text-start peer ${(isEditingGroupName && editingGroupId === groupId) && `pl-8`}`}
+                                           focus:text-start peer ${(isEditingGroupName && editingGroupId === groupId) && `pl-8`} ${groupNameTextColor} font-medium`}
                                 value={(isEditingGroupName && editingGroupId === groupId) ? editingGroupName : currentGroup.name} 
                                 ref={(el) => el && groupInputRef.current.push(el)}
                                 onFocus={(e) => {
