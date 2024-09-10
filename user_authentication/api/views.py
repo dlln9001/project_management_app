@@ -83,3 +83,13 @@ def login(request):
     token = Token.objects.create(user=user)
     serializer = UserSerializer(instance=user)
     return Response({'status': 'success', 'user': serializer.data, 'token': token.key})
+
+
+@api_view(['POST', 'GET'])
+def get_user_info(request):
+    try:
+        user = get_object_or_404(User, id=request.data['user_id'])
+    except:
+        return Response({'status': 'user not found'})
+    user_serialized = UserSerializer(instance=user)
+    return Response({'status': 'success', 'user_info': user_serialized.data})

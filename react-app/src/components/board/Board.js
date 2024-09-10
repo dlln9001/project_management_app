@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react"
+import BoardInfo from "./BoardInfo";
 import { useLocation } from "react-router-dom"
 import { AiOutlinePlus } from "react-icons/ai";
 import { FaCheck } from "react-icons/fa6";
@@ -17,6 +18,8 @@ function Board() {
 
     const [boardTitle, setBoardTitle] = useState('')
     const boardId = query.get('id')
+    const [boardInfo, setBoardInfo] = useState('')
+
     const [groupHtml, setGroupHtml] = useState('')
     // render groups does not send a request, render component does
     const [renderComponent, setRenderComponent] = useState(false)
@@ -72,6 +75,10 @@ function Board() {
     const [columnNameEditedIndexes, setColumnNameEditedIndexes] = useState('')
     const [columnNameFocused, setColumnNameFocused] = useState(false)
 
+    const [showBoardInfo, setShowBoardInfo] = useState(false)
+    const boardInfoRef = useRef('')
+
+    const boardTitleRef = useRef('')
 
     useEffect(() => {
         fetch('http://127.0.0.1:8000/board/get/', {
@@ -87,6 +94,7 @@ function Board() {
         .then(res => res.json())
         .then(data => {
             setBoardTitle(data.boardInfo.name)
+            setBoardInfo(data.boardInfo)
         })
 
         fetch('http://127.0.0.1:8000/board/get-groups/', {
@@ -134,6 +142,10 @@ function Board() {
         if (columnOptionsSelectedRef.current && !columnOptionsSelectedRef.current.contains(e.target)) {
             setColumnOptionsSelectedId('')
             setRenderGroups(!renderGroups)
+        }
+
+        if (boardInfoRef.current && !boardInfoRef.current.contains(e.target) && !boardTitleRef.current.contains(e.target)) {
+            setShowBoardInfo(false)
         }
     }
 
@@ -250,7 +262,6 @@ function Board() {
                 let currentGroupsItems = groupsData.itemsInfo[i]
 
                 let groupNameTextColor = currentGroup.color.replace('bg', 'text')
-                console.log(groupNameTextColor)
 
                 // set the column type html. In the group for loop so it can know which group it is on to open column options on the right group
                 let columnHtml = []
@@ -837,11 +848,19 @@ function Board() {
         })
     }
 
+
     return (
         <div className="bg-white rounded-tl-lg relative flex flex-col overflow-auto h-full custom-scrollbar">
             <div className="ml-10 mb-5 mr-1">
                 <div className="sticky top-0 bg-white z-10 py-5">
-                    <p className="text-2xl hover:bg-slate-100 w-fit p-1 py-0 rounded-md cursor-pointer">{boardTitle}</p>
+                    <div >
+                        <p ref={boardTitleRef} className="text-2xl hover:bg-slate-100 w-fit p-2 py-0 rounded-[4px] cursor-pointer peer" onClick={() => setShowBoardInfo(true)}>
+                            {boardTitle}
+                        </p>
+                        {showBoardInfo &&
+                            <BoardInfo ref={boardInfoRef} boardTitle={boardTitle} setBoardTitle={setBoardTitle} boardInfo={boardInfo} setBoardInfo={setBoardInfo}/>
+                        }
+                    </div>
                     <button onClick={() => createItemButton()} className="bg-sky-600 p-[6px] px-4 rounded-sm text-white text-sm hover:bg-sky-700 mt-5">New item</button>
                 </div>
                 <div>
