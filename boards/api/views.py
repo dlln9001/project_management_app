@@ -151,6 +151,14 @@ def delete_column(request):
 
 
 @api_view(['GET', 'POST'])
+def edit_column_name(request):
+    column = Column.objects.get(id=request.data['column_id'])
+    column.name = request.data['column_name']
+    column.save()
+    return Response({'status': 'success'})
+
+
+@api_view(['GET', 'POST'])
 def edit_column_value(request):
     column_value = ColumnValue.objects.get(id=request.data['column_value_id'])
     column_value.value_color = request.data['color']

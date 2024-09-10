@@ -65,6 +65,12 @@ function Board() {
 
     const [columnOptionsSelectedId, setColumnOptionsSelectedId] = useState('')
     const columnOptionsSelectedRef = useRef('')
+    const columnNameRefs = useRef([])
+    const measureColumnNamesRefs = useRef([])
+    const [columnEditingName, setColumnEditingName] = useState('')
+    const [columnNameEdited, setColumnNameEdited] = useState(false)
+    const [columnNameEditedIndexes, setColumnNameEditedIndexes] = useState('')
+    const [columnNameFocused, setColumnNameFocused] = useState(false)
 
 
     useEffect(() => {
@@ -236,6 +242,7 @@ function Board() {
                 setIsItemSelected(false)
                 setItemSelected([])
             }
+
             // set the group html
             for (let i=0; i<groupsData.groupsInfo.length; i++) {
                 let currentGroup = groupsData.groupsInfo[i]  
@@ -246,33 +253,72 @@ function Board() {
                 let columnHtml = []
                 for (let j=0; j<groupsData.columnsInfo.length; j++) {
                     columnHtml.push(
-                        <div key={j} className={`min-w-36 text-sm border-r border-r-slate-300 flex justify-center items-center text-slate-600  relative group
+                        <div key={j} className={`min-w-36 text-sm border-r border-r-slate-300 flex justify-center items-center text-slate-600  relative group max-w-20
                             ${(columnOptionsSelectedId[0] === groupsData.columnsInfo[j].id && columnOptionsSelectedId[1] === i)
                                 ? `bg-slate-100`
                                 : `hover:bg-slate-100`
                             }`}>
-                            <p>{groupsData.columnsInfo[j].name}</p>
-                            <div className={`absolute right-0 mr-2  p-1 rounded-[4px] cursor-pointer  
-                                ${(columnOptionsSelectedId[0] === groupsData.columnsInfo[j].id && columnOptionsSelectedId[1] === i) 
-                                    ? `text-slate-600 bg-sky-100` 
-                                    : `group-hover:text-inherit hover:bg-slate-200 text-white`}`}
-                                onClick={() => {
-                                setColumnOptionsSelectedId([groupsData.columnsInfo[j].id, i])
-                                setRenderGroups(!renderGroups)
-                            }}>
-                                <BsThreeDots />
-                            {(columnOptionsSelectedId[0] === groupsData.columnsInfo[j].id && columnOptionsSelectedId[1]) === i &&
-                                <div ref={columnOptionsSelectedRef} className="absolute bg-white shadow-all-sides rounded-md w-48 z-10 left-7 top-0 text-slate-700">
-                                    <div className="flex px-2 py-1 hover:bg-slate-100 m-2 rounded-md cursor-pointer" onClick={() => deleteColumn(groupsData.columnsInfo[j].id)}>
-                                        <FiTrash className="mx-2 my-1"/>
-                                        <p>Delete</p>
-                                    </div>
-                                </div>
-                            }
+                            <div className={`${(columnNameFocused && columnNameEditedIndexes[0] === groupsData.columnsInfo[j].id && columnNameEditedIndexes[1] === i)
+                                    ? `border border-sky-600 w-10/12 mx-2`
+                                    : `hover:border-slate-400 border border-white max-w-10/12`
+                                    }   bg-white max-w-10/12 w-7/12`}>
+                                <input type="text" 
+                                className={` focus:outline-none max-w-full text-center focus:text-start text-ellipsis`}
+                                value={(columnNameEdited && columnNameEditedIndexes[0] === groupsData.columnsInfo[j].id && columnNameEditedIndexes[1] === i)
+                                ? columnEditingName 
+                                : groupsData.columnsInfo[j].name
+                                } 
+                                onChange={(e) => {
+                                        setColumnEditingName(e.target.value)
+                                        setColumnNameEdited(true)
+                                        setRenderGroups(!renderGroups)
+                                    }}
+                                onFocus={() => {
+                                    setColumnNameFocused(true)
+                                    setColumnNameEditedIndexes([groupsData.columnsInfo[j].id, i])
+                                    setRenderGroups(!renderGroups)
+                                }}
+                                onBlur={(e) => {
+                                    setColumnNameFocused(false)
+                                    setColumnNameEditedIndexes([])
+                                    editColumnName(e.target.value, groupsData.columnsInfo[j].id)
+                                    setRenderGroups(!renderGroups)
+                                }}
+                                onKeyDown={(e) => {
+                                    if(e.key === 'Enter') {
+                                        e.target.blur()
+                                        editColumnName(e.target.value, groupsData.columnsInfo[j].id)
+                                    }
+                                }}
+                                ref={(el) => el && columnNameRefs.current.push(el)}/>
                             </div>
+                             <span ref={(el) => el && measureColumnNamesRefs.current.push(el)} className="text-lg p-1 px-2 invisible absolute min-w-3"></span>
+                             {!columnNameFocused && 
+                                <div className={`absolute right-0 mr-2  p-1 rounded-[4px] cursor-pointer  
+                                    ${(columnOptionsSelectedId[0] === groupsData.columnsInfo[j].id && columnOptionsSelectedId[1] === i) 
+                                        ? `text-slate-600 bg-sky-100` 
+                                        : `group-hover:text-inherit hover:bg-slate-200 text-white`}`}
+                                    onClick={() => {
+                                    setColumnOptionsSelectedId([groupsData.columnsInfo[j].id, i])
+                                    setRenderGroups(!renderGroups)
+                                }}>
+                                    <BsThreeDots />
+                                {(columnOptionsSelectedId[0] === groupsData.columnsInfo[j].id && columnOptionsSelectedId[1]) === i &&
+                                    <div ref={columnOptionsSelectedRef} className="absolute bg-white shadow-all-sides rounded-md w-48 z-10 left-7 top-0 text-slate-700">
+                                        <div className="flex px-2 py-1 hover:bg-slate-100 m-2 rounded-md cursor-pointer" onClick={() => deleteColumn(groupsData.columnsInfo[j].id)}>
+                                            <FiTrash className="mx-2 my-1"/>
+                                            <p>Delete</p>
+                                        </div>
+                                    </div>
+                                }
+                                </div>
+                             }
                         </div>
                     )
+
+                    resizeInput(i, columnNameRefs, measureColumnNamesRefs)
                 }
+
 
                 tempGroupHtml.push(
                     <div key={i} className="mt-10">
@@ -448,6 +494,8 @@ function Board() {
 
             groupInputRef.current = []
             measureGroupInputRef.current = []
+            columnNameRefs.current = []
+            measureColumnNamesRefs.current = []
         }
     }, [renderGroups])   
 
@@ -473,6 +521,13 @@ function Board() {
         if (groupInputRef.current[index] && measureGroupInputRef.current[index]) {
             measureGroupInputRef.current[index].textContent = groupInputRef.current[index].value
             groupInputRef.current[index].style.width = `${measureGroupInputRef.current[index].offsetWidth + 10}px`
+        }
+    }
+
+    function resizeInput(index, inputRefs, measureInputRefs) {
+        if (inputRefs.current[index] && measureInputRefs.current[index]) {
+            measureInputRefs.current[index].textContent = inputRefs.current[index].value
+            inputRefs.current[index].style.width = `${measureInputRefs.current[index].offsetWidth + 5}px`
         }
     }
 
@@ -741,6 +796,22 @@ function Board() {
             setColumnOptionsSelectedId('')
             setRenderComponent(!renderComponent)
         })
+    }
+
+    function editColumnName(columnName, columnId) {
+        fetch('http://127.0.0.1:8000/board/edit-column-name/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${userToken}`
+            },
+            body: JSON.stringify({
+                column_id: columnId,
+                column_name: columnName
+            })
+        })
+        .then(res => res.json())
+        .then(data => setRenderComponent(!renderComponent))
     }
 
     function editColumnValue(columnValueId, color, text) {
