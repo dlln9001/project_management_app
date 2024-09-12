@@ -98,6 +98,7 @@ function Board(props) {
         .then(data => {
             setBoardTitle(data.boardInfo.name)
             setBoardInfo(data.boardInfo)
+            console.log(data.boardInfo)
         })
 
         fetch('http://127.0.0.1:8000/board/get-groups/', {
@@ -114,7 +115,6 @@ function Board(props) {
         .then(data => {
             setGroupsData(data)
             setRenderGroups(!renderGroups)
-            console.log(data)
         })
 
         // when a new board is clicked, you want the group's name's html to be set to the right width. Reload a second time.
@@ -850,7 +850,7 @@ function Board(props) {
             setRenderComponent(!renderComponent)
         })
     }
-    console.log(props, 'rposaslkdjflkasjdf')
+
 
     return (
         <div className="bg-white rounded-tl-lg relative flex flex-col overflow-auto h-full custom-scrollbar">

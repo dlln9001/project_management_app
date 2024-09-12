@@ -13,7 +13,7 @@ class BoardSummarySerializer(serializers.ModelSerializer):
 class BoardFullSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = Board
-        fields = ['name', 'type', 'id', 'created_at', 'user']
+        fields = ['name', 'type', 'id', 'created_at', 'user', 'description']
 
 class GroupSerializer(serializers.ModelSerializer):
     class Meta(object):

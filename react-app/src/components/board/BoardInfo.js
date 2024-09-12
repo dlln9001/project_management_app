@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef } from "react"
 
 const BoardInfo = React.forwardRef((props, ref) => {
     const userToken = JSON.parse(localStorage.getItem('userToken'))
@@ -8,16 +8,30 @@ const BoardInfo = React.forwardRef((props, ref) => {
     const [boardName, setBoardName] = useState('')
     const [boardDescription, setBoardDescription] = useState('')
 
+    const [isDescriptionOverflowing, setIsDescriptionOverflowing] = useState('')
+    const descriptionRef = useRef('')
+    const [descriptionHeight, setDescriptionHeight] = useState('')
+    const [updateEffect, setUpdateEffect] = useState(true)
+
+
     useEffect(() => {
         getOwnerInfo()
+        setBoardDescription(props.boardInfo.description)
 
         // convert date format to be readable 
         const date = new Date(props.boardInfo.created_at)
         const options = {year: 'numeric', month: 'long', day: 'numeric'}
         const formattedDate = date.toLocaleDateString('en-US', options)
         setCreatedDate(formattedDate)
-
     }, [])
+
+    useEffect(() => {
+        // check if description is overflowing, set height
+        const descriptionElement = descriptionRef.current
+        const isOverflow = descriptionElement.scrollHeight > descriptionElement.clientHeight
+        setIsDescriptionOverflowing(isOverflow)
+        setDescriptionHeight(descriptionElement.scrollHeight)
+    }, [boardDescription, updateEffect])
 
     function getOwnerInfo() {
         fetch('http://127.0.0.1:8000/authorize/get-user-info/', {
@@ -53,6 +67,25 @@ const BoardInfo = React.forwardRef((props, ref) => {
         })
     }
 
+    function changeBoardDescription(boardDescription) {
+        fetch('http://127.0.0.1:8000/board/change-board-description/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${userToken}`
+            },
+            body: JSON.stringify({
+                board_id: props.boardInfo.id,
+                board_description: boardDescription
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            props.setRenderComponent(!props.renderComponent)
+        })
+    }
+
+
     return (
         <div className="shadow-all-sides p-5 py-4 w-[422px] flex flex-col gap-3 rounded-md mt-2 absolute bg-white" ref={ref}>
             <div className="flex flex-col gap-2">
@@ -70,10 +103,15 @@ const BoardInfo = React.forwardRef((props, ref) => {
                                 changeBoardName(e.target.value)
                             }
                         }}/>
-                <textarea type="text" className="w-full h-8 focus:outline-none border border-white hover:border-slate-300 p-1 rounded-sm focus:border-sky-600 text-slate-500 text-sm 
-                         focus:h-32"  value={boardDescription ? boardDescription : "Add your board's description here"} style={{resize: 'none'}} 
+                <textarea type="text" className="w-full max-h-32 h-9 focus:outline-none border border-white hover:border-slate-300 p-1 rounded-sm focus:border-sky-600 text-slate-500 text-sm 
+                         focus:min-h-32"  value={boardDescription} ref={descriptionRef} style={{resize: 'none', height: descriptionHeight}} 
                          onFocus={(e) => setBoardDescription(e.target.value)}
-                         onChange={(e) => setBoardDescription(e.target.value)}/>
+                         onChange={(e) => setBoardDescription(e.target.value)}
+                         onBlur={(e) => {
+                            changeBoardDescription(e.target.value)
+                            setDescriptionHeight(36)
+                            setUpdateEffect(!updateEffect)
+                        }}/>
             </div>
             <hr className=" border-slate-300" />
             <p className=" font-medium">Board info</p>

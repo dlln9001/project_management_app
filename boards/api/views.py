@@ -29,6 +29,14 @@ def change_board_name(request):
 
 
 @api_view(['GET', 'POST'])
+def change_board_description(request):
+    board = Board.objects.get(id=request.data['board_id'])
+    board.description = request.data['board_description']
+    board.save()
+    return Response({'status': 'success'})
+
+
+@api_view(['GET', 'POST'])
 def create_group(request):
     board_id = request.data['board_id']
     board = Board.objects.get(id=board_id)
@@ -38,6 +46,7 @@ def create_group(request):
     group = Group.objects.create(board=board, order=num_of_groups)
     group.save()
     return Response({'status': 'success'})
+
 
 @api_view(['GET', 'POST'])
 def delete_group(request):
