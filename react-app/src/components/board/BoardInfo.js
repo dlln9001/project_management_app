@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react"
 
 const BoardInfo = React.forwardRef((props, ref) => {
+    const userToken = JSON.parse(localStorage.getItem('userToken'))
     const [boardOwnerInfo, setBoardOwnerInfo] = useState('')
     const [createdDate, setCreatedDate] = useState('')
-    const userToken = JSON.parse(localStorage.getItem('userToken'))
-    console.log(props.boardInfo)
+
+    const [boardName, setBoardName] = useState('')
+    const [boardDescription, setBoardDescription] = useState('')
 
     useEffect(() => {
         getOwnerInfo()
@@ -32,14 +34,46 @@ const BoardInfo = React.forwardRef((props, ref) => {
         .then(data => setBoardOwnerInfo(data.user_info))
     }
 
+    function changeBoardName(boardName) {
+        fetch('http://127.0.0.1:8000/board/change-board-name/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${userToken}`
+            },
+            body: JSON.stringify({
+                board_id: props.boardInfo.id,
+                board_name: boardName
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            props.setRenderComponent(!props.renderComponent)
+            props.setRenderSideBar(!props.renderSideBar)
+        })
+    }
+
     return (
         <div className="shadow-all-sides p-5 py-4 w-[422px] flex flex-col gap-3 rounded-md mt-2 absolute bg-white" ref={ref}>
             <div className="flex flex-col gap-2">
                 <input type="text" className="font-medium text-lg w-full focus:outline-none border border-white hover:border-slate-300 px-1 rounded-sm focus:border-sky-600" 
-                        value={props.boardTitle} />
-                <textarea className="w-full h-8 focus:outline-none border border-white hover:border-slate-300 p-1 rounded-sm focus:border-sky-600 text-slate-500 text-sm 
-                         focus:h-32"
-                type="text" value={"Add your board's description here"} style={{resize: 'none'}} />
+                        value={boardName ? boardName : props.boardTitle} 
+                        onFocus={(e) => {
+                            setBoardName(e.target.value)
+                        }}
+                        onChange={(e) => {
+                            setBoardName(e.target.value)
+                        }}
+                        onBlur={(e) => changeBoardName(e.target.value)}
+                        onKeyDown={(e) => {
+                            if(e.key === 'Enter') {
+                                changeBoardName(e.target.value)
+                            }
+                        }}/>
+                <textarea type="text" className="w-full h-8 focus:outline-none border border-white hover:border-slate-300 p-1 rounded-sm focus:border-sky-600 text-slate-500 text-sm 
+                         focus:h-32"  value={boardDescription ? boardDescription : "Add your board's description here"} style={{resize: 'none'}} 
+                         onFocus={(e) => setBoardDescription(e.target.value)}
+                         onChange={(e) => setBoardDescription(e.target.value)}/>
             </div>
             <hr className=" border-slate-300" />
             <p className=" font-medium">Board info</p>

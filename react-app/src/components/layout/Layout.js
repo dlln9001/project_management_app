@@ -1,12 +1,15 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useOutletContext } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
 import CreateWorkspaceItem from "../CreateWorkspaceItem";
 import { useCreateElement } from "../../contexts/CreateWorkspaceItemContext";
 import { useState } from "react";
 
+
 function Layout() {
     const {showCreateWorkspaceItem, setShowCreateWorkspaceItem} = useCreateElement()
+    const [renderSideBar, setRenderSideBar] = useState(false)
+
     return (
         <>
             <div className="bg-gradient-to-b from-indigo-100 to-slate-50 relative h-screen">
@@ -15,9 +18,9 @@ function Layout() {
                         <Topbar />
                     </div>
                     <div className="flex overflow-hidden h-full">
-                            <Sidebar />
+                            <Sidebar renderSideBar={renderSideBar} setRenderSideBar={setRenderSideBar}/>
                         <main className="w-full">
-                            <Outlet />
+                            <Outlet context={{ renderSideBar, setRenderSideBar}}/>
                         </main>
                     </div>
                 </div>

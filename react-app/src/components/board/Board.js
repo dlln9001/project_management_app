@@ -1,6 +1,7 @@
-import React, { useEffect, useState, useRef } from "react"
+import React, { useEffect, useState, useRef } from "react";
+import { useOutletContext } from "react-router-dom";
 import BoardInfo from "./BoardInfo";
-import { useLocation } from "react-router-dom"
+import { useLocation } from "react-router-dom";
 import { AiOutlinePlus } from "react-icons/ai";
 import { FaCheck } from "react-icons/fa6";
 import { IoMdClose } from "react-icons/io";
@@ -12,7 +13,9 @@ import { FiTrash } from "react-icons/fi";
 import { IoIosAdd } from "react-icons/io";
 
 
-function Board() {
+function Board(props) {
+    const { renderSideBar, setRenderSideBar } = useOutletContext()
+    
     const userToken = JSON.parse(localStorage.getItem('userToken'))
     const query = new URLSearchParams(useLocation().search)
 
@@ -847,7 +850,7 @@ function Board() {
             setRenderComponent(!renderComponent)
         })
     }
-
+    console.log(props, 'rposaslkdjflkasjdf')
 
     return (
         <div className="bg-white rounded-tl-lg relative flex flex-col overflow-auto h-full custom-scrollbar">
@@ -858,7 +861,8 @@ function Board() {
                             {boardTitle}
                         </p>
                         {showBoardInfo &&
-                            <BoardInfo ref={boardInfoRef} boardTitle={boardTitle} setBoardTitle={setBoardTitle} boardInfo={boardInfo} setBoardInfo={setBoardInfo}/>
+                            <BoardInfo ref={boardInfoRef} boardTitle={boardTitle} setBoardTitle={setBoardTitle} boardInfo={boardInfo} setBoardInfo={setBoardInfo} renderComponent={renderComponent}
+                            setRenderComponent={setRenderComponent} renderSideBar={renderSideBar} setRenderSideBar={setRenderSideBar}/>
                         }
                     </div>
                     <button onClick={() => createItemButton()} className="bg-sky-600 p-[6px] px-4 rounded-sm text-white text-sm hover:bg-sky-700 mt-5">New item</button>

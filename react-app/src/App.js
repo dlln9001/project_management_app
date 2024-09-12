@@ -20,10 +20,10 @@ function App() {
             <Route path='/' element={<LoginPage />} />
             <Route path='signup' element={<SignupPage />} />
             <Route path='create-account' element={<SignupCreateAccount />} />
-              <Route element={<Layout />}>
-                <Route path='home' element={<Home />} />
-                <Route path='board' element={<Board />}/>
-              </Route>
+            <Route element={<Layout />}>
+              <Route path='home' element={<Home />} />
+              <Route path='board' element={<Board />}/>
+            </Route>
           </Routes>
         </BrowserRouter>
       </CreateWorkspaceItemProvider>

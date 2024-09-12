@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { useCreateElement } from "../../contexts/CreateWorkspaceItemContext";
 
 
-function Sidebar() {
+function Sidebar(props) {
     const searchBar = useRef('')
     const addWorkspaceItemRef = useRef('')
     const addWorkspaceItemButton = useRef('')
@@ -42,7 +42,7 @@ function Sidebar() {
             }
             setWorkspaceElementsHtml(tempWorkspaceElementsHtml)
         }) 
-    }, [showCreateWorkspaceItem])
+    }, [showCreateWorkspaceItem, props.renderSideBar])
 
     function handleDocumentClick(e) {
         if (addWorkspaceItemRef.current && !addWorkspaceItemRef.current.contains(e.target) && !addWorkspaceItemButton.current.contains(e.target)) {
