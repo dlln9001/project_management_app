@@ -16,6 +16,7 @@ function WorkspaceItemOptions(props) {
         if (optionsRef.current && !optionsRef.current.contains(e.target)) {
             props.setWorkspaceItemOptionsId('')
             props.setRenderSideBar(!props.renderSideBar)
+            document.removeEventListener('click', handleDocumentClick)
         }
     }
 

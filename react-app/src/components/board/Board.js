@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useOutletContext } from "react-router-dom";
 import BoardInfo from "./BoardInfo";
+import AddColumn from "./columns/AddColumn";
 import { useLocation } from "react-router-dom";
 import { AiOutlinePlus } from "react-icons/ai";
 import { FaCheck } from "react-icons/fa6";
@@ -61,10 +62,6 @@ function Board(props) {
     const colorOptions = ['bg-emerald-600', 'bg-green-500', 'bg-lime-500', 'bg-yellow-500', 'bg-amber-400', 'bg-violet-600', 'bg-purple-500', 'bg-blue-500', 'bg-sky-400', 
                          'bg-cyan-300', 'bg-rose-700', 'bg-red-500', 'bg-pink-600', 'bg-pink-300', 'bg-orange-600', 'bg-amber-500', 'bg-yellow-800', 'bg-gray-300', 
                          'bg-gray-500', 'bg-slate-600']
-    
-    const [showAddColumns, setShowAddColumn] = useState(false)
-    const [addColumnsId, setAddColumnsId] = useState('')
-    const addColumnsRef = useRef('')
 
     const [setColumnValueItemId, setSetColumnValueItemId] = useState('')
     const setColumnValueRef = useRef('')
@@ -127,12 +124,6 @@ function Board(props) {
         if (groupOptionsRef.current && !groupOptionsRef.current.contains(e.target)) {
             setShowGroupOptions(false)
             setGroupOptionsId('')
-            setRenderGroups(!renderGroups)
-        }
-
-        if (addColumnsRef.current && !addColumnsRef.current.contains(e.target)) {
-            setShowAddColumn(false)
-            setAddColumnsId('')
             setRenderGroups(!renderGroups)
         }
 
@@ -439,37 +430,9 @@ function Board(props) {
 
                                 {columnHtml}
 
-                                <div className="text-2xl flex items-center justify-center mx-1 h-fit self-center group relative" 
-                                    onClick={() => {
-                                        setShowAddColumn(true)
-                                        setAddColumnsId(groupId)
-                                        setRenderGroups(!renderGroups)
-                                    }}>
-                                    {(showAddColumns && addColumnsId === groupId) && 
-                                        // this is the menu to add different columns
-                                        <div className="absolute text-sm w-80 bg-white shadow-all-sides p-6 rounded-md right-[26px] top-0 z-10"
-                                            ref={addColumnsRef}>
-                                            <p className="text-slate-500 mb-1 p-1">Essentials</p>
-                                            <div className="hover:bg-slate-100 rounded-md p-2 cursor-pointer flex items-center gap-2"
-                                                 onClick={() => addColumn('Status')}>
-                                                <img src={process.env.PUBLIC_URL + 'images/statusColumn.png'} alt="" className="w-[7%] h-fit rounded-sm" />
-                                                <p>Status</p>
-                                            </div>
-                                        </div>
-                                    }
-                                    <IoIosAdd className={`hover:bg-slate-100   rounded-sm cursor-pointer peer 
-                                            ${(showAddColumns && addColumnsId === groupId) ? `bg-slate-100 text-sky-600` : `text-slate-500 hover:text-slate-700`}`}/>
-                                    <div 
-                                        className={`absolute scale-0 justify-center bg-slate-700 py-[7px] px-4 rounded-md z-10 min-w-28 bottom-10 shadow-lg
-                                                peer-hover:flex peer-hover:scale-100 transition ease-in duration-0 peer-hover:duration-100 peer-hover:delay-300
-                                                `}>
-                                        <p className="bg-slate-700 text-white m-0 text-sm">Add column</p>
-                                        <div className="text-slate-700 absolute top-[25px] text-2xl
-                                        " >
-                                            <GoTriangleDown/>
-                                        </div>
-                                    </div>
-                                </div>
+                                <AddColumn userToken={userToken} boardId={boardId} groupId={groupId} renderComponent={renderComponent} setRenderComponent={setRenderComponent}
+                                        renderGroups={renderGroups} setRenderGroups={setRenderGroups}/>
+
                                 <div className="w-full"></div>
                             </div>
 
@@ -773,26 +736,6 @@ function Board(props) {
         })
         .then(res => res.json())
         .then(data => setRenderComponent(!renderComponent))
-    }
-
-    function addColumn(columnType) {
-        fetch('http://127.0.0.1:8000/board/create-column/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${userToken}`
-            },
-            body: JSON.stringify({
-                column_type: columnType,
-                board_id: boardId
-            })
-        })
-        .then(res => res.json())
-        .then(data => {
-            setShowAddColumn(false)
-            setAddColumnsId('')
-            setRenderComponent(!renderComponent)
-        })
     }
     
     function deleteColumn(columnId) {
