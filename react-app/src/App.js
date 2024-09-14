@@ -8,6 +8,7 @@ import LoginPage from './components/authorization/LoginPage'
 import Layout from './components/layout/Layout'
 import { CreateWorkspaceItemProvider } from './contexts/CreateWorkspaceItemContext'
 import Board from './components/board/Board'
+import BoardDeleted from './components/board/BoardDeleted'
 
 const CLIENT_ID = process.env.REACT_APP_GOOGLE_OAUTH2_CLIENT_ID
 
@@ -23,6 +24,7 @@ function App() {
             <Route element={<Layout />}>
               <Route path='home' element={<Home />} />
               <Route path='board' element={<Board />}/>
+              <Route path='board-deleted' element={<BoardDeleted/>}/>
             </Route>
           </Routes>
         </BrowserRouter>

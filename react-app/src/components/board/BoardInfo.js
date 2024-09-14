@@ -8,7 +8,6 @@ const BoardInfo = React.forwardRef((props, ref) => {
     const [boardName, setBoardName] = useState('')
     const [boardDescription, setBoardDescription] = useState('')
 
-    const [isDescriptionOverflowing, setIsDescriptionOverflowing] = useState('')
     const descriptionRef = useRef('')
     const [descriptionHeight, setDescriptionHeight] = useState('')
     const [updateEffect, setUpdateEffect] = useState(true)
@@ -26,10 +25,9 @@ const BoardInfo = React.forwardRef((props, ref) => {
     }, [])
 
     useEffect(() => {
-        // check if description is overflowing, set height
+        // set height of description
         const descriptionElement = descriptionRef.current
         const isOverflow = descriptionElement.scrollHeight > descriptionElement.clientHeight
-        setIsDescriptionOverflowing(isOverflow)
         setDescriptionHeight(descriptionElement.scrollHeight)
     }, [boardDescription, updateEffect])
 

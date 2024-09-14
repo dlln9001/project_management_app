@@ -37,6 +37,13 @@ def change_board_description(request):
 
 
 @api_view(['GET', 'POST'])
+def delete_board(request):
+    board = Board.objects.get(id=request.data['board_id'])
+    board.delete()
+    return Response({'status': 'success'})
+
+
+@api_view(['GET', 'POST'])
 def create_group(request):
     board_id = request.data['board_id']
     board = Board.objects.get(id=board_id)

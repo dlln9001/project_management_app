@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { useCreateElement } from "../contexts/CreateWorkspaceItemContext"
+import { useCreateElement } from "../../contexts/CreateWorkspaceItemContext"
 
 function CreateWorkspaceItem() {
     const { itemType, setItemType, showCreateWorkspaceItem, setShowCreateWorkspaceItem } = useCreateElement()
@@ -15,13 +15,13 @@ function CreateWorkspaceItem() {
                 'Authorization': `Token ${userToken}`,
             },
             body: JSON.stringify({
-                    element_name: itemName,
-                    element_type: lowerItemType,
-                }
+                element_name: itemName,
+                element_type: lowerItemType,
+            }
             )
         })
-        .then(res => res.json())
-        .then(data => setShowCreateWorkspaceItem(false))
+            .then(res => res.json())
+            .then(data => setShowCreateWorkspaceItem(false))
     }
 
     return (
@@ -31,9 +31,9 @@ function CreateWorkspaceItem() {
                 <div className="mt-7 mb-7">
                     <p className="text-sm text-slate-600 mb-2">{itemType} name</p>
                     <input type="text" placeholder={'New ' + itemType + ' name'}
-                    className="border-2 w-full p-2 text-slate-700 rounded-md focus:outline-none focus:border-sky-500 border-x-[1px]"
-                    value={itemName}
-                    onChange={(e) => setItemName(e.target.value)}/>
+                        className="border-2 w-full p-2 text-slate-700 rounded-md focus:outline-none focus:border-sky-500 border-x-[1px]"
+                        value={itemName}
+                        onChange={(e) => setItemName(e.target.value)} />
                 </div>
                 <div className="flex gap-2 self-end">
                     <button className="text-slate-600 hover:bg-slate-100 p-2 px-3 rounded-md" onClick={() => setShowCreateWorkspaceItem(false)}>Cancel</button>
