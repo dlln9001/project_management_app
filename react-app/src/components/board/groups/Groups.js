@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react"
 import GroupColors from "./GroupColors";
+import GroupOptions from "./GroupOptions";
 import { GoTriangleUp } from "react-icons/go";
 import { FaCheck } from "react-icons/fa6";
 import { FiTrash } from "react-icons/fi";
@@ -54,10 +55,6 @@ function Groups(props) {
     const [editingGroupId, setEditingGroupId] = useState('')
     const [isEditingGroupName, setIsEditingGroupName] = useState(false)
 
-    const [showGroupOptions, setShowGroupOptions] = useState(false)
-    const [groupOptionsId, setGroupOptionsId] = useState('') // id of the group
-    const groupOptionsRef = useRef('')
-
     const [setColumnValueItemId, setSetColumnValueItemId] = useState('')
     const setColumnValueRef = useRef('')
 
@@ -75,13 +72,6 @@ function Groups(props) {
     }, [])
 
     function handleDocumentClick(e) {
-        // closes out the group options
-        if (groupOptionsRef.current && !groupOptionsRef.current.contains(e.target)) {
-            setShowGroupOptions(false)
-            setGroupOptionsId('')
-            props.setRenderGroups(!props.renderGroups)
-        }
-
         if (setColumnValueRef.current && !setColumnValueRef.current.contains(e.target)) {
             setSetColumnValueItemId('')
             props.setRenderGroups(!props.renderGroups)
@@ -281,26 +271,10 @@ function Groups(props) {
                 tempGroupHtml.push(
                     <div key={i} className="mt-10">
                         <div className="flex items-center mb-2 group">
-                            <div className={`absolute left-3 group-hover:text-inherit  p-1 rounded-md cursor-pointer 
-                                 ${showGroupOptions && groupOptionsId === groupId ? `bg-sky-200 text-inherit` : `hover:bg-slate-300 text-white`}`}
-                                 onClick={() => {
-                                    setShowGroupOptions(true)
-                                    setGroupOptionsId(groupId)
-                                    props.setRenderGroups(!props.renderGroups)
-                                }}>
-                                <BsThreeDots />
 
-                                {(showGroupOptions && groupOptionsId === groupId) && 
-                                    <div ref={groupOptionsId === groupId ? groupOptionsRef : null}
-                                        className="absolute left-7 top-0 bg-white z-10 shadow-all-sides w-60 text-slate-600 text-sm p-2 rounded-lg">
-                                        <div className="group-options-button" onClick={() => deleteGroup(groupId)}>
-                                            <FiTrash className="mx-2 my-1"/>
-                                            <p>Delete</p>
-                                        </div>
-                                    </div>
-                                }
-                                
-                            </div>
+                            <GroupOptions groupId={groupId} userToken={props.userToken} renderComponent={props.renderComponent} setRenderComponent={props.setRenderComponent}
+                                          renderGroups={props.renderGroups} setRenderGroups={props.setRenderGroups} boardId={props.boardId}/>
+
                             <div className={`flex items-center gap-1 group ${isEditingGroupName && `w-full`} w-fit relative`}>
 
                                 {/* for color options */}
@@ -545,24 +519,6 @@ function Groups(props) {
             setFocusedAddItem(i)
             props.setRenderGroups(!props.renderGroups)
         }
-
-
-    
-        function deleteGroup(groupId) {
-            fetch('http://127.0.0.1:8000/board/delete-group/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Token ${props.userToken}`,
-                },
-                body: JSON.stringify({
-                    group_id: groupId,
-                    board_id: props.boardId
-                })
-            })
-            .then(res => res.json())
-            .then(data => props.setRenderComponent(!props.renderComponent))
-        }
     
         function editGroupName(groupId) {
             fetch('http://127.0.0.1:8000/board/edit-group-name/', {
@@ -638,11 +594,11 @@ function Groups(props) {
         }
 
     return (
-        <div>
+        <>
             {groupHtml &&
                 groupHtml
             }
-        </div>
+        </>
     )
 }
 
