@@ -7,13 +7,8 @@ import Groups from "./groups/Groups";
 import {createItem} from "./groups/Groups"
 import { useLocation } from "react-router-dom";
 import { AiOutlinePlus } from "react-icons/ai";
-import { FaCheck } from "react-icons/fa6";
 import { IoMdClose } from "react-icons/io";
 import { IoTrashOutline } from "react-icons/io5";
-import { GoTriangleDown } from "react-icons/go";
-import { GoTriangleUp } from "react-icons/go";
-import { BsThreeDots } from "react-icons/bs";
-import { FiTrash } from "react-icons/fi";
 
 
 function Board(props) {

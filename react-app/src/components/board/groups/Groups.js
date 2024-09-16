@@ -1,12 +1,11 @@
 import { useEffect, useState, useRef } from "react"
-import GroupColors from "./GroupColors";
 import GroupOptions from "./GroupOptions";
 import { GoTriangleUp } from "react-icons/go";
 import { FaCheck } from "react-icons/fa6";
 import { FiTrash } from "react-icons/fi";
 import { BsThreeDots } from "react-icons/bs";
-import { GoTriangleDown } from "react-icons/go";
 import AddColumn from "../columns/AddColumn"
+import GroupNameInput from "./GroupNameInput";
 
 export function createItem(groupId, addItemContent, setAddItemContent='', boardId, userToken, renderComponent, setRenderComponent, renderGroups, setRenderGroups) {
     if (addItemContent) {
@@ -47,13 +46,6 @@ function Groups(props) {
 
     const [focusedItem, setFocusedItem] = useState([])
     const [editingItemContents, setEditingItemContents] = useState('')
-
-    const groupInputRef = useRef([])
-    const measureGroupInputRef = useRef([])
-    
-    const [editingGroupName, setEditingGroupName] = useState('')
-    const [editingGroupId, setEditingGroupId] = useState('')
-    const [isEditingGroupName, setIsEditingGroupName] = useState(false)
 
     const [setColumnValueItemId, setSetColumnValueItemId] = useState('')
     const setColumnValueRef = useRef('')
@@ -195,8 +187,6 @@ function Groups(props) {
                 let groupId = currentGroup.id
                 let currentGroupsItems = groupsData.itemsInfo[i]
 
-                let groupNameTextColor = currentGroup.color.replace('bg', 'text')
-
                 // set the column type html. In the group for loop so it can know which group it is on to open column options on the right group
                 let columnHtml = []
                 for (let j=0; j<groupsData.columnsInfo.length; j++) {
@@ -275,57 +265,10 @@ function Groups(props) {
                             <GroupOptions groupId={groupId} userToken={props.userToken} renderComponent={props.renderComponent} setRenderComponent={props.setRenderComponent}
                                           renderGroups={props.renderGroups} setRenderGroups={props.setRenderGroups} boardId={props.boardId}/>
 
-                            <div className={`flex items-center gap-1 group ${isEditingGroupName && `w-full`} w-fit relative`}>
+                            <GroupNameInput groupId={groupId} userToken={props.userToken} renderComponent={props.renderComponent} setRenderComponent={props.setRenderComponent}
+                                           renderGroups={props.renderGroups} setRenderGroups={props.setRenderGroups} currentGroup={currentGroup} i={i}
+                                           currentGroupsItems={currentGroupsItems}/>
 
-                                {/* for color options */}
-                                {(isEditingGroupName && editingGroupId === groupId) && 
-                                    <GroupColors groupId={groupId} userToken={props.userToken} renderComponent={props.renderComponent} setRenderComponent={props.setRenderComponent}
-                                            renderGroups={props.renderGroups} setRenderGroups={props.setRenderGroups} currentGroup={currentGroup}/>
-                                }
-
-                                <input type="text" 
-                                className={`text-lg border px-1 py-0 text-center rounded-[4px] border-transparent hover:border-slate-300 focus:outline-none focus:border-sky-600 focus:min-w-[70%] 
-                                           focus:text-start peer ${(isEditingGroupName && editingGroupId === groupId) && `pl-8`} ${groupNameTextColor} font-medium`}
-                                value={(isEditingGroupName && editingGroupId === groupId) ? editingGroupName : currentGroup.name} 
-                                ref={(el) => el && groupInputRef.current.push(el)}
-                                onFocus={(e) => {
-                                    setEditingGroupName(e.target.value)
-                                    setEditingGroupId(groupId)
-                                    setIsEditingGroupName(true)
-                                    props.setRenderGroups(!props.renderGroups)
-                                }}
-                                onChange={(e) => {
-                                    setEditingGroupName(e.target.value)
-                                    props.setRenderGroups(!props.renderGroups)
-                                    }}
-                                onBlur={() => {
-                                    setIsEditingGroupName(false)
-                                    setEditingGroupName('')
-                                    editGroupName(groupId)
-                                    props.setRenderGroups(!props.renderGroups)
-                                }}
-                                onKeyDown={(e) => {
-                                    if(e.key === 'Enter') {
-                                        e.target.blur()
-                                        setIsEditingGroupName(false)
-                                        setEditingGroupName('')
-                                        editGroupName(groupId)
-                                    }
-                                }}/>
-                                {!isEditingGroupName && 
-                                    <div 
-                                        className="absolute scale-0 justify-center bg-slate-700 py-[7px] px-4 rounded-md bottom-10 z-10 min-w-28 shadow-lg
-                                                peer-hover:flex peer-hover:scale-100 transition ease-in duration-0 peer-hover:duration-100 peer-hover:delay-500">
-                                        <p className="bg-slate-700 text-white m-0 text-sm">Click to Edit</p>
-                                        <div className="text-slate-700 absolute top-[25px] text-2xl">
-                                            <GoTriangleDown/>
-                                        </div>
-                                    </div>
-                                }
-                                <p className={`transition ease-in group-hover:text-slate-400 text-sm text-white w-fit peer-focus:hidden `}>{currentGroupsItems.length} Items</p>
-                                {/* hidden span to measure the length of the input so we can manually set the width */}
-                                <span ref={(el) => el && measureGroupInputRef.current.push(el)} className="text-lg p-1 px-2 invisible absolute min-w-3"></span>
-                            </div>
                         </div>
                         <div className="border border-slate-300 rounded-md border-r-0 border-l-0 rounded-r-none">
                             <div className="w-full flex bg-white">
@@ -374,10 +317,6 @@ function Groups(props) {
                         </div>
                     </div>
                 )
-
-                if (!editingGroupName) {
-                    adjustGroupNameWidth(i)
-                }
             }
 
             setGroupHtml(tempGroupHtml)
@@ -387,20 +326,10 @@ function Groups(props) {
                 props.setReloadGroupsInitial(false)
             }
 
-            groupInputRef.current = []
-            measureGroupInputRef.current = []
             columnNameRefs.current = []
             measureColumnNamesRefs.current = []
         }
     }, [props.renderGroups])   
-
-        // this is so we can change the group name's input's width dynamically, will fit the width 
-        function adjustGroupNameWidth(index) {
-            if (groupInputRef.current[index] && measureGroupInputRef.current[index]) {
-                measureGroupInputRef.current[index].textContent = groupInputRef.current[index].value
-                groupInputRef.current[index].style.width = `${measureGroupInputRef.current[index].offsetWidth + 10}px`
-            }
-        }
     
         function resizeInput(index, inputRefs, measureInputRefs) {
             if (inputRefs.current[index] && measureInputRefs.current[index]) {
@@ -518,24 +447,6 @@ function Groups(props) {
         function addItemFocus(i) {
             setFocusedAddItem(i)
             props.setRenderGroups(!props.renderGroups)
-        }
-    
-        function editGroupName(groupId) {
-            fetch('http://127.0.0.1:8000/board/edit-group-name/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Token ${props.userToken}`
-                },
-                body: JSON.stringify({
-                    group_name: editingGroupName,
-                    group_id: groupId
-                })
-            })
-            .then(res => res.json())
-            .then(data => {
-                props.setRenderComponent(!props.renderComponent)
-            })
         }
         
         function deleteColumn(columnId) {
