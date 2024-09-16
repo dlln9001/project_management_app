@@ -6,7 +6,7 @@ function GroupOptions(props) {
     const [showGroupOptions, setShowGroupOptions] = useState(false)
     const [groupOptionsId, setGroupOptionsId] = useState('') // id of the group
     const groupOptionsRef = useRef('')
-    console.log(showGroupOptions)
+
     useEffect(() => {
         document.addEventListener('click', handleDocumentClick)
     }, [])
@@ -35,7 +35,7 @@ function GroupOptions(props) {
         .then(res => res.json())
         .then(data => props.setRenderComponent(!props.renderComponent))
     }
-    console.log(props.boardId)
+
     return (
         <div ref={groupOptionsId === props.groupId ? groupOptionsRef : null} className={`absolute left-3 group-hover:text-inherit  p-1 rounded-md cursor-pointer 
             ${showGroupOptions && groupOptionsId === props.groupId ? `bg-sky-200 text-inherit` : `hover:bg-slate-300 text-white`}`}

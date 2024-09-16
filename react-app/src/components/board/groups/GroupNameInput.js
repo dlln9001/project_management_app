@@ -1,4 +1,4 @@
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import GroupColors from "./GroupColors"
 import { GoTriangleDown } from "react-icons/go";
 
@@ -11,14 +11,24 @@ function GroupNameInput(props) {
     const [editingGroupId, setEditingGroupId] = useState('')
     const [isEditingGroupName, setIsEditingGroupName] = useState(false)
 
-    const groupInputRef = useRef([])
-    const measureGroupInputRef = useRef([])
+    const groupInputRef = useRef('')
+    const measureGroupInputRef = useRef('')
+
+    const [updated, setUpdated] = useState(0)
+
+    useEffect(() => {
+        if (!editingGroupName || updated <= 1) {
+            adjustGroupNameWidth()
+        }
+    }, [updated])
 
     // this is so we can change the group name's input's width dynamically, will fit the width 
-    function adjustGroupNameWidth(index) {
-        if (groupInputRef.current[index] && measureGroupInputRef.current[index]) {
-            measureGroupInputRef.current[index].textContent = groupInputRef.current[index].value
-            groupInputRef.current[index].style.width = `${measureGroupInputRef.current[index].offsetWidth + 10}px`
+    function adjustGroupNameWidth() {
+        if (groupInputRef.current && measureGroupInputRef.current) {
+            measureGroupInputRef.current.textContent = groupInputRef.current.value
+            groupInputRef.current.style.width = `${measureGroupInputRef.current.offsetWidth + 10}px`
+            let addUpdate = updated + 1
+            setUpdated(addUpdate)
         }
     }
 
@@ -40,10 +50,6 @@ function GroupNameInput(props) {
         })
     }
 
-    if (!editingGroupName) {
-        adjustGroupNameWidth(props.i)
-    }
-
     return (
         <div className={`flex items-center gap-1 group ${isEditingGroupName && `w-full`} w-fit relative`}>
 
@@ -57,7 +63,7 @@ function GroupNameInput(props) {
             className={`text-lg border px-1 py-0 text-center rounded-[4px] border-transparent hover:border-slate-300 focus:outline-none focus:border-sky-600 focus:min-w-[70%] 
                     focus:text-start peer ${(isEditingGroupName && editingGroupId === groupId) && `pl-8`} ${groupNameTextColor} font-medium`}
             value={(isEditingGroupName && editingGroupId === groupId) ? editingGroupName : props.currentGroup.name} 
-            ref={(el) => el && groupInputRef.current.push(el)}
+            ref={groupInputRef}
             onFocus={(e) => {
                 setEditingGroupName(e.target.value)
                 setEditingGroupId(groupId)
@@ -72,6 +78,7 @@ function GroupNameInput(props) {
                 setIsEditingGroupName(false)
                 setEditingGroupName('')
                 editGroupName(groupId)
+                setUpdated(0)
                 props.setRenderGroups(!props.renderGroups)
             }}
             onKeyDown={(e) => {
@@ -80,6 +87,7 @@ function GroupNameInput(props) {
                     setIsEditingGroupName(false)
                     setEditingGroupName('')
                     editGroupName(groupId)
+                    setUpdated(0)
                 }
             }}/>
             {!isEditingGroupName && 
@@ -94,7 +102,7 @@ function GroupNameInput(props) {
             }
             <p className={`transition ease-in group-hover:text-slate-400 text-sm text-white w-fit peer-focus:hidden `}>{props.currentGroupsItems.length} Items</p>
             {/* hidden span to measure the length of the input so we can manually set the width */}
-            <span ref={(el) => el && measureGroupInputRef.current.push(el)} className="text-lg p-1 px-2 invisible absolute min-w-3"></span>
+            <span ref={measureGroupInputRef} className="text-lg p-1 px-2 invisible absolute min-w-3"></span>
         </div>
     )
 }
