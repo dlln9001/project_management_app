@@ -16,7 +16,6 @@ function GroupColors(props) {
                     onMouseDown={() => {
                         setShowColorOptions(false)
                         editGroupColor(colorOptions[i])
-                        props.setRenderComponent(!props.renderComponent)
                     }}>
                     <div className={`w-[22px] h-[22px] ${colorOptions[i]} rounded-[4px]`}></div>
                 </div>
@@ -38,7 +37,7 @@ function GroupColors(props) {
             })
         })
         .then(res => res.json())
-        .then(data => props.setRenderGroups(!props.renderGroups))
+        .then(data => props.setRenderComponent(!props.renderComponent))
     }
 
     return (

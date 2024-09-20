@@ -1,8 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useOutletContext } from "react-router-dom";
 import BoardInfo from "./BoardInfo";
-import AddColumn from "./columns/AddColumn";
-import GroupColors from "./groups/GroupColors";
 import Groups from "./groups/Groups";
 import {createItem} from "./groups/Groups"
 import { useLocation } from "react-router-dom";
@@ -70,14 +68,19 @@ function Board(props) {
         .then(res => res.json())
         .then(data => {
             setGroupsData(data)
-            setRenderGroups(!renderGroups)
+            console.log(data)
         })
+
 
         // when a new board is clicked, you want the group's name's html to be set to the right width. Reload a second time.
         setReloadGroupsInitial(true)
 
         document.addEventListener('click', handleDocumentClick)
     }, [boardId, renderComponent])
+
+    useEffect(() => {
+        setRenderGroups(!renderGroups)
+    }, [groupsData])
 
     function handleDocumentClick(e) {
         if (boardInfoRef.current && !boardInfoRef.current.contains(e.target) && !boardTitleRef.current.contains(e.target)) {
@@ -125,6 +128,7 @@ function Board(props) {
         .then(res => res.json())
         .then(data => setRenderComponent(!renderComponent))
     }
+    console.log('is item selected (BOARD): ', isItemSelected)
 
     return (
         <div className="bg-white rounded-tl-lg relative flex flex-col overflow-auto h-full custom-scrollbar">
@@ -143,8 +147,8 @@ function Board(props) {
                 </div>
                 <div>
                     <Groups groupsData={groupsData} setGroupsData={setGroupsData} userToken={userToken} boardId={boardId} renderComponent={renderComponent} setRenderComponent={setRenderComponent}
-                    itemSelected={itemSelected} setItemSelected={setItemSelected} isItemSelected={isItemSelected} setIsItemSelected={setIsItemSelected} renderComponent={renderComponent}
-                    setRenderComponent={setRenderComponent} groupsAllSelected={groupsAllSelected} setGroupsAllSelected={setGroupsAllSelected} reloadGroupsInitial={reloadGroupsInitial}
+                    itemSelected={itemSelected} setItemSelected={setItemSelected} isItemSelected={isItemSelected} setIsItemSelected={setIsItemSelected} 
+                    groupsAllSelected={groupsAllSelected} setGroupsAllSelected={setGroupsAllSelected} reloadGroupsInitial={reloadGroupsInitial}
                     setReloadGroupsInitial={setReloadGroupsInitial} numberOfItemsSelected={numberOfItemsSelected} setNumberOfItemsSelected={setNumberOfItemsSelected}
                     renderGroups={renderGroups} setRenderGroups={setRenderGroups}/>
                     <button className="flex gap-2 items-center border p-1 rounded-md px-2 border-slate-300 hover:bg-slate-100 mt-14" onClick={createGroup}>

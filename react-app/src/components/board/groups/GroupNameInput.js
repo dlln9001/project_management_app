@@ -16,12 +16,14 @@ function GroupNameInput(props) {
 
     const [updated, setUpdated] = useState(0)
 
-    useEffect(() => {
-        if (!editingGroupName || updated <= 1) {
-            adjustGroupNameWidth()
-        }
-    }, [updated])
+    if (!editingGroupName && updated <=5) {
+        adjustGroupNameWidth()
+    }
 
+    useEffect(() => {
+        setUpdated(0)
+    }, [props.boardId])
+    
     // this is so we can change the group name's input's width dynamically, will fit the width 
     function adjustGroupNameWidth() {
         if (groupInputRef.current && measureGroupInputRef.current) {
@@ -32,7 +34,7 @@ function GroupNameInput(props) {
         }
     }
 
-    function editGroupName(groupId) {
+    function editGroupName(groupId, groupName) {
         fetch('http://127.0.0.1:8000/board/edit-group-name/', {
             method: 'POST',
             headers: {
@@ -40,13 +42,15 @@ function GroupNameInput(props) {
                 'Authorization': `Token ${props.userToken}`
             },
             body: JSON.stringify({
-                group_name: editingGroupName,
+                group_name: groupName,
                 group_id: groupId
             })
         })
         .then(res => res.json())
         .then(data => {
             props.setRenderComponent(!props.renderComponent)
+            props.setRenderGroups(!props.renderGroups)
+            setUpdated(0)
         })
     }
 
@@ -74,26 +78,27 @@ function GroupNameInput(props) {
                 setEditingGroupName(e.target.value)
                 props.setRenderGroups(!props.renderGroups)
                 }}
-            onBlur={() => {
+            onBlur={(e) => {
                 setIsEditingGroupName(false)
-                setEditingGroupName('')
-                editGroupName(groupId)
-                setUpdated(0)
-                props.setRenderGroups(!props.renderGroups)
+                setEditingGroupName(e.target.value)
+                setEditingGroupId('')
+                adjustGroupNameWidth()
+                editGroupName(groupId, e.target.value)
             }}
             onKeyDown={(e) => {
                 if(e.key === 'Enter') {
                     e.target.blur()
                     setIsEditingGroupName(false)
-                    setEditingGroupName('')
-                    editGroupName(groupId)
-                    setUpdated(0)
+                    setEditingGroupName(e.target.value)
+                    setEditingGroupId('')
+                    adjustGroupNameWidth()
+                    editGroupName(groupId, e.target.value)
                 }
             }}/>
             {!isEditingGroupName && 
                 <div 
-                    className="absolute scale-0 justify-center bg-slate-700 py-[7px] px-4 rounded-md bottom-10 z-10 min-w-28 shadow-lg
-                            peer-hover:flex peer-hover:scale-100 transition ease-in duration-0 peer-hover:duration-100 peer-hover:delay-500">
+                    className={`absolute scale-0 justify-center bg-slate-700 py-[7px] px-4 rounded-md bottom-10 z-10 min-w-28 shadow-lg
+                            peer-hover:flex peer-hover:scale-100 transition ease-in duration-0 peer-hover:duration-100 peer-hover:delay-500`}>
                     <p className="bg-slate-700 text-white m-0 text-sm">Click to Edit</p>
                     <div className="text-slate-700 absolute top-[25px] text-2xl">
                         <GoTriangleDown/>
