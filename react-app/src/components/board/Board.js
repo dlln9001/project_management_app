@@ -62,9 +62,17 @@ function Board(props) {
         document.addEventListener('click', handleDocumentClick)
     }, [boardId, boardValues.renderComponent])
 
+
     useEffect(() => {
         boardValues.setRenderGroups(!boardValues.renderGroups)
     }, [boardValues.groupsData])
+
+
+    useEffect(() => {
+        boardValues.setIsItemSelected(false)
+        boardValues.setItemSelected([])
+    }, [boardId])
+
 
     function handleDocumentClick(e) {
         if (boardInfoRef.current && !boardInfoRef.current.contains(e.target) && !boardTitleRef.current.contains(e.target)) {
@@ -112,7 +120,6 @@ function Board(props) {
         .then(res => res.json())
         .then(data => boardValues.setRenderComponent(!boardValues.renderComponent))
     }
-    console.log('is item selected (BOARD): ', boardValues.isItemSelected)
 
     return (
         <div className="bg-white rounded-tl-lg relative flex flex-col overflow-auto h-full custom-scrollbar">
@@ -152,6 +159,8 @@ function Board(props) {
                     <div className="flex flex-col justify-center w-16 items-center gap-1 ml-auto cursor-pointer group" 
                         onClick={() => {
                             deleteSelectedItems()
+                            boardValues.setIsItemSelected(false)
+                            boardValues.setItemSelected([])
                             boardValues.setGroupsAllSelected([])
                         }}>
                         <IoTrashOutline className="text-2xl group-hover:text-sky-600"/>
@@ -168,7 +177,7 @@ function Board(props) {
                     </div>
                 </div>
             }
-        </div>
+            </div>
     )
 }
 

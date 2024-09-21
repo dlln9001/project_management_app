@@ -72,9 +72,8 @@ function Groups(props) {
 
      // renders all the groups in a separate use effect than the fetch
      useEffect(() => {
-        if (groupsData) {
+        if (Object.keys(groupsData).length != 0) {
             let tempGroupHtml = []
-
 
             // set the group html
             for (let i=0; i<groupsData.groupsInfo.length; i++) {
@@ -189,7 +188,7 @@ function Groups(props) {
 
                             </div>
 
-                                <Items i={i} currentGroup={currentGroup}/>
+                                <Items i={i} currentGroup={currentGroup} userToken={props.userToken}/>
 
                             {/* Add Item */}
                             <div className={`flex`}>

@@ -12,7 +12,7 @@ export function BoardValuesProvider( {children} ) {
     const [renderComponent, setRenderComponent] = useState(false)
     const [renderGroups, setRenderGroups] = useState(false)
 
-    const [groupsData, setGroupsData] = useState('')
+    const [groupsData, setGroupsData] = useState({})
     // the width of the group names doesn't adjust until after the html has been set, so it needs to re render the groups
     const [reloadGroupsInitial, setReloadGroupsInitial] = useState(true)
 
