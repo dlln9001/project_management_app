@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react"
+import { useBoardValues } from "../../../contexts/BoardValuesContext"
 
 function GroupColors(props) {
+    const boardValues = useBoardValues()
 
     const [showColorOptions, setShowColorOptions] = useState(false)
     const [colorOptionsHtml, setColorOptionsHtml] = useState('')
@@ -37,7 +39,7 @@ function GroupColors(props) {
             })
         })
         .then(res => res.json())
-        .then(data => props.setRenderComponent(!props.renderComponent))
+        .then(data => boardValues.setRenderComponent(!boardValues.renderComponent))
     }
 
     return (

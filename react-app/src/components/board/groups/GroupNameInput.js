@@ -1,8 +1,10 @@
 import { useState, useRef, useEffect } from "react"
 import GroupColors from "./GroupColors"
 import { GoTriangleDown } from "react-icons/go";
+import { useBoardValues } from "../../../contexts/BoardValuesContext";
 
 function GroupNameInput(props) {
+    const boardValues = useBoardValues()
 
     let groupId = props.groupId    
     let groupNameTextColor = props.currentGroup.color.replace('bg', 'text')
@@ -48,8 +50,8 @@ function GroupNameInput(props) {
         })
         .then(res => res.json())
         .then(data => {
-            props.setRenderComponent(!props.renderComponent)
-            props.setRenderGroups(!props.renderGroups)
+            boardValues.setRenderComponent(!boardValues.renderComponent)
+            boardValues.setRenderGroups(!boardValues.renderGroups)
             setUpdated(0)
         })
     }
@@ -59,8 +61,7 @@ function GroupNameInput(props) {
 
             {/* for color options */}
             {(isEditingGroupName && editingGroupId === groupId) && 
-                <GroupColors groupId={groupId} userToken={props.userToken} renderComponent={props.renderComponent} setRenderComponent={props.setRenderComponent}
-                        renderGroups={props.renderGroups} setRenderGroups={props.setRenderGroups} currentGroup={props.currentGroup}/>
+                <GroupColors groupId={groupId} userToken={props.userToken} currentGroup={props.currentGroup}/>
             }
 
             <input type="text" 
@@ -72,11 +73,11 @@ function GroupNameInput(props) {
                 setEditingGroupName(e.target.value)
                 setEditingGroupId(groupId)
                 setIsEditingGroupName(true)
-                props.setRenderGroups(!props.renderGroups)
+                boardValues.setRenderGroups(!boardValues.renderGroups)
             }}
             onChange={(e) => {
                 setEditingGroupName(e.target.value)
-                props.setRenderGroups(!props.renderGroups)
+                boardValues.setRenderGroups(!boardValues.renderGroups)
                 }}
             onBlur={(e) => {
                 setIsEditingGroupName(false)

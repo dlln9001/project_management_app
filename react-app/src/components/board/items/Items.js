@@ -1,9 +1,12 @@
 import { useState, useEffect, useRef } from "react"
 import { FaCheck } from "react-icons/fa6";
 import { GoTriangleUp } from "react-icons/go";
+import { useBoardValues } from "../../../contexts/BoardValuesContext";
 
 function Items(props) {
-    let groupsData = props.groupsData
+    const boardValues = useBoardValues()
+
+    let groupsData = boardValues.groupsData
     // i here is the group index, groups data has the groups and items ordered the same, so if you have the right group index, you can get its items
     let i = props.i
 
@@ -24,7 +27,7 @@ function Items(props) {
     function handleDocumentClick(e) {
         if (setColumnValueRef.current && !setColumnValueRef.current.contains(e.target)) {
             setSetColumnValueItemId('')
-            props.setRenderGroups(!props.renderGroups)
+            boardValues.setRenderGroups(!boardValues.renderGroups)
         }
     }
 
@@ -37,8 +40,8 @@ function Items(props) {
         // this variable is so that when a user clicks on a new board, when items are selected, that the item menu doesn't show up on separate boards
         let itemIdCheck = false
         if (!itemIdCheck) {
-            props.setIsItemSelected(false)
-            props.setItemSelected([])
+            boardValues.setIsItemSelected(false)
+            boardValues.setItemSelected([])
         }
 
         for (let j=0; j<groupsData.itemsInfo[i].length; j++) {
@@ -55,7 +58,7 @@ function Items(props) {
                             : `border-t border-t-slate-300 border-r border-r-slate-300`}`}
                         onClick={() => {
                                 setSetColumnValueItemId([i, j, k])
-                                props.setRenderGroups(!props.renderGroups)
+                                boardValues.setRenderGroups(!boardValues.renderGroups)
                         }}>
                         <p>{columnValues[k].value_text}</p>
                         {/* set labels menu */}
@@ -76,7 +79,7 @@ function Items(props) {
                     </div>
                 )
             }
-            if (props.itemSelected.includes(groupsData.itemsInfo[i][j].id)) {
+            if (boardValues.itemSelected.includes(groupsData.itemsInfo[i][j].id)) {
                 itemIdCheck = true
             }
 
@@ -86,10 +89,10 @@ function Items(props) {
                         <div className={`${props.currentGroup.color} w-[6px] justify-self-start min-w-[6px]`}></div>
                         <div className="p-2 flex items-center border-r border-r-slate-300 border-t border-t-slate-300">
                             <div className={`w-4 h-4 border  cursor-pointer rounded-sm
-                                ${props.itemSelected.includes(groupsData.itemsInfo[i][j].id) ? `bg-sky-600 hover:bg-sky-700` : `bg-white border-slate-300 hover:border-slate-600`}`}
+                                ${boardValues.itemSelected.includes(groupsData.itemsInfo[i][j].id) ? `bg-sky-600 hover:bg-sky-700` : `bg-white border-slate-300 hover:border-slate-600`}`}
                                 onClick={() => handleItemSelect(i, j)}
                             >
-                                {props.itemSelected.includes(groupsData.itemsInfo[i][j].id) && 
+                                {boardValues.itemSelected.includes(groupsData.itemsInfo[i][j].id) && 
                                     <FaCheck color="white" className="h-4/5 w-4/5 mx-auto my-[1px]"/>
                                 }
                             </div>
@@ -100,12 +103,12 @@ function Items(props) {
                             onFocus={() => {
                                 setFocusedItem([i, j])
                                 setEditingItemContents(groupsData.itemsInfo[i][j].name)
-                                props.setRenderGroups(!props.renderGroups)
+                                boardValues.setRenderGroups(!boardValues.renderGroups)
                             }}
                             onBlur={(e) => editItem(e.target.value, groupsData.itemsInfo[i][j].id)}
                             onChange={(e) => {
                                 setEditingItemContents(e.target.value)
-                                props.setRenderGroups(!props.renderGroups)
+                                boardValues.setRenderGroups(!boardValues.renderGroups)
                             }}
                             value={(focusedItem[0] === i && focusedItem[1] === j) ? editingItemContents : groupsData.itemsInfo[i][j].name}
                             tabIndex={0}
@@ -127,14 +130,14 @@ function Items(props) {
         } 
         setitemsHtml(tempItemsHtml)
 
-    }, [props.renderGroups, renderItems])
+    }, [boardValues.renderGroups, renderItems])
 
     function editColumnValue(columnValueId, color, text) {
         fetch('http://127.0.0.1:8000/board/edit-column-value/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Token ${props.userToken}`
+                'Authorization': `Token ${boardValues.userToken}`
             },
             body: JSON.stringify({
                 column_value_id: columnValueId,
@@ -145,12 +148,12 @@ function Items(props) {
         .then(res => res.json())
         .then(data => {
             setSetColumnValueItemId('')
-            props.setRenderComponent(!props.renderComponent)
+            boardValues.setRenderComponent(!boardValues.renderComponent)
         })
     }
 
     function handleItemSelect(groupIndex, itemIndex) {
-        let tempItemSelected = [...props.itemSelected]
+        let tempItemSelected = [...boardValues.itemSelected]
         let itemId = groupsData.itemsInfo[groupIndex][itemIndex].id
         console.log('itemId: ', itemId, tempItemSelected, tempItemSelected.includes(itemId))
         if (tempItemSelected.includes(itemId)) {
@@ -161,35 +164,35 @@ function Items(props) {
                 }
             }
             if (tempItemSelected.length === 0) {
-                props.setIsItemSelected(false)
+                boardValues.setIsItemSelected(false)
                 console.log('ja;lskdjflk;asj dflk  runing faseSSSS')
             }
             // removes the group so it doesn't show the entire group is selected anymore, if it was.
             let groupId = groupsData.itemsInfo[groupIndex][itemIndex].group
-            if (props.groupsAllSelected.includes(groupId)) {
-                let index = props.groupsAllSelected.indexOf(groupId)
-                props.groupsAllSelected.splice(index, 1)
+            if (boardValues.groupsAllSelected.includes(groupId)) {
+                let index = boardValues.groupsAllSelected.indexOf(groupId)
+                boardValues.groupsAllSelected.splice(index, 1)
             }
-            props.setNumberOfItemsSelected(tempItemSelected.length)
-            props.setItemSelected(tempItemSelected)
+            boardValues.setNumberOfItemsSelected(tempItemSelected.length)
+            boardValues.setItemSelected(tempItemSelected)
         }
         else {
             console.log('adding iididttem ')
-            props.setNumberOfItemsSelected(props.itemSelected.length + 1)
-            props.setItemSelected(oldArr => [...oldArr, itemId])
-            props.setIsItemSelected(true)
+            boardValues.setNumberOfItemsSelected(boardValues.itemSelected.length + 1)
+            boardValues.setItemSelected(oldArr => [...oldArr, itemId])
+            boardValues.setIsItemSelected(true)
         }
         setRenderItems(!renderItems)
 
     }
-    console.log('is item selected (ITEMS): ', props.isItemSelected)
+    console.log('is item selected (ITEMS): ', boardValues.isItemSelected)
 
     function editItem(itemContent, itemId) {
         fetch('http://127.0.0.1:8000/board/edit-item/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Token ${props.userToken}`
+                'Authorization': `Token ${boardValues.userToken}`
             },
             body: JSON.stringify({
                 item_id: itemId,
@@ -197,7 +200,7 @@ function Items(props) {
             })
         })
         .then(res => res.json())
-        .then(data => props.setRenderComponent(!props.renderComponent))
+        .then(data => boardValues.setRenderComponent(!boardValues.renderComponent))
     }
 
     return (

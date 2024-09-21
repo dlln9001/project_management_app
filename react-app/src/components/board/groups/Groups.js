@@ -6,6 +6,7 @@ import { FiTrash } from "react-icons/fi";
 import { BsThreeDots } from "react-icons/bs";
 import AddColumn from "../columns/AddColumn"
 import GroupNameInput from "./GroupNameInput";
+import { useBoardValues } from "../../../contexts/BoardValuesContext";
 
 
 export function createItem(groupId, addItemContent, setAddItemContent='', boardId, userToken, renderComponent, setRenderComponent, renderGroups, setRenderGroups) {
@@ -38,8 +39,11 @@ export function createItem(groupId, addItemContent, setAddItemContent='', boardI
 }
 
 
+
 function Groups(props) {
-    let groupsData = props.groupsData
+    const boardValues = useBoardValues()
+
+    let groupsData = boardValues.groupsData
     const [groupHtml, setGroupHtml] = useState('')
 
     const [addItemContent, setAddItemContent] = useState('')
@@ -62,7 +66,7 @@ function Groups(props) {
 
         if (columnOptionsSelectedRef.current && !columnOptionsSelectedRef.current.contains(e.target)) {
             setColumnOptionsSelectedId('')
-            props.setRenderGroups(!props.renderGroups)
+            boardValues.setRenderGroups(!boardValues.renderGroups)
         }
     }
 
@@ -100,18 +104,18 @@ function Groups(props) {
                                 onChange={(e) => {
                                         setColumnEditingName(e.target.value)
                                         setColumnNameEdited(true)
-                                        props.setRenderGroups(!props.renderGroups)
+                                        boardValues.setRenderGroups(!boardValues.renderGroups)
                                     }}
                                 onFocus={() => {
                                     setColumnNameFocused(true)
                                     setColumnNameEditedIndexes([groupsData.columnsInfo[j].id, i])
-                                    props.setRenderGroups(!props.renderGroups)
+                                    boardValues.setRenderGroups(!boardValues.renderGroups)
                                 }}
                                 onBlur={(e) => {
                                     setColumnNameFocused(false)
                                     setColumnNameEditedIndexes([])
                                     editColumnName(e.target.value, groupsData.columnsInfo[j].id)
-                                    props.setRenderGroups(!props.renderGroups)
+                                    boardValues.setRenderGroups(!boardValues.renderGroups)
                                 }}
                                 onKeyDown={(e) => {
                                     if(e.key === 'Enter') {
@@ -129,7 +133,7 @@ function Groups(props) {
                                         : `group-hover:text-inherit hover:bg-slate-200 text-white`}`}
                                     onClick={() => {
                                     setColumnOptionsSelectedId([groupsData.columnsInfo[j].id, i])
-                                    props.setRenderGroups(!props.renderGroups)
+                                    boardValues.setRenderGroups(!boardValues.renderGroups)
                                 }}>
                                     <BsThreeDots />
                                 {(columnOptionsSelectedId[0] === groupsData.columnsInfo[j].id && columnOptionsSelectedId[1]) === i &&
@@ -152,12 +156,10 @@ function Groups(props) {
                     <div key={i} className="mt-10">
                         <div className="flex items-center mb-2 group">
 
-                            <GroupOptions groupId={groupId} userToken={props.userToken} renderComponent={props.renderComponent} setRenderComponent={props.setRenderComponent}
-                                          renderGroups={props.renderGroups} setRenderGroups={props.setRenderGroups} boardId={props.boardId}/>
+                            <GroupOptions groupId={groupId} userToken={props.userToken} boardId={props.boardId}/>
 
-                            <GroupNameInput groupId={groupId} userToken={props.userToken} renderComponent={props.renderComponent} setRenderComponent={props.setRenderComponent}
-                                           renderGroups={props.renderGroups} setRenderGroups={props.setRenderGroups} currentGroup={currentGroup} i={i}
-                                           currentGroupsItems={currentGroupsItems} boardId={props.boardId}/>
+                            <GroupNameInput groupId={groupId} userToken={props.userToken} currentGroup={currentGroup} i={i}
+                                            currentGroupsItems={currentGroupsItems} boardId={props.boardId}/>
 
                         </div>
                         <div className="border border-slate-300 rounded-md border-r-0 border-l-0 rounded-r-none">
@@ -167,9 +169,9 @@ function Groups(props) {
 
                                 <div className="p-2 flex items-center border-r border-r-slate-300">
                                     <div className={`w-4 h-4 border border-slate-300 hover:border-slate-600 cursor-pointer rounded-sm 
-                                        ${props.groupsAllSelected.includes(groupId) ? `bg-sky-600` : `bg-white`}`} 
+                                        ${boardValues.groupsAllSelected.includes(groupId) ? `bg-sky-600` : `bg-white`}`} 
                                         onClick={() => selectAllItems(groupId)}>
-                                            { props.groupsAllSelected.includes(groupId) && 
+                                            { boardValues.groupsAllSelected.includes(groupId) && 
                                                 <FaCheck color="white" className="h-4/5 w-4/5 mx-auto my-[1px]"/>
                                             }
                                     </div>
@@ -181,17 +183,13 @@ function Groups(props) {
 
                                 {columnHtml}
 
-                                <AddColumn userToken={props.userToken} boardId={props.boardId} groupId={groupId} renderComponent={props.renderComponent} setRenderComponent={props.setRenderComponent}
-                                        renderGroups={props.renderGroups} setRenderGroups={props.setRenderGroups}/>
+                                <AddColumn userToken={props.userToken} boardId={props.boardId} groupId={groupId}/>
 
                                 <div className="w-full"></div>
 
                             </div>
 
-                                <Items isItemSelected={props.isItemSelected} setIsItemSelected={props.setIsItemSelected} itemSelected={props.itemSelected} setItemSelected={props.setItemSelected}
-                                groupsData={groupsData} i={i} currentGroup={currentGroup} renderComponent={props.renderComponent} setRenderComponent={props.setRenderComponent}
-                                renderGroups={props.renderGroups} setRenderGroups={props.setRenderGroups} numberOfItemsSelected={props.numberOfItemsSelected} 
-                                setNumberOfItemsSelected={props.setNumberOfItemsSelected}/>
+                                <Items i={i} currentGroup={currentGroup}/>
 
                             {/* Add Item */}
                             <div className={`flex`}>
@@ -206,7 +204,7 @@ function Groups(props) {
                                     onFocus={() => addItemFocus(i)}
                                     value={focusedAddItem === i ? addItemContent : ''}
                                     onChange={(e) => changeFocusedAddItem(e.target.value)}
-                                    onBlur={() => createItem(groupId, addItemContent, setAddItemContent, props.boardId, props.userToken, props.renderComponent, props.setRenderComponent, props.renderGroups, props.setRenderGroups)}
+                                    onBlur={() => createItem(groupId, addItemContent, setAddItemContent, props.boardId, props.userToken, boardValues.renderComponent, boardValues.setRenderComponent, boardValues.renderGroups, boardValues.setRenderGroups)}
                                     onKeyDown={(e) => enterAddItem(e, groupId, addItemContent)}
                                     /> 
                                 </div>
@@ -217,15 +215,15 @@ function Groups(props) {
             }
             
             setGroupHtml(tempGroupHtml)
-            if (props.reloadGroupsInitial) {
-                props.setRenderGroups(!props.renderGroups)
-                props.setReloadGroupsInitial(false)
+            if (boardValues.reloadGroupsInitial) {
+                boardValues.setRenderGroups(!boardValues.renderGroups)
+                boardValues.setReloadGroupsInitial(false)
             }
 
             columnNameRefs.current = []
             measureColumnNamesRefs.current = []
         }
-    }, [props.renderGroups])   
+    }, [boardValues.renderGroups])   
     
         function resizeInput(index, inputRefs, measureInputRefs) {
             if (inputRefs.current[index] && measureInputRefs.current[index]) {
@@ -243,23 +241,23 @@ function Groups(props) {
                     let itemsInTheGroup = []
                     for (let j=0; j<groupsData.itemsInfo[i].length; j++) {
                         itemsInTheGroup.push(groupsData.itemsInfo[i][j].id)
-                        if (!props.itemSelected.includes(groupsData.itemsInfo[i][j].id)) {
-                            props.setItemSelected(oldArr => [...oldArr, groupsData.itemsInfo[i][j].id])
+                        if (!boardValues.itemSelected.includes(groupsData.itemsInfo[i][j].id)) {
+                            boardValues.setItemSelected(oldArr => [...oldArr, groupsData.itemsInfo[i][j].id])
                             amountSelected += 1
                             allItemsSelected = false
                         }
                     }
                     // if in the group, all the items were already selected, deselect all of the items
                     if (allItemsSelected) {
-                        let tempItemSelected = props.itemSelected
+                        let tempItemSelected = boardValues.itemSelected
                         // so we don't have issues with the for loop while removing elements
                         let newItemSelected = []
     
-                        let groupIndex = props.groupsAllSelected.indexOf(groupId)
-                        let tempGroupsAllSelected = [...props.groupsAllSelected]
+                        let groupIndex = boardValues.groupsAllSelected.indexOf(groupId)
+                        let tempGroupsAllSelected = [...boardValues.groupsAllSelected]
     
                         tempGroupsAllSelected.splice(groupIndex, 1)
-                        props.setGroupsAllSelected(tempGroupsAllSelected)
+                        boardValues.setGroupsAllSelected(tempGroupsAllSelected)
     
                         for (let k=0; k<tempItemSelected.length; k++) {
                             if (!itemsInTheGroup.includes(tempItemSelected[k])) {
@@ -270,15 +268,15 @@ function Groups(props) {
                             }
                         }
     
-                        props.setItemSelected(newItemSelected)
+                        boardValues.setItemSelected(newItemSelected)
                     }
     
                     else {
-                    props.setGroupsAllSelected(oldArr => [...oldArr, groupId])
+                    boardValues.setGroupsAllSelected(oldArr => [...oldArr, groupId])
                     }
-                    props.setRenderGroups(!props.renderGroups)
-                    props.setIsItemSelected(true)
-                    props.setNumberOfItemsSelected(props.itemSelected.length + amountSelected)
+                    boardValues.setRenderGroups(!boardValues.renderGroups)
+                    boardValues.setIsItemSelected(true)
+                    boardValues.setNumberOfItemsSelected(boardValues.itemSelected.length + amountSelected)
                     return
                 }
             }
@@ -286,18 +284,18 @@ function Groups(props) {
     
         function enterAddItem(e, groupId, addItemContent) {
             if (e.key === 'Enter') {
-                createItem(groupId, addItemContent, setAddItemContent, props.boardId, props.userToken, props.renderComponent, props.setRenderComponent, props.renderGroups, props.setRenderGroups)
+                createItem(groupId, addItemContent, setAddItemContent, props.boardId, props.userToken, boardValues.renderComponent, boardValues.setRenderComponent, boardValues.renderGroups, boardValues.setRenderGroups)
             }
         }
     
         function changeFocusedAddItem(value) {
             setAddItemContent(value)
-            props.setRenderGroups(!props.renderGroups)
+            boardValues.setRenderGroups(!boardValues.renderGroups)
         }
     
         function addItemFocus(i) {
             setFocusedAddItem(i)
-            props.setRenderGroups(!props.renderGroups)
+            boardValues.setRenderGroups(!boardValues.renderGroups)
         }
         
         function deleteColumn(columnId) {
@@ -315,7 +313,7 @@ function Groups(props) {
             .then(res => res.json())
             .then(data => {
                 setColumnOptionsSelectedId('')
-                props.setRenderComponent(!props.renderComponent)
+                boardValues.setRenderComponent(!boardValues.renderComponent)
             })
         }
     
@@ -332,7 +330,7 @@ function Groups(props) {
                 })
             })
             .then(res => res.json())
-            .then(data => props.setRenderComponent(!props.renderComponent))
+            .then(data => boardValues.setRenderComponent(!boardValues.renderComponent))
         }
 
     return (

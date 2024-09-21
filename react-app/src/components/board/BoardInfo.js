@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useRef } from "react"
+import { useBoardValues } from "../../contexts/BoardValuesContext"
 
 const BoardInfo = React.forwardRef((props, ref) => {
+    const boardValues = useBoardValues()
+
     const userToken = JSON.parse(localStorage.getItem('userToken'))
     const [boardOwnerInfo, setBoardOwnerInfo] = useState('')
     const [createdDate, setCreatedDate] = useState('')
@@ -15,10 +18,10 @@ const BoardInfo = React.forwardRef((props, ref) => {
 
     useEffect(() => {
         getOwnerInfo()
-        setBoardDescription(props.boardInfo.description)
+        setBoardDescription(boardValues.boardInfo.description)
 
         // convert date format to be readable 
-        const date = new Date(props.boardInfo.created_at)
+        const date = new Date(boardValues.boardInfo.created_at)
         const options = {year: 'numeric', month: 'long', day: 'numeric'}
         const formattedDate = date.toLocaleDateString('en-US', options)
         setCreatedDate(formattedDate)
@@ -39,7 +42,7 @@ const BoardInfo = React.forwardRef((props, ref) => {
                 'Authorization': `Token ${userToken}`
             },
             body: JSON.stringify({
-                user_id: props.boardInfo.user
+                user_id: boardValues.boardInfo.user
             })
         })
         .then(res => res.json())
@@ -54,13 +57,13 @@ const BoardInfo = React.forwardRef((props, ref) => {
                 'Authorization': `Token ${userToken}`
             },
             body: JSON.stringify({
-                board_id: props.boardInfo.id,
+                board_id: boardValues.boardInfo.id,
                 board_name: boardName
             })
         })
         .then(res => res.json())
         .then(data => {
-            props.setRenderComponent(!props.renderComponent)
+            boardValues.setRenderComponent(!boardValues.renderComponent)
             props.setRenderSideBar(!props.renderSideBar)
         })
     }
@@ -73,13 +76,13 @@ const BoardInfo = React.forwardRef((props, ref) => {
                 'Authorization': `Token ${userToken}`
             },
             body: JSON.stringify({
-                board_id: props.boardInfo.id,
+                board_id: boardValues.boardInfo.id,
                 board_description: boardDescription
             })
         })
         .then(res => res.json())
         .then(data => {
-            props.setRenderComponent(!props.renderComponent)
+            boardValues.setRenderComponent(!boardValues.renderComponent)
         })
     }
 
@@ -88,7 +91,7 @@ const BoardInfo = React.forwardRef((props, ref) => {
         <div className="shadow-all-sides p-5 py-4 w-[422px] flex flex-col gap-3 rounded-md mt-2 absolute bg-white" ref={ref}>
             <div className="flex flex-col gap-2">
                 <input type="text" className="font-medium text-lg w-full focus:outline-none border border-white hover:border-slate-300 px-1 rounded-sm focus:border-sky-600" 
-                        value={boardName ? boardName : props.boardTitle} 
+                        value={boardName ? boardName : boardValues.boardTitle} 
                         onFocus={(e) => {
                             setBoardName(e.target.value)
                         }}

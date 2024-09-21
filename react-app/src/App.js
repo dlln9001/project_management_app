@@ -9,6 +9,7 @@ import Layout from './components/layout/Layout'
 import { CreateWorkspaceItemProvider } from './contexts/CreateWorkspaceItemContext'
 import Board from './components/board/Board'
 import BoardDeleted from './components/board/BoardDeleted'
+import { BoardValuesProvider } from './contexts/BoardValuesContext'
 
 const CLIENT_ID = process.env.REACT_APP_GOOGLE_OAUTH2_CLIENT_ID
 
@@ -23,8 +24,8 @@ function App() {
             <Route path='create-account' element={<SignupCreateAccount />} />
             <Route element={<Layout />}>
               <Route path='home' element={<Home />} />
-              <Route path='board' element={<Board />}/>
-              <Route path='board-deleted' element={<BoardDeleted/>}/>
+                <Route path='board' element={<BoardValuesProvider> <Board /> </BoardValuesProvider>}/>
+                <Route path='board-deleted' element={<BoardValuesProvider> <BoardDeleted/> </BoardValuesProvider>}/>
             </Route>
           </Routes>
         </BrowserRouter>

@@ -1,8 +1,11 @@
 import { useState, useRef, useEffect } from "react"
 import { BsThreeDots } from "react-icons/bs";
 import { FiTrash } from "react-icons/fi";
+import { useBoardValues } from "../../../contexts/BoardValuesContext";
+
 
 function GroupOptions(props) {
+    const boardValues = useBoardValues()
     const [showGroupOptions, setShowGroupOptions] = useState(false)
     const [groupOptionsId, setGroupOptionsId] = useState('') // id of the group
     const groupOptionsRef = useRef('')
@@ -16,7 +19,7 @@ function GroupOptions(props) {
         if (groupOptionsRef.current && !groupOptionsRef.current.contains(e.target)) {
             setShowGroupOptions(false)
             setGroupOptionsId('')
-            props.setRenderGroups(!props.renderGroups)
+            boardValues.setRenderGroups(!boardValues.renderGroups)
         }
     }
 
@@ -33,7 +36,7 @@ function GroupOptions(props) {
             })
         })
         .then(res => res.json())
-        .then(data => props.setRenderComponent(!props.renderComponent))
+        .then(data => boardValues.setRenderComponent(!boardValues.renderComponent))
     }
 
     return (
@@ -42,7 +45,7 @@ function GroupOptions(props) {
             onClick={() => {
                setShowGroupOptions(true)
                setGroupOptionsId(props.groupId)
-               props.setRenderGroups(!props.renderGroups)
+               boardValues.setRenderGroups(!boardValues.renderGroups)
            }}>
            <BsThreeDots />
 

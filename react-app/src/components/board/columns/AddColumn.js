@@ -1,8 +1,11 @@
 import { useState, useRef, useEffect } from "react";
 import { IoIosAdd } from "react-icons/io";
 import { GoTriangleDown } from "react-icons/go";
+import { useBoardValues } from "../../../contexts/BoardValuesContext";
 
 function AddColumn(props) {
+    const boardValues = useBoardValues()
+
     const [showAddColumn, setShowAddColumn] = useState(false)
     const [addColumnsId, setAddColumnsId] = useState('')
     const addColumnsRef = useRef('')
@@ -15,7 +18,7 @@ function AddColumn(props) {
         if (addColumnsRef.current && !addColumnsRef.current.contains(e.target)) {
             setShowAddColumn(false)
             setAddColumnsId('')
-            props.setRenderGroups(!props.renderGroups)
+            boardValues.setRenderGroups(!boardValues.renderGroups)
         }
     }
 
@@ -35,7 +38,7 @@ function AddColumn(props) {
         .then(data => {
             setShowAddColumn(false)
             setAddColumnsId('')
-            props.setRenderComponent(!props.renderComponent)
+            boardValues.setRenderComponent(!boardValues.renderComponent)
         })
     }
 
@@ -44,7 +47,7 @@ function AddColumn(props) {
             onClick={() => {
                 setShowAddColumn(true)
                 setAddColumnsId(props.groupId)
-                props.setRenderGroups(!props.renderGroups)
+                boardValues.setRenderGroups(!boardValues.renderGroups)
             }}>
             {(showAddColumn && addColumnsId === props.groupId) && 
                 // this is the menu to add different columns
