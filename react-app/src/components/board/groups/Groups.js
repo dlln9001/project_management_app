@@ -1,12 +1,12 @@
 import { useEffect, useState, useRef } from "react"
 import GroupOptions from "./GroupOptions";
 import Items from "../items/Items";
-import { FaCheck } from "react-icons/fa6";
 import { FiTrash } from "react-icons/fi";
 import { BsThreeDots } from "react-icons/bs";
 import AddColumn from "../columns/AddColumn"
 import GroupNameInput from "./GroupNameInput";
 import GroupAddItem from "./GroupAddItem";
+import GroupSelectAllItems from "./GroupsSelectAllItems";
 import { useBoardValues } from "../../../contexts/BoardValuesContext";
 
 
@@ -158,20 +158,13 @@ function Groups(props) {
                                             currentGroupsItems={currentGroupsItems} boardId={props.boardId}/>
 
                         </div>
+                        
                         <div className="border border-slate-300 rounded-md border-r-0 border-l-0 rounded-r-none">
                             <div className="w-full flex bg-white">
 
                                 <div className={`${currentGroup.color} min-w-[6px] justify-self-start rounded-tl-md`}></div>
 
-                                <div className="p-2 flex items-center border-r border-r-slate-300">
-                                    <div className={`w-4 h-4 border border-slate-300 hover:border-slate-600 cursor-pointer rounded-sm 
-                                        ${boardValues.groupsAllSelected.includes(groupId) ? `bg-sky-600` : `bg-white`}`} 
-                                        onClick={() => selectAllItems(groupId)}>
-                                            { boardValues.groupsAllSelected.includes(groupId) && 
-                                                <FaCheck color="white" className="h-4/5 w-4/5 mx-auto my-[1px]"/>
-                                            }
-                                    </div>
-                                </div>
+                                <GroupSelectAllItems groupId={groupId}/>
 
                                 <div className="min-w-[33%] px-2 border-r border-r-slate-300 flex items-center justify-center">
                                     <p className="text-sm text-slate-600 self-center  text-center">Item</p>
@@ -210,58 +203,6 @@ function Groups(props) {
                 inputRefs.current[index].style.width = `${measureInputRefs.current[index].offsetWidth + 5}px`
             }
         }
-    
-        function selectAllItems(groupId) {
-            let amountSelected = 0
-            for (let i=0; i < groupsData.itemsInfo.length; i++) {
-                // go through items, if they match the group that was clicked to select all items, they'll be added to selected items
-                if (groupsData.itemsInfo[i].length != 0 && groupsData.itemsInfo[i][0].group === groupId) {
-                    let allItemsSelected = true
-                    let itemsInTheGroup = []
-                    for (let j=0; j<groupsData.itemsInfo[i].length; j++) {
-                        itemsInTheGroup.push(groupsData.itemsInfo[i][j].id)
-                        if (!boardValues.itemSelected.includes(groupsData.itemsInfo[i][j].id)) {
-                            boardValues.setItemSelected(oldArr => [...oldArr, groupsData.itemsInfo[i][j].id])
-                            amountSelected += 1
-                            allItemsSelected = false
-                        }
-                    }
-                    // if in the group, all the items were already selected, deselect all of the items
-                    if (allItemsSelected) {
-                        let tempItemSelected = boardValues.itemSelected
-                        // so we don't have issues with the for loop while removing elements
-                        let newItemSelected = []
-    
-                        let groupIndex = boardValues.groupsAllSelected.indexOf(groupId)
-                        let tempGroupsAllSelected = [...boardValues.groupsAllSelected]
-    
-                        tempGroupsAllSelected.splice(groupIndex, 1)
-                        boardValues.setGroupsAllSelected(tempGroupsAllSelected)
-    
-                        for (let k=0; k<tempItemSelected.length; k++) {
-                            if (!itemsInTheGroup.includes(tempItemSelected[k])) {
-                                newItemSelected.push(tempItemSelected[k])
-                            }
-                            else {
-                                amountSelected -= 1
-                            }
-                        }
-    
-                        boardValues.setItemSelected(newItemSelected)
-                        boardValues.setIsItemSelected(false)
-                    }
-    
-                    else {
-                        boardValues.setGroupsAllSelected(oldArr => [...oldArr, groupId])
-                        boardValues.setIsItemSelected(true)
-                    }
-                    boardValues.setRenderGroups(!boardValues.renderGroups)
-                    boardValues.setNumberOfItemsSelected(boardValues.itemSelected.length + amountSelected)
-                    return
-                }
-            }
-        }
-
         
         function deleteColumn(columnId) {
             fetch('http://127.0.0.1:8000/board/delete-column/', {
