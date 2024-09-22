@@ -6,6 +6,7 @@ import { FiTrash } from "react-icons/fi";
 import { BsThreeDots } from "react-icons/bs";
 import AddColumn from "../columns/AddColumn"
 import GroupNameInput from "./GroupNameInput";
+import GroupAddItem from "./GroupAddItem";
 import { useBoardValues } from "../../../contexts/BoardValuesContext";
 
 
@@ -46,9 +47,6 @@ function Groups(props) {
     let groupsData = boardValues.groupsData
     const [groupHtml, setGroupHtml] = useState('')
 
-    const [addItemContent, setAddItemContent] = useState('')
-    const [focusedAddItem, setFocusedAddItem] = useState('')
-
     const [columnOptionsSelectedId, setColumnOptionsSelectedId] = useState('')
     const columnOptionsSelectedRef = useRef('')
     const columnNameRefs = useRef([])
@@ -63,7 +61,6 @@ function Groups(props) {
     }, [])
 
     function handleDocumentClick(e) {
-
         if (columnOptionsSelectedRef.current && !columnOptionsSelectedRef.current.contains(e.target)) {
             setColumnOptionsSelectedId('')
             boardValues.setRenderGroups(!boardValues.renderGroups)
@@ -190,24 +187,7 @@ function Groups(props) {
 
                                 <Items i={i} currentGroup={currentGroup} userToken={props.userToken}/>
 
-                            {/* Add Item */}
-                            <div className={`flex`}>
-                                <div className={`${currentGroup.color} w-[6px] justify-self-start rounded-bl-md opacity-50`}></div>
-                                <div className="p-2 flex items-center border-r border-r-slate-300 border-t border-t-slate-300">
-                                    <div className="w-4 h-4 border border-slate-200 rounded-sm"></div>
-                                </div>
-                                <div className="w-full flex items-center pl-2 border-t border-t-slate-300">
-                                    <input type="text" placeholder="+ Add item"   
-                                    className="w-1/5 border border-white text-sm pl-5 focus:outline-none hover:border-slate-200 hover:border rounded-sm
-                                    focus:border-sky-600 text-slate-600 h-fit"
-                                    onFocus={() => addItemFocus(i)}
-                                    value={focusedAddItem === i ? addItemContent : ''}
-                                    onChange={(e) => changeFocusedAddItem(e.target.value)}
-                                    onBlur={() => createItem(groupId, addItemContent, setAddItemContent, props.boardId, props.userToken, boardValues.renderComponent, boardValues.setRenderComponent, boardValues.renderGroups, boardValues.setRenderGroups)}
-                                    onKeyDown={(e) => enterAddItem(e, groupId, addItemContent)}
-                                    /> 
-                                </div>
-                            </div>
+                                <GroupAddItem i={i} currentGroup={currentGroup} userToken={props.userToken} groupId={groupId} boardId={props.boardId}/>
                         </div>
                     </div>
                 )
@@ -268,34 +248,20 @@ function Groups(props) {
                         }
     
                         boardValues.setItemSelected(newItemSelected)
+                        boardValues.setIsItemSelected(false)
                     }
     
                     else {
-                    boardValues.setGroupsAllSelected(oldArr => [...oldArr, groupId])
+                        boardValues.setGroupsAllSelected(oldArr => [...oldArr, groupId])
+                        boardValues.setIsItemSelected(true)
                     }
                     boardValues.setRenderGroups(!boardValues.renderGroups)
-                    boardValues.setIsItemSelected(true)
                     boardValues.setNumberOfItemsSelected(boardValues.itemSelected.length + amountSelected)
                     return
                 }
             }
         }
-    
-        function enterAddItem(e, groupId, addItemContent) {
-            if (e.key === 'Enter') {
-                createItem(groupId, addItemContent, setAddItemContent, props.boardId, props.userToken, boardValues.renderComponent, boardValues.setRenderComponent, boardValues.renderGroups, boardValues.setRenderGroups)
-            }
-        }
-    
-        function changeFocusedAddItem(value) {
-            setAddItemContent(value)
-            boardValues.setRenderGroups(!boardValues.renderGroups)
-        }
-    
-        function addItemFocus(i) {
-            setFocusedAddItem(i)
-            boardValues.setRenderGroups(!boardValues.renderGroups)
-        }
+
         
         function deleteColumn(columnId) {
             fetch('http://127.0.0.1:8000/board/delete-column/', {
