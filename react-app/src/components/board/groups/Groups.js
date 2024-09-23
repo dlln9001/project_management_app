@@ -1,13 +1,12 @@
 import { useEffect, useState, useRef } from "react"
 import GroupOptions from "./GroupOptions";
 import Items from "../items/Items";
-import { FiTrash } from "react-icons/fi";
-import { BsThreeDots } from "react-icons/bs";
 import AddColumn from "../columns/AddColumn"
 import GroupNameInput from "./GroupNameInput";
 import GroupAddItem from "./GroupAddItem";
 import GroupSelectAllItems from "./GroupsSelectAllItems";
 import { useBoardValues } from "../../../contexts/BoardValuesContext";
+import ColumnOptions from "../columns/ColumnOptions";
 
 
 export function createItem(groupId, addItemContent, setAddItemContent='', boardId, userToken, renderComponent, setRenderComponent, renderGroups, setRenderGroups) {
@@ -48,24 +47,12 @@ function Groups(props) {
     const [groupHtml, setGroupHtml] = useState('')
 
     const [columnOptionsSelectedId, setColumnOptionsSelectedId] = useState('')
-    const columnOptionsSelectedRef = useRef('')
     const columnNameRefs = useRef([])
     const measureColumnNamesRefs = useRef([])
     const [columnEditingName, setColumnEditingName] = useState('')
     const [columnNameEdited, setColumnNameEdited] = useState(false)
     const [columnNameEditedIndexes, setColumnNameEditedIndexes] = useState('')
     const [columnNameFocused, setColumnNameFocused] = useState(false)
-
-    useEffect(() => {
-        document.addEventListener('click', handleDocumentClick)
-    }, [])
-
-    function handleDocumentClick(e) {
-        if (columnOptionsSelectedRef.current && !columnOptionsSelectedRef.current.contains(e.target)) {
-            setColumnOptionsSelectedId('')
-            boardValues.setRenderGroups(!boardValues.renderGroups)
-        }
-    }
 
      // renders all the groups in a separate use effect than the fetch
      useEffect(() => {
@@ -81,6 +68,7 @@ function Groups(props) {
                 // set the column type html. In the group for loop so it can know which group it is on to open column options on the right group
                 let columnHtml = []
                 for (let j=0; j<groupsData.columnsInfo.length; j++) {
+                    // j is each column
                     columnHtml.push(
                         <div key={j} className={`min-w-36 text-sm border-r border-r-slate-300 flex justify-center items-center text-slate-600  relative group max-w-20
                             ${(columnOptionsSelectedId[0] === groupsData.columnsInfo[j].id && columnOptionsSelectedId[1] === i)
@@ -122,26 +110,12 @@ function Groups(props) {
                                 ref={(el) => el && columnNameRefs.current.push(el)}/>
                             </div>
                              <span ref={(el) => el && measureColumnNamesRefs.current.push(el)} className="text-lg p-1 px-2 invisible absolute min-w-3"></span>
+                             
                              {!columnNameFocused && 
-                                <div className={`absolute right-0 mr-2  p-1 rounded-[4px] cursor-pointer  
-                                    ${(columnOptionsSelectedId[0] === groupsData.columnsInfo[j].id && columnOptionsSelectedId[1] === i) 
-                                        ? `text-slate-600 bg-sky-100` 
-                                        : `group-hover:text-inherit hover:bg-slate-200 text-white`}`}
-                                    onClick={() => {
-                                    setColumnOptionsSelectedId([groupsData.columnsInfo[j].id, i])
-                                    boardValues.setRenderGroups(!boardValues.renderGroups)
-                                }}>
-                                    <BsThreeDots />
-                                {(columnOptionsSelectedId[0] === groupsData.columnsInfo[j].id && columnOptionsSelectedId[1]) === i &&
-                                    <div ref={columnOptionsSelectedRef} className="absolute bg-white shadow-all-sides rounded-md w-48 z-10 left-7 top-0 text-slate-700">
-                                        <div className="flex px-2 py-1 hover:bg-slate-100 m-2 rounded-md cursor-pointer" onClick={() => deleteColumn(groupsData.columnsInfo[j].id)}>
-                                            <FiTrash className="mx-2 my-1"/>
-                                            <p>Delete</p>
-                                        </div>
-                                    </div>
-                                }
-                                </div>
+                                <ColumnOptions i={i} j={j} userToken={props.userToken} boardId={props.boardId}
+                                               columnOptionsSelectedId={columnOptionsSelectedId} setColumnOptionsSelectedId={setColumnOptionsSelectedId}/>
                              }
+
                         </div>
                     )
 
@@ -158,7 +132,7 @@ function Groups(props) {
                                             currentGroupsItems={currentGroupsItems} boardId={props.boardId}/>
 
                         </div>
-                        
+
                         <div className="border border-slate-300 rounded-md border-r-0 border-l-0 rounded-r-none">
                             <div className="w-full flex bg-white">
 
@@ -202,25 +176,6 @@ function Groups(props) {
                 measureInputRefs.current[index].textContent = inputRefs.current[index].value
                 inputRefs.current[index].style.width = `${measureInputRefs.current[index].offsetWidth + 5}px`
             }
-        }
-        
-        function deleteColumn(columnId) {
-            fetch('http://127.0.0.1:8000/board/delete-column/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Token ${props.userToken}`
-                },
-                body: JSON.stringify({
-                    column_id: columnId,
-                    board_id: props.boardId
-                })
-            })
-            .then(res => res.json())
-            .then(data => {
-                setColumnOptionsSelectedId('')
-                boardValues.setRenderComponent(!boardValues.renderComponent)
-            })
         }
     
         function editColumnName(columnName, columnId) {

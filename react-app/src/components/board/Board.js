@@ -136,7 +136,9 @@ function Board(props) {
                     <button onClick={() => createItemButton()} className="bg-sky-600 p-[6px] px-4 rounded-sm text-white text-sm hover:bg-sky-700 mt-5">New item</button>
                 </div>
                 <div>
+
                     <Groups userToken={userToken} boardId={boardId} />
+                    
                     <button className="flex gap-2 items-center border p-1 rounded-md px-2 border-slate-300 hover:bg-slate-100 mt-14" onClick={createGroup}>
                         <div> 
                             <AiOutlinePlus />
