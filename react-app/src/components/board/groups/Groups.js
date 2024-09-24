@@ -7,6 +7,7 @@ import GroupAddItem from "./GroupAddItem";
 import GroupSelectAllItems from "./GroupsSelectAllItems";
 import { useBoardValues } from "../../../contexts/BoardValuesContext";
 import ColumnOptions from "../columns/ColumnOptions";
+import ColumnNameInput from "../columns/ColumnNameInput";
 
 
 export function createItem(groupId, addItemContent, setAddItemContent='', boardId, userToken, renderComponent, setRenderComponent, renderGroups, setRenderGroups) {
@@ -47,11 +48,6 @@ function Groups(props) {
     const [groupHtml, setGroupHtml] = useState('')
 
     const [columnOptionsSelectedId, setColumnOptionsSelectedId] = useState('')
-    const columnNameRefs = useRef([])
-    const measureColumnNamesRefs = useRef([])
-    const [columnEditingName, setColumnEditingName] = useState('')
-    const [columnNameEdited, setColumnNameEdited] = useState(false)
-    const [columnNameEditedIndexes, setColumnNameEditedIndexes] = useState('')
     const [columnNameFocused, setColumnNameFocused] = useState(false)
 
      // renders all the groups in a separate use effect than the fetch
@@ -75,41 +71,8 @@ function Groups(props) {
                                 ? `bg-slate-100`
                                 : `hover:bg-slate-100`
                             }`}>
-                            <div className={`${(columnNameFocused && columnNameEditedIndexes[0] === groupsData.columnsInfo[j].id && columnNameEditedIndexes[1] === i)
-                                    ? `border border-sky-600 w-10/12 mx-2`
-                                    : `hover:border-slate-400 border border-white max-w-10/12`
-                                    }   bg-white max-w-10/12 w-7/12`}>
-                                <input type="text" 
-                                className={` focus:outline-none max-w-full text-center focus:text-start text-ellipsis`}
-                                value={(columnNameEdited && columnNameEditedIndexes[0] === groupsData.columnsInfo[j].id && columnNameEditedIndexes[1] === i)
-                                ? columnEditingName 
-                                : groupsData.columnsInfo[j].name
-                                } 
-                                onChange={(e) => {
-                                        setColumnEditingName(e.target.value)
-                                        setColumnNameEdited(true)
-                                        boardValues.setRenderGroups(!boardValues.renderGroups)
-                                    }}
-                                onFocus={() => {
-                                    setColumnNameFocused(true)
-                                    setColumnNameEditedIndexes([groupsData.columnsInfo[j].id, i])
-                                    boardValues.setRenderGroups(!boardValues.renderGroups)
-                                }}
-                                onBlur={(e) => {
-                                    setColumnNameFocused(false)
-                                    setColumnNameEditedIndexes([])
-                                    editColumnName(e.target.value, groupsData.columnsInfo[j].id)
-                                    boardValues.setRenderGroups(!boardValues.renderGroups)
-                                }}
-                                onKeyDown={(e) => {
-                                    if(e.key === 'Enter') {
-                                        e.target.blur()
-                                        editColumnName(e.target.value, groupsData.columnsInfo[j].id)
-                                    }
-                                }}
-                                ref={(el) => el && columnNameRefs.current.push(el)}/>
-                            </div>
-                             <span ref={(el) => el && measureColumnNamesRefs.current.push(el)} className="text-lg p-1 px-2 invisible absolute min-w-3"></span>
+                            <ColumnNameInput i={i} j={j} userToken={props.userToken} columnNameFocused={columnNameFocused} setColumnNameFocused={setColumnNameFocused}/>
+
                              
                              {!columnNameFocused && 
                                 <ColumnOptions i={i} j={j} userToken={props.userToken} boardId={props.boardId}
@@ -118,9 +81,8 @@ function Groups(props) {
 
                         </div>
                     )
-
-                    resizeInput(i, columnNameRefs, measureColumnNamesRefs)
                 }
+
 
                 tempGroupHtml.push(
                     <div key={i} className="mt-10">
@@ -165,34 +127,8 @@ function Groups(props) {
                 boardValues.setRenderGroups(!boardValues.renderGroups)
                 boardValues.setReloadGroupsInitial(false)
             }
-
-            columnNameRefs.current = []
-            measureColumnNamesRefs.current = []
         }
     }, [boardValues.renderGroups])   
-    
-        function resizeInput(index, inputRefs, measureInputRefs) {
-            if (inputRefs.current[index] && measureInputRefs.current[index]) {
-                measureInputRefs.current[index].textContent = inputRefs.current[index].value
-                inputRefs.current[index].style.width = `${measureInputRefs.current[index].offsetWidth + 5}px`
-            }
-        }
-    
-        function editColumnName(columnName, columnId) {
-            fetch('http://127.0.0.1:8000/board/edit-column-name/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Token ${props.userToken}`
-                },
-                body: JSON.stringify({
-                    column_id: columnId,
-                    column_name: columnName
-                })
-            })
-            .then(res => res.json())
-            .then(data => boardValues.setRenderComponent(!boardValues.renderComponent))
-        }
 
     return (
         <>
