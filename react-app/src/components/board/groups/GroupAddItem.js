@@ -1,6 +1,34 @@
 import { useState } from "react"
 import { useBoardValues } from "../../../contexts/BoardValuesContext"
-import { createItem } from "./Groups"
+
+export function createItem(groupId, addItemContent, setAddItemContent='', boardId, userToken, renderComponent, setRenderComponent, renderGroups, setRenderGroups) {
+    if (addItemContent) {
+        fetch('http://127.0.0.1:8000/board/create-item/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${userToken}`
+            },
+            body: JSON.stringify({
+                group_id: groupId,
+                name: addItemContent,
+                board_id: boardId
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status != 'success') {
+                console.log(data)
+            }
+            setRenderComponent(!renderComponent)
+        })
+    }
+    if (setAddItemContent) {
+        setAddItemContent('')
+    }
+    setRenderGroups(!renderGroups)
+
+}
 
 function GroupAddItem(props) {
     const boardValues = useBoardValues()

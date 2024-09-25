@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { useOutletContext } from "react-router-dom";
 import BoardInfo from "./BoardInfo";
 import Groups from "./groups/Groups";
-import {createItem} from "./groups/Groups"
+import { createItem } from "./groups/GroupAddItem";
 import { useBoardValues } from "../../contexts/BoardValuesContext";
 import { useLocation } from "react-router-dom";
 import { AiOutlinePlus } from "react-icons/ai";
