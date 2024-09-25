@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react"
-import { FaCheck } from "react-icons/fa6";
 import { GoTriangleUp } from "react-icons/go";
 import { useBoardValues } from "../../../contexts/BoardValuesContext";
+import SelectItem from "./SelectItem";
 
 function Items(props) {
     const boardValues = useBoardValues()
@@ -71,18 +71,9 @@ function Items(props) {
 
                 itemHtml.push(
                     <div key={j} className=" w-full text-sm text-slate-600 hover:bg-slate-100 flex">
-                            {/* here allows for selecting icons */}
-                            <div className={`${props.currentGroup.color} w-[6px] justify-self-start min-w-[6px]`}></div>
-                            <div className="p-2 flex items-center border-r border-r-slate-300 border-t border-t-slate-300">
-                                <div className={`w-4 h-4 border  cursor-pointer rounded-sm
-                                    ${boardValues.itemSelected.includes(groupsData.itemsInfo[i][j].id) ? `bg-sky-600 hover:bg-sky-700` : `bg-white border-slate-300 hover:border-slate-600`}`}
-                                    onClick={() => handleItemSelect(i, j)}
-                                >
-                                    {boardValues.itemSelected.includes(groupsData.itemsInfo[i][j].id) && 
-                                        <FaCheck color="white" className="h-4/5 w-4/5 mx-auto my-[1px]"/>
-                                    }
-                                </div>
-                            </div>
+                        {/* the box that allows for selecting icons */}
+                        <SelectItem i={i} j={j} currentGroup={props.currentGroup}/>
+
                         {/* this is where the user inputs the item content */}
                         <div className="px-2 border-t flex border-t-slate-300 min-w-[33%] border-r border-r-slate-300">
                             <input type="text" 
@@ -138,37 +129,6 @@ function Items(props) {
             boardValues.setRenderComponent(!boardValues.renderComponent)
         })
     }
-
-    function handleItemSelect(groupIndex, itemIndex) {
-        let tempItemSelected = [...boardValues.itemSelected]
-        let itemId = groupsData.itemsInfo[groupIndex][itemIndex].id
-        if (tempItemSelected.includes(itemId)) {
-            for (let i=0; i<tempItemSelected.length; i++) {
-                if (tempItemSelected[i] === itemId) {
-                    tempItemSelected.splice(i, 1)
-                }
-            }
-            if (tempItemSelected.length === 0) {
-                boardValues.setIsItemSelected(false)
-            }
-            // removes the group so it doesn't show the entire group is selected anymore, if it was.
-            let groupId = groupsData.itemsInfo[groupIndex][itemIndex].group
-            if (boardValues.groupsAllSelected.includes(groupId)) {
-                let index = boardValues.groupsAllSelected.indexOf(groupId)
-                boardValues.groupsAllSelected.splice(index, 1)
-            }
-            boardValues.setNumberOfItemsSelected(tempItemSelected.length)
-            boardValues.setItemSelected(tempItemSelected)
-        }
-        else {
-            boardValues.setNumberOfItemsSelected(boardValues.itemSelected.length + 1)
-            boardValues.setItemSelected(oldArr => [...oldArr, itemId])
-            boardValues.setIsItemSelected(true)
-        }
-        boardValues.setRenderGroups(!boardValues.renderGroups)
-
-    }
-
 
     function editItem(itemContent, itemId) {
         fetch('http://127.0.0.1:8000/board/edit-item/', {
