@@ -43,7 +43,10 @@ function GroupSelectAllItems(props) {
                     }
 
                     boardValues.setItemSelected(newItemSelected)
-                    boardValues.setIsItemSelected(false)
+                    console.log(newItemSelected, tempGroupsAllSelected)
+                    if (newItemSelected.length === 0) {
+                        boardValues.setIsItemSelected(false)
+                    }
                 }
 
                 else {
