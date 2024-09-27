@@ -33,10 +33,10 @@ function SelectItem(props) {
         boardValues.setRenderGroups(!boardValues.renderGroups)
 
     }
-
+    
     return (
     <>
-        {boardValues.groupsData.itemsInfo[props.i][props.j] &&
+        {(boardValues.groupsData.itemsInfo[props.i]?.[props.j]) &&
         <>
         <div className={`${props.currentGroup.color} w-[6px] justify-self-start min-w-[6px]`}></div>
         <div className="p-2 flex items-center border-r border-r-slate-300 border-t border-t-slate-300">

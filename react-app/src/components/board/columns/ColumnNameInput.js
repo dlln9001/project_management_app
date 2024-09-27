@@ -1,4 +1,4 @@
-import { useState } from "react"
+import React, { useState } from "react"
 import { useBoardValues } from "../../../contexts/BoardValuesContext"
 
 function ColumnNameInput(props) {
@@ -30,11 +30,12 @@ function ColumnNameInput(props) {
         <>
         {boardValues.groupsData.columnsInfo[props.j] && 
         <>
-        <div className={`${(props.columnNameFocused && columnNameEditedIndexes[0] === boardValues.groupsData.columnsInfo[props.j].id && columnNameEditedIndexes[1] === i)
+        <div 
+            className={`${(props.columnNameFocused && columnNameEditedIndexes[0] === boardValues.groupsData.columnsInfo[props.j].id && columnNameEditedIndexes[1] === i)
             ? `border border-sky-600 w-10/12 mx-2`
             : `hover:border-slate-400 border border-white max-w-10/12`
             }   bg-white max-w-10/12 w-7/12`}>
-            <input type="text" 
+            <input type="text" data-testid='column-name-input'
             className={` focus:outline-none max-w-full text-center focus:text-start text-ellipsis`}
             value={(columnNameEdited && columnNameEditedIndexes[0] === boardValues.groupsData.columnsInfo[props.j].id && columnNameEditedIndexes[1] === i)
             ? columnEditingName 

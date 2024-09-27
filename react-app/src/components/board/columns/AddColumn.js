@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { IoIosAdd } from "react-icons/io";
 import { GoTriangleDown } from "react-icons/go";
 import { useBoardValues } from "../../../contexts/BoardValuesContext";
@@ -43,7 +43,7 @@ function AddColumn(props) {
     }
 
     return (
-        <div className="text-2xl flex items-center justify-center mx-1 h-fit self-center group relative" ref={addColumnsRef}
+        <div className="text-2xl flex items-center justify-center mx-1 h-fit self-center group relative" ref={addColumnsRef} data-testid="add-column-button"
             onClick={() => {
                 setShowAddColumn(true)
                 setAddColumnsId(props.groupId)

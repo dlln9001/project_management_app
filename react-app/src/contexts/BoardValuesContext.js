@@ -1,6 +1,6 @@
-import { useState, useContext, createContext, useRef } from "react";
+import React, { useState, useContext, createContext, useRef } from "react";
 
-const BoardValuesContext = createContext()
+export const BoardValuesContext = createContext()
 
 
 export function BoardValuesProvider( {children} ) {

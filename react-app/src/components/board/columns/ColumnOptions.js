@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useBoardValues } from "../../../contexts/BoardValuesContext"
 import { FiTrash } from "react-icons/fi";
 import { BsThreeDots } from "react-icons/bs";
@@ -42,7 +42,8 @@ function ColumnOptions(props) {
     return (
         <>
         {boardValues.groupsData.columnsInfo[props.j] &&
-            <div className={`absolute right-0 mr-2  p-1 rounded-[4px] cursor-pointer  
+            <div data-testid="open-column-options"
+                className={`absolute right-0 mr-2  p-1 rounded-[4px] cursor-pointer  
                 ${(props.columnOptionsSelectedId[0] === boardValues.groupsData.columnsInfo[props.j].id && props.columnOptionsSelectedId[1] === i) 
                     ? `text-slate-600 bg-sky-100` 
                     : `group-hover:text-inherit hover:bg-slate-200 text-white`}`}
