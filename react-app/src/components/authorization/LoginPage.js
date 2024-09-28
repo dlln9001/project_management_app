@@ -46,9 +46,10 @@ function LoginPage() {
                     <div className="flex flex-col items-start w-full gap-4">
                         <div className="flex items-center w-full justify-end">
                             <p className=" mr-5">Email</p>
-                            <input type="email" className=" border border-slate-300 p-2 rounded-md w-2/3 focus:outline-none focus:border-slate-500"
+                            <input type="email" className=" border border-slate-300 p-2 rounded-md w-2/3 focus:outline-none focus:border-slate-500" 
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
+                            data-testid='login-email'
                             />
                         </div>
                         <div className="flex items-center w-full justify-end">
@@ -56,7 +57,7 @@ function LoginPage() {
                             <input type="password" className=" border border-slate-300 p-2 rounded-md w-2/3 focus:outline-none focus:border-slate-500"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            />
+                            data-testid='login-password'/>
                         </div>
                     </div>
                     <button className=" bg-sky-600 text-white content-end rounded-md p-2 text-lg hover:bg-sky-700 mb-7 w-2/3" onClick={login}>Log in</button>

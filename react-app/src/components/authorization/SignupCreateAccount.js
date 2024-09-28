@@ -45,7 +45,8 @@ function SignupCreateAccount() {
             body: JSON.stringify({
                 name: fullName,
                 password: password,
-                username: email
+                username: email,
+                email: email
             })
         })
         .then(res => res.json())
