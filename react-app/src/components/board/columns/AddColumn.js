@@ -9,9 +9,29 @@ function AddColumn(props) {
     const [showAddColumn, setShowAddColumn] = useState(false)
     const [addColumnsId, setAddColumnsId] = useState('')
     const addColumnsRef = useRef('')
+    const [columnOptionsHtml, setColumnOptionsHtml] = useState('')
+    const columnOptions = ['Status', 'Priority']
 
     useEffect(() => {
         document.addEventListener('click', handleDocumentClick)
+
+        let tempColumnOptionsHtml = []
+        for (let i=0; i < columnOptions.length; i++) {
+            const lowerCase = columnOptions[i].toLowerCase()
+            tempColumnOptionsHtml.push(
+                <div key={i} className="hover:bg-slate-100 rounded-md p-2 cursor-pointer flex items-center gap-2"
+                    onClick={() => addColumn(columnOptions[i])}>
+                    <img src={process.env.PUBLIC_URL + `images/columns/${lowerCase}Column.png`} alt="" className="w-[7%] h-fit rounded-sm" />
+                    <p>{columnOptions[i]}</p>
+                </div>
+            )
+        }
+        setColumnOptionsHtml(tempColumnOptionsHtml)
+
+        return () => {
+            document.removeEventListener('click', handleDocumentClick);
+        }
+
     }, [])
 
     function handleDocumentClick(e) {
@@ -38,7 +58,7 @@ function AddColumn(props) {
         .then(data => {
             setShowAddColumn(false)
             setAddColumnsId('')
-            boardValues.setRenderComponent(!boardValues.renderComponent)
+            boardValues.setRenderComponent(prev => !prev)
         })
     }
 
@@ -51,15 +71,11 @@ function AddColumn(props) {
             }}>
             {(showAddColumn && addColumnsId === props.groupId) && 
                 // this is the menu to add different columns
-                <div className="absolute text-sm w-80 bg-white shadow-all-sides p-6 rounded-md right-[26px] top-0 z-10"
-                    >
+                <div className="absolute text-sm w-80 bg-white shadow-all-sides p-6 rounded-md right-[26px] top-0 z-10">
                     <p className="text-slate-500 mb-1 p-1">Essentials</p>
-                    <div className="hover:bg-slate-100 rounded-md p-2 cursor-pointer flex items-center gap-2"
-                        onClick={() => addColumn('Status')}>
-                        <img src={process.env.PUBLIC_URL + 'images/statusColumn.png'} alt="" className="w-[7%] h-fit rounded-sm" />
-                        <p>Status</p>
-                    </div>
+                    {columnOptionsHtml}
                 </div>
+                
             }
             <IoIosAdd className={`hover:bg-slate-100   rounded-sm cursor-pointer peer 
                     ${(showAddColumn && addColumnsId === props.groupId) ? `bg-slate-100 text-sky-600` : `text-slate-500 hover:text-slate-700`}`}/>

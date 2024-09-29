@@ -4,13 +4,61 @@ import { GoTriangleUp } from "react-icons/go";
 
 function LabelColumn(props) {
     const boardValues = useBoardValues()
+    const columnValueId = props.columnValues[props.k].id
 
     const [setColumnValueItemId, setSetColumnValueItemId] = useState('')
     const setColumnValueRef = useRef('')
 
+    const [statusColumnValuesHtml, setStatusColumnValuesHtml] = useState('')
+    const statusColumnValues = [{id: columnValueId, text: 'Done', color: 'bg-green-500'}, {id: columnValueId, text: 'Working on it', color: 'bg-orange-300'}, 
+                                {id: columnValueId, text: 'Stuck', color: 'bg-red-500'},{id: columnValueId, text: '', color: 'bg-neutral-400'},
+                                ]
+    
+    const [priorityColumnValuesHtml, setPriorityColumnValuesHtml] = useState('')
+    const priorityColumnValues = [{id: columnValueId, text: 'Critical ⚠', color: 'bg-slate-800'}, {id: columnValueId, text: 'High', color: 'bg-violet-900'}, 
+                                {id: columnValueId, text: 'Medium', color: 'bg-indigo-500'},{id: columnValueId, text: 'low', color: 'bg-blue-400'},
+                                {id: columnValueId, text: '', color: 'bg-neutral-400'}
+                                ]
+    
+    // this is the column that the selected column value is associated with
+    const [associatedColumn, setAssociatedColumn] = useState('')
+
     useEffect(() => {
         document.addEventListener('click', handleDocumentClick)
     }, [])
+
+    useEffect(() => {
+
+        // set the status options
+        let tempStatusColumnValuesHtml = []
+        for (let i=0; i < statusColumnValues.length; i++) {
+            tempStatusColumnValuesHtml.push(
+                <div key={i} className={`w-full ${statusColumnValues[i].color} text-white p-[6px] rounded-sm cursor-pointer min-h-8 hover:opacity-90`} 
+                onClick={() => editColumnValue(statusColumnValues[i].id, statusColumnValues[i].color, statusColumnValues[i].text)}>{statusColumnValues[i].text}</div>
+            )
+        }
+        setStatusColumnValuesHtml(tempStatusColumnValuesHtml)
+
+        // set the priority options
+        let tempPriorityColumnValuesHtml = []
+        for (let i=0; i < priorityColumnValues.length; i++) {
+            tempPriorityColumnValuesHtml.push(
+                <div key={i} className={`w-full ${priorityColumnValues[i].color} text-white p-[6px] rounded-sm cursor-pointer min-h-8 hover:opacity-90`} 
+                onClick={() => editColumnValue(priorityColumnValues[i].id, priorityColumnValues[i].color, priorityColumnValues[i].text)}>{priorityColumnValues[i].text}</div>
+            )
+        }
+        setPriorityColumnValuesHtml(tempPriorityColumnValuesHtml)
+
+
+        const associatedColumnId = props.columnValues[props.k].column
+        const columnsInfo = boardValues.groupsData.columnsInfo
+        for (let i=0; i < columnsInfo.length; i++) {
+            if (columnsInfo[i].id === associatedColumnId) {
+                setAssociatedColumn(columnsInfo[i])
+                break
+            }
+        }
+    }, [boardValues.renderComponent, boardValues.renderGroups])
 
     function handleDocumentClick(e) {
         if (setColumnValueRef.current && !setColumnValueRef.current.contains(e.target)) {
@@ -54,15 +102,18 @@ function LabelColumn(props) {
             {/* set labels menu */}
             {(setColumnValueItemId[0] === props.i && setColumnValueItemId[1] === props.j && setColumnValueItemId[2] === props.k) && 
                 <div className="absolute bg-white z-10 top-9 flex flex-col items-center p-6 w-48 shadow-all-sides rounded-md text-center gap-2 cursor-default">
-                    <GoTriangleUp className="absolute bottom-[189px] text-white text-3xl"/>
-                    <div className="w-full bg-green-500 text-white p-[6px] rounded-sm cursor-pointer" 
-                        onClick={() => editColumnValue(props.columnValues[props.k].id, 'bg-green-500', 'Done')}>Done</div>
-                    <div className="w-full bg-orange-300 text-white p-[6px] rounded-sm cursor-pointer"
-                        onClick={() => editColumnValue(props.columnValues[props.k].id, 'bg-orange-300', 'Working on it')}>Working on it</div>
-                    <div className="w-full bg-red-500 text-white p-[6px] rounded-sm cursor-pointer"
-                        onClick={() => editColumnValue(props.columnValues[props.k].id, 'bg-red-500', 'Stuck')}>Stuck</div>
-                    <div className="w-full bg-neutral-400 text-white p-[6px] rounded-sm min-h-[32px] cursor-pointer"
-                        onClick={() => editColumnValue(props.columnValues[props.k].id, 'bg-neutral-400', '')}></div>
+                    {associatedColumn.column_type === 'Status' && 
+                        <>
+                        <GoTriangleUp className="absolute bottom-[189px] text-white text-3xl"/>
+                        {statusColumnValuesHtml}
+                        </>
+                    }
+                    {associatedColumn.column_type === 'Priority' && 
+                        <>
+                        <GoTriangleUp className="absolute bottom-[229px] text-white text-3xl"/>
+                        {priorityColumnValuesHtml}
+                        </>
+                    }
                 </div>
             }
         </div>
