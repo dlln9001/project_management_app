@@ -16,6 +16,22 @@ module.exports = {
       },
     },
   },
-  plugins: [],  
+  plugins: [
+    function({ addUtilities }) {
+      const newUtilities = {
+        '.no-spinner': {
+          // Chrome, Safari, Edge
+          '&::-webkit-inner-spin-button, &::-webkit-outer-spin-button': {
+            '-webkit-appearance': 'none',
+            'margin': '0',
+          },
+          // Firefox
+          '-moz-appearance': 'textfield',
+        },
+      }
+
+      addUtilities(newUtilities, ['responsive', 'hover']);
+    }
+  ],  
 }
 

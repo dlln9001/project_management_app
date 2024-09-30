@@ -36,6 +36,7 @@ class ColumnValue(models.Model):
     value_color = models.CharField(max_length=255, null=True, blank=True, default='bg-neutral-400')
     value_date = models.DateField(null=True, blank=True) # for date values
     value_person = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True) # for person columns
+    value_number = models.DecimalField(max_digits=20, decimal_places=8, null=True, blank=True)
 
     class Meta:
         ordering = ['column__order']

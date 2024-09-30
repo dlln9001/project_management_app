@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react"
 import { useBoardValues } from "../../../contexts/BoardValuesContext";
 import SelectItem from "./SelectItem";
-import LabelColumn from "../columns/LabelColumn";
+import ItemColumnValue from "../columns/ItemColumnValue";
 
 function Items(props) {
     const boardValues = useBoardValues()
@@ -26,12 +26,12 @@ function Items(props) {
                 // set columnValues html for each item
                 for (let k=0; k<columnValues.length; k++) {
                     columnValuesHtml.push(
-                        <LabelColumn i={i} j={j} k={k} columnValues={columnValues} key={k} userToken={props.userToken}/>
+                        <ItemColumnValue i={i} j={j} k={k} columnValues={columnValues} key={k} userToken={props.userToken}/>
                     )
                 }
 
                 itemHtml.push(
-                    <div key={j} className=" w-full text-sm text-slate-600 hover:bg-slate-100 flex">
+                    <div key={j} className=" w-full text-sm text-slate-600 hover:bg-slate-100 flex max-h-[33px]">
                         {/* the box that allows for selecting icons */}
                         <SelectItem i={i} j={j} currentGroup={props.currentGroup}/>
 

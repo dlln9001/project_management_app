@@ -19,9 +19,6 @@ function LabelColumn(props) {
                                 {id: columnValueId, text: 'Medium', color: 'bg-indigo-500'},{id: columnValueId, text: 'low', color: 'bg-blue-400'},
                                 {id: columnValueId, text: '', color: 'bg-neutral-400'}
                                 ]
-    
-    // this is the column that the selected column value is associated with
-    const [associatedColumn, setAssociatedColumn] = useState('')
 
     useEffect(() => {
         document.addEventListener('click', handleDocumentClick)
@@ -34,7 +31,7 @@ function LabelColumn(props) {
         for (let i=0; i < statusColumnValues.length; i++) {
             tempStatusColumnValuesHtml.push(
                 <div key={i} className={`w-full ${statusColumnValues[i].color} text-white p-[6px] rounded-sm cursor-pointer min-h-8 hover:opacity-90`} 
-                onClick={() => editColumnValue(statusColumnValues[i].id, statusColumnValues[i].color, statusColumnValues[i].text)}>{statusColumnValues[i].text}</div>
+                onClick={() => editLabelColumn(statusColumnValues[i].id, statusColumnValues[i].color, statusColumnValues[i].text)}>{statusColumnValues[i].text}</div>
             )
         }
         setStatusColumnValuesHtml(tempStatusColumnValuesHtml)
@@ -44,20 +41,11 @@ function LabelColumn(props) {
         for (let i=0; i < priorityColumnValues.length; i++) {
             tempPriorityColumnValuesHtml.push(
                 <div key={i} className={`w-full ${priorityColumnValues[i].color} text-white p-[6px] rounded-sm cursor-pointer min-h-8 hover:opacity-90`} 
-                onClick={() => editColumnValue(priorityColumnValues[i].id, priorityColumnValues[i].color, priorityColumnValues[i].text)}>{priorityColumnValues[i].text}</div>
+                onClick={() => editLabelColumn(priorityColumnValues[i].id, priorityColumnValues[i].color, priorityColumnValues[i].text)}>{priorityColumnValues[i].text}</div>
             )
         }
         setPriorityColumnValuesHtml(tempPriorityColumnValuesHtml)
 
-
-        const associatedColumnId = props.columnValues[props.k].column
-        const columnsInfo = boardValues.groupsData.columnsInfo
-        for (let i=0; i < columnsInfo.length; i++) {
-            if (columnsInfo[i].id === associatedColumnId) {
-                setAssociatedColumn(columnsInfo[i])
-                break
-            }
-        }
     }, [boardValues.renderComponent, boardValues.renderGroups])
 
     function handleDocumentClick(e) {
@@ -67,8 +55,8 @@ function LabelColumn(props) {
         }
     }
 
-    function editColumnValue(columnValueId, color, text) {
-        fetch('http://127.0.0.1:8000/board/edit-column-value/', {
+    function editLabelColumn(columnValueId, color, text) {
+        fetch('http://127.0.0.1:8000/board/edit-label-column/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -102,13 +90,13 @@ function LabelColumn(props) {
             {/* set labels menu */}
             {(setColumnValueItemId[0] === props.i && setColumnValueItemId[1] === props.j && setColumnValueItemId[2] === props.k) && 
                 <div className="absolute bg-white z-10 top-9 flex flex-col items-center p-6 w-48 shadow-all-sides rounded-md text-center gap-2 cursor-default">
-                    {associatedColumn.column_type === 'Status' && 
+                    {props.associatedColumn.column_type === 'Status' && 
                         <>
                         <GoTriangleUp className="absolute bottom-[189px] text-white text-3xl"/>
                         {statusColumnValuesHtml}
                         </>
                     }
-                    {associatedColumn.column_type === 'Priority' && 
+                    {props.associatedColumn.column_type === 'Priority' && 
                         <>
                         <GoTriangleUp className="absolute bottom-[229px] text-white text-3xl"/>
                         {priorityColumnValuesHtml}

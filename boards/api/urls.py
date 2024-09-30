@@ -15,7 +15,8 @@ urlpatterns = [
     path('delete-group/', views.delete_group, name='delete-group'),
     path('edit-group-color/', views.edit_group_color, name='edit-group-color'),
     path('create-column/', views.create_column, name='create-column'),
-    path('edit-column-value/', views.edit_column_value, name='edit-column-value'),
+    path('edit-label-column/', views.edit_label_column, name='edit-column-value'),
+    path('edit-numbers-column/', views.edit_numbers_column, name='edit-numbers-column'),
     path('delete-column/', views.delete_column, name='delete-column'), 
     path('edit-column-name/', views.edit_column_name, name='edit-column-name')
 ]

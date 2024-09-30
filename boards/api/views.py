@@ -1,5 +1,6 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from rest_framework import status
 from ..models import Board
 from .serializers import BoardFullSerializer
 from ..models import Group
@@ -183,9 +184,17 @@ def edit_column_name(request):
 
 
 @api_view(['GET', 'POST'])
-def edit_column_value(request):
+def edit_label_column(request):
     column_value = ColumnValue.objects.get(id=request.data['column_value_id'])
     column_value.value_color = request.data['color']
     column_value.value_text = request.data['text']
     column_value.save()
     return Response({'status': 'success'})
+
+
+@api_view(['GET', 'POST'])
+def edit_numbers_column(request):
+    column_value = ColumnValue.objects.get(id=request.data['column_value_id'])
+    column_value.value_number = request.data['number_value']
+    column_value.save()
+    return Response({'status': 'success'}, status=status.HTTP_200_OK)
