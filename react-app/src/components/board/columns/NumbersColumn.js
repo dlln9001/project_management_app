@@ -28,7 +28,7 @@ function NumbersColumn(props) {
     return (
         <div className="min-w-36 border-t border-t-slate-300 border-r border-r-slate-300 flex justify-center items-center">
             <div className=" border border-transparent hover:border-slate-400 h-fit w-[90%] has-[:focus]:border-sky-600 relative group">
-                <input type="number" className="w-full focus:outline-none px-2 no-spinner text-center" 
+                <input type="number" className="w-full focus:outline-none px-2 no-spinner text-center peer" 
                 value={inputClicked ? numberInputValue : columnValueNumber}
                 ref={inputRef}
                 onChange={(e) => {
@@ -46,13 +46,12 @@ function NumbersColumn(props) {
                 onBlur={(e) => editNumbersColumn(e.target.value)} 
                 onKeyDown={(e) => {
                     if (e.key === 'Enter') {
-                        editNumbersColumn(e.target.value)
                         e.target.blur()
                     }
                 }}/>
                 {(!columnValueNumber && columnValueNumber != 0 && numberInputValue === '') &&
                     <img src={process.env.PUBLIC_URL + `images/numbersHover.png`} alt="" onClick={() => inputRef.current.focus()}
-                         className=" h-[75%] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 invisible group-hover:visible cursor-text" />
+                         className=" h-[75%] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 invisible group-hover:visible cursor-text peer-focus:invisible" />
                 }
             </div>
         </div>

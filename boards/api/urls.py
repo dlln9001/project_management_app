@@ -17,6 +17,7 @@ urlpatterns = [
     path('create-column/', views.create_column, name='create-column'),
     path('edit-label-column/', views.edit_label_column, name='edit-column-value'),
     path('edit-numbers-column/', views.edit_numbers_column, name='edit-numbers-column'),
+    path('edit-text-column/', views.edit_text_column, name='edit-text-column'),
     path('delete-column/', views.delete_column, name='delete-column'), 
     path('edit-column-name/', views.edit_column_name, name='edit-column-name')
 ]
