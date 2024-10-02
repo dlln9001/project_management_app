@@ -2,11 +2,9 @@ import React, { useEffect, useState, useRef } from "react";
 import { useOutletContext } from "react-router-dom";
 import BoardInfo from "./BoardInfo";
 import Groups from "./groups/Groups";
-import ItemSelectedMenu from "./items/ItemSelectedMenu";
 import { createItem } from "./groups/GroupAddItem";
 import { useBoardValues } from "../../contexts/BoardValuesContext";
 import { useLocation } from "react-router-dom";
-import { AiOutlinePlus } from "react-icons/ai";
 
 
 function Board(props) {
@@ -79,26 +77,6 @@ function Board(props) {
         }
     } 
 
-    function createGroup() {
-        fetch('http://127.0.0.1:8000/board/create-group/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${userToken}`,
-            },
-            body: JSON.stringify({
-                board_id: boardId,
-            })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (!data.status === 'success') {
-                console.log(data)
-            }
-            boardValues.setRenderComponent(!boardValues.renderComponent)
-        })
-    }
-
     function createItemButton() {
         let groupId = boardValues.groupsData.groupsInfo[0].id
         createItem(groupId, 'New item', '', boardId, userToken, boardValues.renderComponent, boardValues.setRenderComponent,boardValues.renderGroups, boardValues.setRenderGroups)
@@ -118,22 +96,11 @@ function Board(props) {
                     </div>
                     <button onClick={() => createItemButton()} className="bg-sky-600 p-[6px] px-4 rounded-sm text-white text-sm hover:bg-sky-700 mt-5">New item</button>
                 </div>
-                <div>
 
-                    <Groups userToken={userToken} boardId={boardId} />
+                <Groups userToken={userToken} boardId={boardId} />
                     
-                    <button className="flex gap-2 items-center border p-1 rounded-md px-2 border-slate-300 hover:bg-slate-100 mt-14" onClick={createGroup}>
-                        <div> 
-                            <AiOutlinePlus />
-                        </div>
-                        <p className="text-sm text-slate-600">Add new group</p>
-                    </button>
-                </div>
             </div>
-            {boardValues.isItemSelected && 
-                <ItemSelectedMenu userToken={userToken}/>
-            }
-            </div>
+        </div>
     )
 }
 

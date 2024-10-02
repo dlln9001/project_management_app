@@ -5,9 +5,11 @@ import AddColumn from "../columns/AddColumn"
 import GroupNameInput from "./GroupNameInput";
 import GroupAddItem from "./GroupAddItem";
 import GroupSelectAllItems from "./GroupsSelectAllItems";
-import { useBoardValues } from "../../../contexts/BoardValuesContext";
 import ColumnOptions from "../columns/ColumnOptions";
 import ColumnNameInput from "../columns/ColumnNameInput";
+import ItemSelectedMenu from "../items/ItemSelectedMenu";
+import { useBoardValues } from "../../../contexts/BoardValuesContext";
+import { AiOutlinePlus } from "react-icons/ai";
 
 
 function Groups(props) {
@@ -99,10 +101,41 @@ function Groups(props) {
         }
     }, [boardValues.renderGroups])   
 
+    function createGroup() {
+        fetch('http://127.0.0.1:8000/board/create-group/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${props.userToken}`,
+            },
+            body: JSON.stringify({
+                board_id: props.boardId,
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (!data.status === 'success') {
+                console.log(data)
+            }
+            boardValues.setRenderComponent(!boardValues.renderComponent)
+        })
+    }
+
     return (
         <>
             {groupHtml &&
                 groupHtml
+            }
+
+            <button className="flex gap-2 items-center border p-1 rounded-md px-2 border-slate-300 hover:bg-slate-100 mt-14" onClick={createGroup}>
+                <div> 
+                    <AiOutlinePlus />
+                </div>
+                <p className="text-sm text-slate-600">Add new group</p>
+            </button>
+            
+            {boardValues.isItemSelected && 
+                <ItemSelectedMenu userToken={props.userToken}/>
             }
         </>
     )
