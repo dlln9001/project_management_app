@@ -50,7 +50,7 @@ function NumbersColumn(props) {
                     }
                 }}/>
                 {(!columnValueNumber && columnValueNumber != 0 && numberInputValue === '') &&
-                    <img src={process.env.PUBLIC_URL + `images/numbersHover.png`} alt="" onClick={() => inputRef.current.focus()}
+                    <img src={process.env.PUBLIC_URL + `images/columns/hovers/numbersHover.png`} alt="" onClick={() => inputRef.current.focus()}
                          className=" h-[75%] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 invisible group-hover:visible cursor-text peer-focus:invisible" />
                 }
             </div>

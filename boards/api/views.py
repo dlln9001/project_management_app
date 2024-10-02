@@ -209,3 +209,11 @@ def edit_text_column(request):
     column_value.value_text = request.data['text_value']
     column_value.save()
     return Response({'status': 'success'}, status=status.HTTP_200_OK)
+
+
+@api_view(['GET', 'POST'])
+def edit_date_column(request):
+    column_value = ColumnValue.objects.get(id=request.data['column_value_id'])
+    column_value.value_date = request.data['selected_date']
+    column_value.save()
+    return Response({'status': 'success'}, status=status.HTTP_200_OK)

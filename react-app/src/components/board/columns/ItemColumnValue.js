@@ -3,6 +3,7 @@ import { useBoardValues } from "../../../contexts/BoardValuesContext"
 import LabelColumn from "./LabelColumn";
 import NumbersColumn from "./NumbersColumn";
 import TextColumn from "./TextColumn";
+import DateColumn from "./DateColumn";
 
 function ItemColumnValue(props) {
     const boardValues = useBoardValues()
@@ -31,6 +32,9 @@ function ItemColumnValue(props) {
             }
             {associatedColumn.column_type === 'Text' &&
                 <TextColumn userToken={props.userToken} k={props.k} columnValues={props.columnValues}/>
+            }
+            {associatedColumn.column_type === 'Date' &&
+                <DateColumn userToken={props.userToken} k={props.k} columnValues={props.columnValues}/>
             }
         </>
     )

@@ -10,7 +10,7 @@ function AddColumn(props) {
     const [addColumnsId, setAddColumnsId] = useState('')
     const addColumnsRef = useRef('')
     const [columnOptionsHtml, setColumnOptionsHtml] = useState('')
-    const columnOptions = ['Status', 'Priority', 'Text', 'Numbers']
+    const columnOptions = ['Status', 'Priority', 'Text', 'Numbers', 'Date']
 
     useEffect(() => {
         document.addEventListener('click', handleDocumentClick)

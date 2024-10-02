@@ -34,7 +34,7 @@ class ColumnValue(models.Model):
 
     value_text = models.CharField(max_length=255, null=True, blank=True, default='') # for text, like status, or priority
     value_color = models.CharField(max_length=255, null=True, blank=True, default='bg-neutral-400')
-    value_date = models.DateField(null=True, blank=True) # for date values
+    value_date = models.DateTimeField(null=True, blank=True) # for date values
     value_person = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True) # for person columns
     value_number = models.DecimalField(max_digits=20, decimal_places=8, null=True, blank=True)
 

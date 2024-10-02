@@ -49,7 +49,7 @@ function TextColumn(props) {
                 }
             }}/>
             {(!columnValueText && textInputValue === '') &&
-                <img src={process.env.PUBLIC_URL + `images/textHover.png`} alt="" onClick={() => inputRef.current.focus()}
+                <img src={process.env.PUBLIC_URL + `images/columns/hovers/textHover.png`} alt="" onClick={() => inputRef.current.focus()}
                      className=" h-[60%] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 invisible group-hover:visible cursor-text peer-focus:invisible" />
             }
         </div>
