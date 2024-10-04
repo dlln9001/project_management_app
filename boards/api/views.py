@@ -11,14 +11,18 @@ from ..models import Column
 from .serializers import ColumnSerializer
 from ..models import ColumnValue
 from .serializers import ColumnValueSerializer
+from ..models import BoardView
+from .serializers import BoardViewSerializer
 
 
 @api_view(['GET', 'POST'])
 def get_board(request):
     board_id = request.data['board_id']
     board = Board.objects.get(id=board_id)
+    board_views = BoardView.objects.filter(board=board)
     serialized = BoardFullSerializer(board)
-    return Response({'status': 'success', 'boardInfo': serialized.data})
+    board_views_serialized = BoardViewSerializer(board_views, many=True)
+    return Response({'status': 'success', 'boardInfo': serialized.data, 'boardViewsInfo': board_views_serialized.data})
 
 
 @api_view(['GET', 'POST'])
@@ -42,6 +46,14 @@ def delete_board(request):
     board = Board.objects.get(id=request.data['board_id'])
     board.delete()
     return Response({'status': 'success'})
+
+
+@api_view(['GET', 'POST'])
+def delete_board_view(request):
+    print(request.data)
+    board_view = BoardView.objects.get(id=request.data['board_view_option_id'])
+    board_view.delete()
+    return Response({'status': 'success'}, status=status.HTTP_200_OK)
 
 
 @api_view(['GET', 'POST'])

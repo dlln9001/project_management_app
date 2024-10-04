@@ -45,7 +45,8 @@ function DateColumn(props) {
 
     return (
         <div className="min-w-36 relative flex justify-center border-t border-t-slate-300 border-r border-r-slate-300 group" ref={datePickerRef}>
-            <div className="border border-transparent hover:border-slate-400 w-[90%] relative self-center cursor-text peer min-h-[22px] bg-white text-center" 
+            <div className={`border  w-[90%] relative self-center cursor-text peer min-h-[22px] bg-white text-center
+                    ${openDatePicker ? `border-sky-600` : `hover:border-slate-400 border-transparent`}`}
                  onClick={() => setOpenDatePicker(true)}>
                 {selectedDate && selectedDate.toLocaleDateString()}
             </div>

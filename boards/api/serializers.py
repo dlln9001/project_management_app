@@ -4,6 +4,7 @@ from ..models import Group
 from ..models import Item
 from ..models import Column
 from ..models import ColumnValue
+from ..models import BoardView
 
 class BoardSummarySerializer(serializers.ModelSerializer):
     class Meta(object):
@@ -14,6 +15,11 @@ class BoardFullSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = Board
         fields = ['name', 'type', 'id', 'created_at', 'user', 'description']
+
+class BoardViewSerializer(serializers.ModelSerializer):
+    class Meta(object):
+        model = BoardView
+        fields = ['name', 'type', 'order', 'id']
 
 class GroupSerializer(serializers.ModelSerializer):
     class Meta(object):

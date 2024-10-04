@@ -9,6 +9,12 @@ class Board(models.Model):
     type = models.CharField(max_length=50, default='board', editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
+class BoardView(models.Model):
+    board = models.ForeignKey(Board, on_delete=models.CASCADE)
+    name = models.CharField(max_length=200)
+    type = models.CharField(max_length=200)
+    order = models.IntegerField()
+
 class Group(models.Model):
     name = models.CharField(max_length=255, default='New Group')
     board = models.ForeignKey(Board, on_delete=models.CASCADE)

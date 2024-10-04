@@ -5,6 +5,7 @@ import Groups from "./groups/Groups";
 import { createItem } from "./groups/GroupAddItem";
 import { useBoardValues } from "../../contexts/BoardValuesContext";
 import { useLocation } from "react-router-dom";
+import BoardViews from "./BoardViews";
 
 
 function Board(props) {
@@ -34,6 +35,8 @@ function Board(props) {
         .then(data => {
             boardValues.setBoardTitle(data.boardInfo.name)
             boardValues.setBoardInfo(data.boardInfo)
+            boardValues.setBoardViewsInfo(data.boardViewsInfo)
+            console.log(data, 'boardstuff')
         })
 
         fetch('http://127.0.0.1:8000/board/get-groups/', {
@@ -49,7 +52,7 @@ function Board(props) {
         .then(res => res.json())
         .then(data => {
             boardValues.setGroupsData(data)
-            console.log(data)
+            // console.log(data)
         })
 
 
@@ -94,6 +97,9 @@ function Board(props) {
                             <BoardInfo renderSideBar={renderSideBar} setRenderSideBar={setRenderSideBar} ref={boardInfoRef}/>
                         }
                     </div>
+
+                    <BoardViews userToken={userToken}/>
+
                     <button onClick={() => createItemButton()} className="bg-sky-600 p-[6px] px-4 rounded-sm text-white text-sm hover:bg-sky-700 mt-5">New item</button>
                 </div>
 

@@ -6,6 +6,7 @@ urlpatterns = [
     path('change-board-name/', views.change_board_name, name='change-board-name'),
     path('change-board-description/', views.change_board_description, name='change-board-description'),
     path('delete-board/', views.delete_board, name='delete-board'),
+    path('delete-board-view/', views.delete_board_view, name='delete-board-view'),
     path('create-group/', views.create_group, name='create-group'),
     path('get-groups/', views.get_groups, name='get-groups'),
     path('create-item/', views.create_item, name='create-item'),
@@ -20,5 +21,5 @@ urlpatterns = [
     path('edit-text-column/', views.edit_text_column, name='edit-text-column'),
     path('edit-date-column/', views.edit_date_column, name='edit-date-column'),
     path('delete-column/', views.delete_column, name='delete-column'), 
-    path('edit-column-name/', views.edit_column_name, name='edit-column-name')
+    path('edit-column-name/', views.edit_column_name, name='edit-column-name'),
 ]

@@ -88,7 +88,7 @@ const BoardInfo = React.forwardRef((props, ref) => {
 
 
     return (
-        <div className="shadow-all-sides p-5 py-4 w-[422px] flex flex-col gap-3 rounded-md mt-2 absolute bg-white" ref={ref}>
+        <div className="shadow-all-sides p-5 py-4 w-[422px] flex flex-col gap-3 rounded-md mt-2 absolute bg-white z-20" ref={ref}>
             <div className="flex flex-col gap-2">
                 <input type="text" className="font-medium text-lg w-full focus:outline-none border border-white hover:border-slate-300 px-1 rounded-sm focus:border-sky-600" 
                         value={boardName ? boardName : boardValues.boardTitle} 
