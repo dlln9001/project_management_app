@@ -1,5 +1,5 @@
 import { useRef, useEffect } from "react"
-import { useBoardValues } from "../../contexts/BoardValuesContext"
+import { useBoardValues } from "../../../contexts/BoardValuesContext"
 import { FiTrash } from "react-icons/fi";
 
 function BoardViewsOptions(props) {
@@ -11,10 +11,9 @@ function BoardViewsOptions(props) {
     }, [])
 
     function handleDocumentClick(e) {
-        if (!boardViewsOptionsRef.current.contains(e.target)) {
+        if (boardViewsOptionsRef.current && !boardViewsOptionsRef.current.contains(e.target)) {
             props.setBoardViewOptionsId('')
             boardValues.setRenderBoardViews(prev => !prev)
-            document.removeEventListener('click', handleDocumentClick)
         }
     }
 
@@ -29,14 +28,14 @@ function BoardViewsOptions(props) {
                 board_view_option_id: props.boardViewOptionsId
             })
         })
-        .then(res => res.json())
-        .then(data => boardValues.setRenderComponent(prev => !prev))
+            .then(res => res.json())
+            .then(data => boardValues.setRenderComponent(prev => !prev))
     }
 
     return (
         <div className="absolute bg-white shadow-all-sides top-[25px] p-2 rounded-md" ref={boardViewsOptionsRef}>
             <div className=" cursor-pointer hover:bg-slate-100 flex items-center px-2 py-1 gap-2 w-52" onClick={deleteBoardView}>
-                <FiTrash className=""/>
+                <FiTrash className="" />
                 Delete
             </div>
         </div>

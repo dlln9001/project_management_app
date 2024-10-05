@@ -5,13 +5,13 @@ import Groups from "./groups/Groups";
 import { createItem } from "./groups/GroupAddItem";
 import { useBoardValues } from "../../contexts/BoardValuesContext";
 import { useLocation } from "react-router-dom";
-import BoardViews from "./BoardViews";
+import BoardViews from "./board-views/BoardViews";
 
 
 function Board(props) {
     const { renderSideBar, setRenderSideBar } = useOutletContext()
     const boardValues = useBoardValues()
-    
+
     const userToken = JSON.parse(localStorage.getItem('userToken'))
     const query = new URLSearchParams(useLocation().search)
 
@@ -31,13 +31,13 @@ function Board(props) {
                 board_id: boardId
             })
         })
-        .then(res => res.json())
-        .then(data => {
-            boardValues.setBoardTitle(data.boardInfo.name)
-            boardValues.setBoardInfo(data.boardInfo)
-            boardValues.setBoardViewsInfo(data.boardViewsInfo)
-            console.log(data, 'boardstuff')
-        })
+            .then(res => res.json())
+            .then(data => {
+                boardValues.setBoardTitle(data.boardInfo.name)
+                boardValues.setBoardInfo(data.boardInfo)
+                boardValues.setBoardViewsInfo(data.boardViewsInfo)
+                console.log(data, 'boardstuff')
+            })
 
         fetch('http://127.0.0.1:8000/board/get-groups/', {
             method: 'POST',
@@ -49,11 +49,11 @@ function Board(props) {
                 board_id: boardId
             })
         })
-        .then(res => res.json())
-        .then(data => {
-            boardValues.setGroupsData(data)
-            // console.log(data)
-        })
+            .then(res => res.json())
+            .then(data => {
+                boardValues.setGroupsData(data)
+                // console.log(data)
+            })
 
 
         // when a new board is clicked, you want the group's name's html to be set to the right width. Reload a second time.
@@ -78,11 +78,11 @@ function Board(props) {
         if (boardInfoRef.current && !boardInfoRef.current.contains(e.target) && !boardTitleRef.current.contains(e.target)) {
             boardValues.setShowBoardInfo(false)
         }
-    } 
+    }
 
     function createItemButton() {
         let groupId = boardValues.groupsData.groupsInfo[0].id
-        createItem(groupId, 'New item', '', boardId, userToken, boardValues.renderComponent, boardValues.setRenderComponent,boardValues.renderGroups, boardValues.setRenderGroups)
+        createItem(groupId, 'New item', '', boardId, userToken, boardValues.renderComponent, boardValues.setRenderComponent, boardValues.renderGroups, boardValues.setRenderGroups)
     }
 
     return (
@@ -94,17 +94,17 @@ function Board(props) {
                             {boardValues.boardTitle}
                         </p>
                         {boardValues.showBoardInfo &&
-                            <BoardInfo renderSideBar={renderSideBar} setRenderSideBar={setRenderSideBar} ref={boardInfoRef}/>
+                            <BoardInfo renderSideBar={renderSideBar} setRenderSideBar={setRenderSideBar} ref={boardInfoRef} />
                         }
                     </div>
 
-                    <BoardViews userToken={userToken}/>
+                    <BoardViews userToken={userToken} boardId={boardId}/>
 
                     <button onClick={() => createItemButton()} className="bg-sky-600 p-[6px] px-4 rounded-sm text-white text-sm hover:bg-sky-700 mt-5">New item</button>
                 </div>
 
                 <Groups userToken={userToken} boardId={boardId} />
-                    
+
             </div>
         </div>
     )

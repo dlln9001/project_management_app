@@ -28,7 +28,7 @@ function Layout() {
                 {showCreateWorkspaceItem &&
                     <>
                         <div className="flex justify-center items-center absolute top-0 w-full h-full">
-                            <div className=" bg-black absolute w-full h-full top-0 opacity-60 flex justify-center items-center z-10" onClick={() => setShowCreateWorkspaceItem(false)}></div>
+                            <div className=" bg-black absolute w-full h-full top-0 opacity-60 flex justify-center items-center z-20" onClick={() => setShowCreateWorkspaceItem(false)}></div>
                             <CreateWorkspaceItem />
                         </div>
                     </>

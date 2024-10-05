@@ -50,10 +50,19 @@ def delete_board(request):
 
 @api_view(['GET', 'POST'])
 def delete_board_view(request):
-    print(request.data)
     board_view = BoardView.objects.get(id=request.data['board_view_option_id'])
     board_view.delete()
     return Response({'status': 'success'}, status=status.HTTP_200_OK)
+
+
+@api_view(['GET', 'POST'])
+def add_board_view(request):
+    board = Board.objects.get(id=request.data['board_id'])
+    all_board_views = BoardView.objects.filter(board=board)
+    num_of_board_views = len(all_board_views)
+    board_view = BoardView.objects.create(board=board, name=request.data['name'], type=request.data['type'], order=num_of_board_views)
+    board_view.save()
+    return Response({'status': 'success'}, status=status.HTTP_201_CREATED)
 
 
 @api_view(['GET', 'POST'])

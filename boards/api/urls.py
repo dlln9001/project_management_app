@@ -7,6 +7,7 @@ urlpatterns = [
     path('change-board-description/', views.change_board_description, name='change-board-description'),
     path('delete-board/', views.delete_board, name='delete-board'),
     path('delete-board-view/', views.delete_board_view, name='delete-board-view'),
+    path('add-board-view/', views.add_board_view, name='add-board-view'),
     path('create-group/', views.create_group, name='create-group'),
     path('get-groups/', views.get_groups, name='get-groups'),
     path('create-item/', views.create_item, name='create-item'),
