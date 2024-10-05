@@ -52,6 +52,14 @@ def delete_board(request):
 def delete_board_view(request):
     board_view = BoardView.objects.get(id=request.data['board_view_option_id'])
     board_view.delete()
+    # now reorder board views
+    board = Board.objects.get(id=request.data['board_id'])
+    all_board_views = BoardView.objects.filter(board=board).order_by('order')
+    index = 0
+    for board_view in all_board_views:
+        board_view.order = index
+        board_view.save()
+        index += 1
     return Response({'status': 'success'}, status=status.HTTP_200_OK)
 
 
