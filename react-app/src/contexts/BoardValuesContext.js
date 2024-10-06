@@ -24,9 +24,6 @@ export function BoardValuesProvider( {children} ) {
 
     const [showBoardInfo, setShowBoardInfo] = useState(false)
 
-    const [boardViewsInfo, setBoardViewsInfo] = useState('')
-    const [renderBoardViews, setRenderBoardViews] = useState(false)
-
     const boardValues = {
         boardTitle, setBoardTitle,
         boardInfo, setBoardInfo,
@@ -39,8 +36,6 @@ export function BoardValuesProvider( {children} ) {
         itemSelected, setItemSelected,
         groupsAllSelected, setGroupsAllSelected,
         showBoardInfo, setShowBoardInfo,
-        boardViewsInfo, setBoardViewsInfo,
-        renderBoardViews, setRenderBoardViews
     }
 
     return (

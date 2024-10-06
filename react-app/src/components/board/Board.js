@@ -4,6 +4,7 @@ import BoardInfo from "./BoardInfo";
 import Groups from "./groups/Groups";
 import { createItem } from "./groups/GroupAddItem";
 import { useBoardValues } from "../../contexts/BoardValuesContext";
+import { useBoardViews } from "../../contexts/BoardViewsContext";
 import { useLocation } from "react-router-dom";
 import BoardViews from "./board-views/BoardViews";
 
@@ -11,6 +12,7 @@ import BoardViews from "./board-views/BoardViews";
 function Board(props) {
     const { renderSideBar, setRenderSideBar } = useOutletContext()
     const boardValues = useBoardValues()
+    const boardViewsValues = useBoardViews()
 
     const userToken = JSON.parse(localStorage.getItem('userToken'))
     const query = new URLSearchParams(useLocation().search)
@@ -19,6 +21,9 @@ function Board(props) {
 
     const boardTitleRef = useRef('')
     const boardInfoRef = useRef('')
+
+    const [boardData, setBoardData] = useState('')
+    const [toSetInitialBoardView, setToSetInitialBoardView] = useState(true)
 
     useEffect(() => {
         fetch('http://127.0.0.1:8000/board/get/', {
@@ -33,10 +38,11 @@ function Board(props) {
         })
             .then(res => res.json())
             .then(data => {
+                setBoardData(data)
                 boardValues.setBoardTitle(data.boardInfo.name)
                 boardValues.setBoardInfo(data.boardInfo)
-                boardValues.setBoardViewsInfo(data.boardViewsInfo)
-                console.log(data, 'boardstuff')
+                boardViewsValues.setBoardViewsInfo(data.boardViewsInfo)
+                console.log(data.boardViewsInfo)
             })
 
         fetch('http://127.0.0.1:8000/board/get-groups/', {
@@ -58,7 +64,7 @@ function Board(props) {
 
         // when a new board is clicked, you want the group's name's html to be set to the right width. Reload a second time.
         boardValues.setReloadGroupsInitial(true)
-
+        
         document.addEventListener('click', handleDocumentClick)
     }, [boardId, boardValues.renderComponent])
 
@@ -71,8 +77,16 @@ function Board(props) {
     useEffect(() => {
         boardValues.setIsItemSelected(false)
         boardValues.setItemSelected([])
+        setToSetInitialBoardView(true)
     }, [boardId])
-
+    
+    useEffect(() => {
+        if (boardData && toSetInitialBoardView) {
+            boardViewsValues.setCurrentBoardView(boardData.boardViewsInfo[0])
+            boardViewsValues.setRenderBoardViews(prev => !prev)
+            setToSetInitialBoardView(false)
+        }
+    }, [boardData])
 
     function handleDocumentClick(e) {
         if (boardInfoRef.current && !boardInfoRef.current.contains(e.target) && !boardTitleRef.current.contains(e.target)) {
@@ -102,6 +116,9 @@ function Board(props) {
 
                     <button onClick={() => createItemButton()} className="bg-sky-600 p-[6px] px-4 rounded-sm text-white text-sm hover:bg-sky-700 mt-5">New item</button>
                 </div>
+                {
+
+                }
 
                 <Groups userToken={userToken} boardId={boardId} />
 

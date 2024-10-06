@@ -1,9 +1,11 @@
 import { useRef, useEffect } from "react"
 import { useBoardValues } from "../../../contexts/BoardValuesContext"
+import { useBoardViews } from "../../../contexts/BoardViewsContext";
 import { FiTrash } from "react-icons/fi";
 
 function BoardViewsOptions(props) {
     const boardValues = useBoardValues()
+    const boardViewsValues = useBoardViews()
     const boardViewsOptionsRef = useRef('')
 
     useEffect(() => {
@@ -13,7 +15,7 @@ function BoardViewsOptions(props) {
     function handleDocumentClick(e) {
         if (boardViewsOptionsRef.current && !boardViewsOptionsRef.current.contains(e.target)) {
             props.setBoardViewOptionsId('')
-            boardValues.setRenderBoardViews(prev => !prev)
+            boardViewsValues.setRenderBoardViews(prev => !prev)
         }
     }
 
@@ -25,11 +27,14 @@ function BoardViewsOptions(props) {
                 'Authorization': `Token ${props.userToken}`
             },
             body: JSON.stringify({
-                board_view_option_id: props.boardViewOptionsId
+                board_view_option_id: props.boardViewOptionsId,
+                board_id: props.boardId
             })
         })
             .then(res => res.json())
-            .then(data => boardValues.setRenderComponent(prev => !prev))
+            .then(data => {
+                boardValues.setRenderComponent(prev => !prev)
+            })
     }
 
     return (

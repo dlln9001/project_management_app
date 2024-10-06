@@ -14,7 +14,7 @@ function AddBoardView(props) {
     }, [])
 
     function handleDocumentClick(e) {
-        if (!addBoardViewOptionsRef.current.contains(e.target)) {
+        if (addBoardViewOptionsRef.current && !addBoardViewOptionsRef.current.contains(e.target)) {
             setShowAddBoardViewOptions(false)
         }
     }
