@@ -2,6 +2,16 @@ import { useState, useRef, useEffect } from "react";
 import { useBoardValues } from "../../../contexts/BoardValuesContext"
 import { GoTriangleUp } from "react-icons/go";
 
+export function getStatusColumnValues(columnValueId) {
+    // if you only need the text and color values, you can pass in a dummy Id, like -1.
+
+    const statusColumnValues = [{id: columnValueId, text: 'Done', color: 'bg-green-500'}, {id: columnValueId, text: 'Working on it', color: 'bg-orange-300'}, 
+        {id: columnValueId, text: 'Stuck', color: 'bg-red-500'},{id: columnValueId, text: '', color: 'bg-neutral-400'},
+        ]
+
+    return statusColumnValues
+}
+
 function LabelColumn(props) {
     const boardValues = useBoardValues()
     const columnValueId = props.columnValues[props.k].id
@@ -10,9 +20,7 @@ function LabelColumn(props) {
     const setColumnValueRef = useRef('')
 
     const [statusColumnValuesHtml, setStatusColumnValuesHtml] = useState('')
-    const statusColumnValues = [{id: columnValueId, text: 'Done', color: 'bg-green-500'}, {id: columnValueId, text: 'Working on it', color: 'bg-orange-300'}, 
-                                {id: columnValueId, text: 'Stuck', color: 'bg-red-500'},{id: columnValueId, text: '', color: 'bg-neutral-400'},
-                                ]
+    const statusColumnValues = getStatusColumnValues(columnValueId)
     
     const [priorityColumnValuesHtml, setPriorityColumnValuesHtml] = useState('')
     const priorityColumnValues = [{id: columnValueId, text: 'Critical ⚠', color: 'bg-slate-800'}, {id: columnValueId, text: 'High', color: 'bg-violet-900'}, 

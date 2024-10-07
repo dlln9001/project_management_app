@@ -20,7 +20,7 @@ export function createItem(groupId, addItemContent, setAddItemContent='', boardI
             if (data.status != 'success') {
                 console.log(data)
             }
-            setRenderComponent(!renderComponent)
+            setRenderComponent(prev => !prev)
         })
     }
     if (setAddItemContent) {

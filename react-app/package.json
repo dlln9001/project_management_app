@@ -15,7 +15,7 @@
     "webpack-dev-server": "^5.0.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "react-scripts start --max-old-space-size=4096 --no-lint",
     "build": "react-scripts build",
     "test": "jest",
     "eject": "react-scripts eject"

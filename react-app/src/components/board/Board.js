@@ -7,6 +7,7 @@ import { useBoardValues } from "../../contexts/BoardValuesContext";
 import { useBoardViews } from "../../contexts/BoardViewsContext";
 import { useLocation } from "react-router-dom";
 import BoardViews from "./board-views/BoardViews";
+import Kanban from "./board-views/Kanban";
 
 
 function Board(props) {
@@ -42,7 +43,6 @@ function Board(props) {
                 boardValues.setBoardTitle(data.boardInfo.name)
                 boardValues.setBoardInfo(data.boardInfo)
                 boardViewsValues.setBoardViewsInfo(data.boardViewsInfo)
-                console.log(data.boardViewsInfo)
             })
 
         fetch('http://127.0.0.1:8000/board/get-groups/', {
@@ -58,7 +58,7 @@ function Board(props) {
             .then(res => res.json())
             .then(data => {
                 boardValues.setGroupsData(data)
-                // console.log(data)
+                console.log(data)
             })
 
 
@@ -68,9 +68,12 @@ function Board(props) {
         document.addEventListener('click', handleDocumentClick)
     }, [boardId, boardValues.renderComponent])
 
+    useEffect(() => {
+        boardValues.setReloadGroupsInitial(true)
+    }, [boardViewsValues.currentBoardView])
 
     useEffect(() => {
-        boardValues.setRenderGroups(!boardValues.renderGroups)
+        boardValues.setRenderGroups(prev => !prev)
     }, [boardValues.groupsData])
 
 
@@ -97,7 +100,9 @@ function Board(props) {
     function createItemButton() {
         let groupId = boardValues.groupsData.groupsInfo[0].id
         createItem(groupId, 'New item', '', boardId, userToken, boardValues.renderComponent, boardValues.setRenderComponent, boardValues.renderGroups, boardValues.setRenderGroups)
+        boardValues.setRenderComponent(prev => !prev)
     }
+
 
     return (
         <div className="bg-white rounded-tl-lg relative flex flex-col overflow-auto h-full custom-scrollbar">
@@ -116,11 +121,13 @@ function Board(props) {
 
                     <button onClick={() => createItemButton()} className="bg-sky-600 p-[6px] px-4 rounded-sm text-white text-sm hover:bg-sky-700 mt-5">New item</button>
                 </div>
-                {
-
+                {boardViewsValues.currentBoardView.type === 'Table' &&
+                    <Groups userToken={userToken} boardId={boardId} />
                 }
 
-                <Groups userToken={userToken} boardId={boardId} />
+                {boardViewsValues.currentBoardView.type === 'Kanban' &&
+                    <Kanban/>
+                }
 
             </div>
         </div>

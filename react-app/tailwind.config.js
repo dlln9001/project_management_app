@@ -7,6 +7,9 @@ module.exports = {
       {
         pattern: /^text-/, // so it doesn't purge the text colors
       },
+      {
+        pattern: /^border-/, // Prevents purging of border colors
+      },
     ],
   },
   theme: {
