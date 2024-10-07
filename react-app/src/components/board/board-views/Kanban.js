@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useBoardValues } from "../../../contexts/BoardValuesContext"
-import { getStatusColumnValues } from "../columns/LabelColumn"
+import { getStatusColumnValues } from "../columns/LabelsMenu"
 
 
 function Kanban() {
@@ -22,7 +22,7 @@ function Kanban() {
             }
         }
 
-        console.log(groupsData, 'groups data???')
+
         let tempKanbanListsHtml = []
         if (statusColumnOrder != 'no order') {
             for (let i=0; i<statusColumnValues.length; i++) {
