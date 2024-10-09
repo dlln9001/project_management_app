@@ -171,7 +171,22 @@ def edit_item(request):
 @api_view(['GET', 'POST'])
 def delete_item(request):
     items = Item.objects.filter(id__in=request.data['item_ids'])
+
+    # re order items
+    groups = []
+    for item in items:
+        if item.group not in groups:
+            groups.append(item.group)
+
     items.delete()
+
+    for group in groups:
+        all_items_in_group = Item.objects.filter(group=group).order_by('order')
+        index = 0
+        for item in all_items_in_group:
+            item.order = index
+            item.save()
+            index += 1
     return Response({'status': 'success'})
 
 
@@ -214,6 +229,7 @@ def edit_column_name(request):
 
 @api_view(['GET', 'POST'])
 def edit_label_column(request):
+    print(request.data)
     column_value = ColumnValue.objects.get(id=request.data['column_value_id'])
     column_value.value_color = request.data['color']
     column_value.value_text = request.data['text']

@@ -29,7 +29,6 @@ export function getPriorityColumnValues(columnValueId) {
 const LabelsMenu = forwardRef(function (props, ref) {
     const boardValues = useBoardValues()
     const columnValueId = props.columnValues[props.k].id
-
     const [statusColumnValuesHtml, setStatusColumnValuesHtml] = useState('')
     const statusColumnValues = getStatusColumnValues(columnValueId)
     

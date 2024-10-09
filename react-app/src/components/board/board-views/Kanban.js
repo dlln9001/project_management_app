@@ -13,7 +13,7 @@ function Kanban(props) {
     const [renderKanban, setRenderKanban] = useState(false)
 
     // position of the item with the indexes of the for loop
-    const [itemPositionIndex, setItemPositionIndex] = useState([])
+    const [itemPositionId, setItemPositionId] = useState([])
 
     const clickedLablesMenuParentRef = useRef('')
 
@@ -62,24 +62,36 @@ function Kanban(props) {
                                             <div className={`text-sm mt-2 bg-slate-100 w-fit px-2 py-[1px] border-${columnValueColor} border-l-4 rounded-sm cursor-pointer flex justify-center`}
                                                     onClick={() => {
                                                         setShowLabelsMenu(true)
-                                                        setItemPositionIndex([i, j])
+                                                        setItemPositionId([i, j, 'Status'])
                                                         setRenderKanban(prev => !prev)
                                                     }}
-                                                    ref={(itemPositionIndex[0] === i && itemPositionIndex[1] === j) ? clickedLablesMenuParentRef : null}>
+                                                    ref={(itemPositionId[0] === i && itemPositionId[1] === j && itemPositionId[2] === 'Status') ? clickedLablesMenuParentRef : null}>
                                                     <p>{statusColumnValues[i].text}</p>
-                                                    {(itemPositionIndex[0] === i && itemPositionIndex[1] === j && showLabelsMenu && clickedLablesMenuParentRef) &&
+                                                    {(itemPositionId[0] === i && itemPositionId[1] === j && itemPositionId[2] === 'Status' && showLabelsMenu && clickedLablesMenuParentRef) &&
                                                         <div>
-                                                            <LabelsMenu k={j} associatedColumn={statusColumn} columnValues={flat_columnValues} userToken={props.userToken} 
+                                                            <LabelsMenu k={statusColumnOrder} associatedColumn={statusColumn} columnValues={flat_columnValues[j]} userToken={props.userToken} 
                                                                         showMenu={showLabelsMenu} setShowMenu={setShowLabelsMenu} parentRef={clickedLablesMenuParentRef}/>
                                                         </div>
                                                     }
                                             </div>
                                         }
                                         {flat_columnValues[j][priorityColumnOrder].value_text != '' &&
-                                            <div className={`text-sm mt-2 bg-slate-100 w-fit px-2 py-[1px] border-${priorityValueColor} border-l-4 rounded-sm`}>
+                                            <div className={`text-sm mt-2 bg-slate-100 w-fit px-2 py-[1px] border-${priorityValueColor} border-l-4 rounded-sm cursor-pointer`}
+                                                onClick={() => {
+                                                    setShowLabelsMenu(true)
+                                                    setItemPositionId([i, j, 'Priority'])
+                                                    setRenderKanban(prev => !prev)
+                                                }}
+                                                ref={(itemPositionId[0] === i && itemPositionId[1] === j && itemPositionId[2] === 'Priority') ? clickedLablesMenuParentRef : null}>
                                                 <p>
                                                     {flat_columnValues[j][priorityColumnOrder].value_text}
                                                 </p>
+                                                {(itemPositionId[0] === i && itemPositionId[1] === j && itemPositionId[2] === 'Priority' && showLabelsMenu && clickedLablesMenuParentRef) &&
+                                                    <div>
+                                                        <LabelsMenu k={priorityColumnOrder} associatedColumn={priorityColumn} columnValues={flat_columnValues[j]} userToken={props.userToken} 
+                                                                    showMenu={showLabelsMenu} setShowMenu={setShowLabelsMenu} parentRef={clickedLablesMenuParentRef}/>
+                                                    </div>
+                                                }
                                             </div>
                                         }
                                     </div>
