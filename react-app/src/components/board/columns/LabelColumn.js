@@ -7,6 +7,7 @@ function LabelColumn(props) {
 
     const [setColumnValueItemId, setSetColumnValueItemId] = useState('')
     const [showMenu, setShowMenu] = useState(false)
+
     const setColumnValueRef = useRef('')
 
     useEffect(() => {
@@ -35,8 +36,8 @@ function LabelColumn(props) {
             <p>{props.columnValues[props.k].value_text}</p>
             {/* set labels menu */}
             {(setColumnValueItemId[0] === props.i && setColumnValueItemId[1] === props.j && setColumnValueItemId[2] === props.k && showMenu) && 
-
-                <LabelsMenu showMenu={showMenu} setShowMenu={setShowMenu} userToken={props.userToken} columnValues={props.columnValues} k={props.k} associatedColumn={props.associatedColumn}/>
+                    <LabelsMenu showMenu={showMenu} setShowMenu={setShowMenu} userToken={props.userToken} columnValues={props.columnValues} k={props.k} associatedColumn={props.associatedColumn}
+                                parentRef={setColumnValueRef}/>
             }
         </div>
     )

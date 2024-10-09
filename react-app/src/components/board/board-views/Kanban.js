@@ -1,24 +1,36 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { useBoardValues } from "../../../contexts/BoardValuesContext"
 import { getStatusColumnValues } from "../columns/LabelsMenu"
+import LabelsMenu from "../columns/LabelsMenu"
 
 
-function Kanban() {
+function Kanban(props) {
     const boardValues = useBoardValues()
     const [kanbanListsHtml, setKanBanListsHtml] = useState('')
     const statusColumnValues = getStatusColumnValues(-1)
     const groupsData = boardValues.groupsData
-    
+    const [showLabelsMenu, setShowLabelsMenu] = useState(false)
+    const [renderKanban, setRenderKanban] = useState(false)
+
+    // position of the item with the indexes of the for loop
+    const [itemPositionIndex, setItemPositionIndex] = useState([])
+
+    const clickedLablesMenuParentRef = useRef('')
+
     useEffect(() => {
         let statusColumnOrder = 'no order'
+        let statusColumn 
         let priorityColumnOrder = 'no order'
+        let priorityColumn
 
         for (let i=0; i < groupsData.columnsInfo.length; i++) {
             if (groupsData.columnsInfo[i].column_type === 'Status') {
                 statusColumnOrder = groupsData.columnsInfo[i].order
+                statusColumn = groupsData.columnsInfo[i]
             }
             else if (groupsData.columnsInfo[i].column_type === 'Priority') {
                 priorityColumnOrder = groupsData.columnsInfo[i].order
+                priorityColumn = groupsData.columnsInfo[i]
             }
         }
 
@@ -47,10 +59,20 @@ function Kanban() {
                                 </p>
                                     <div className="flex gap-2"> 
                                         {statusColumnValues[i].text != '' &&
-                                            <div className={`text-sm mt-2 bg-slate-100 w-fit px-2 py-[1px] border-${columnValueColor} border-l-4 rounded-sm`}>
-                                                <p>
-                                                    {statusColumnValues[i].text}
-                                                </p>
+                                            <div className={`text-sm mt-2 bg-slate-100 w-fit px-2 py-[1px] border-${columnValueColor} border-l-4 rounded-sm cursor-pointer flex justify-center`}
+                                                    onClick={() => {
+                                                        setShowLabelsMenu(true)
+                                                        setItemPositionIndex([i, j])
+                                                        setRenderKanban(prev => !prev)
+                                                    }}
+                                                    ref={(itemPositionIndex[0] === i && itemPositionIndex[1] === j) ? clickedLablesMenuParentRef : null}>
+                                                    <p>{statusColumnValues[i].text}</p>
+                                                    {(itemPositionIndex[0] === i && itemPositionIndex[1] === j && showLabelsMenu && clickedLablesMenuParentRef) &&
+                                                        <div>
+                                                            <LabelsMenu k={j} associatedColumn={statusColumn} columnValues={flat_columnValues} userToken={props.userToken} 
+                                                                        showMenu={showLabelsMenu} setShowMenu={setShowLabelsMenu} parentRef={clickedLablesMenuParentRef}/>
+                                                        </div>
+                                                    }
                                             </div>
                                         }
                                         {flat_columnValues[j][priorityColumnOrder].value_text != '' &&
@@ -76,7 +98,7 @@ function Kanban() {
                             : default_blank_text + ' / ' + num_of_items
                             }
                         </div>
-                        <div className=" bg-slate-50 h-[600px] p-3 flex flex-col gap-2 rounded-b-md overflow-auto custom-scrollbar-small">
+                        <div className=" bg-slate-50 h-[600px] p-3 flex flex-col gap-2 rounded-b-md custom-scrollbar-small overflow-auto">
                             {itemsHtml}
                         </div>
                     </div>
@@ -92,7 +114,19 @@ function Kanban() {
             }
 
         setKanBanListsHtml(tempKanbanListsHtml)
-    }, [boardValues.renderComponent, boardValues.groupsData])
+    }, [boardValues.renderComponent, boardValues.groupsData, renderKanban])
+
+    useEffect(() => {
+        document.addEventListener('click', handleDocumentClick)
+    })
+
+    function handleDocumentClick(e) {
+        if (clickedLablesMenuParentRef.current && !clickedLablesMenuParentRef.current.contains(e.target)) {
+            setShowLabelsMenu(false)
+            setRenderKanban(prev => !prev)
+            clickedLablesMenuParentRef.current = ''
+        }
+    }
 
     return (
         <div className="flex gap-4">

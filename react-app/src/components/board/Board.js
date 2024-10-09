@@ -105,7 +105,7 @@ function Board(props) {
 
 
     return (
-        <div className="bg-white rounded-tl-lg relative flex flex-col overflow-auto h-full custom-scrollbar">
+        <div className="bg-white rounded-tl-lg relative flex flex-col overflow-auto h-full custom-scrollbar" id="board-id">
             <div className="ml-10 mb-5 mr-1">
                 <div className="sticky top-0 bg-white z-10 py-5">
                     <div >
@@ -126,7 +126,7 @@ function Board(props) {
                 }
 
                 {boardViewsValues.currentBoardView.type === 'Kanban' &&
-                    <Kanban/>
+                    <Kanban userToken={userToken}/>
                 }
 
             </div>
