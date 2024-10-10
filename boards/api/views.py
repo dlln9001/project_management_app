@@ -229,7 +229,6 @@ def edit_column_name(request):
 
 @api_view(['GET', 'POST'])
 def edit_label_column(request):
-    print(request.data)
     column_value = ColumnValue.objects.get(id=request.data['column_value_id'])
     column_value.value_color = request.data['color']
     column_value.value_text = request.data['text']

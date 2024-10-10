@@ -15,12 +15,10 @@
     "webpack-dev-server": "^5.0.4"
   },
   "scripts": {
-    "start": "set ESLINT_NO_DEV_ERRORS=true && react-scripts start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "jest",
-    "eject": "react-scripts eject",
-    "analyze": "react-scripts build --stats && webpack-bundle-analyzer build/bundle-stats.json",
-    "start:nolint": "set DISABLE_ESLINT_PLUGIN=true && react-scripts start"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [

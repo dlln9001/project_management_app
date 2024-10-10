@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react"
 import { useBoardValues } from "../../../contexts/BoardValuesContext"
 import { getStatusColumnValues } from "../columns/LabelsMenu"
 import LabelsMenu from "../columns/LabelsMenu"
+import KanbanItemInput from "./KanbanItemInput"
 
 
 function Kanban(props) {
@@ -50,15 +51,21 @@ function Kanban(props) {
                     // if the type of the status is equal to the type being made on the kanban board. E.g status with "done" will be put under the "done" list in the kanban board
                     if (flat_columnValues[j][statusColumnOrder].value_text === statusColumnValues[i].text) {
                         let priorityValueColor = flat_columnValues[j][priorityColumnOrder].value_color.replace('bg-', '')
+                        let no_status = false
+                        if (statusColumnValues[i].text === '') {
+                            no_status = true
+                        }
                         num_of_items += 1
                         // columnvalues and itemsinfo both have same indexes that refer to the same item
                         itemsHtml.push(
-                            <div key={j} className="bg-white border border-slate-300 rounded-md p-2 min-h-20">
-                                <p>
+                            <div key={j} className="bg-white border border-slate-300 rounded-md p-2 min-h-20 text-sm">
+                                {/* <p>
                                     {flat_itemsInfo[j].name}
-                                </p>
+                                </p> */}
+                                <KanbanItemInput itemInfo={flat_itemsInfo[j]} userToken={props.userToken}/>
+
                                     <div className="flex gap-2"> 
-                                        {statusColumnValues[i].text != '' &&
+                                        
                                             <div className={`text-sm mt-2 bg-slate-100 w-fit px-2 py-[1px] border-${columnValueColor} border-l-4 rounded-sm cursor-pointer flex justify-center`}
                                                     onClick={() => {
                                                         setShowLabelsMenu(true)
@@ -66,7 +73,12 @@ function Kanban(props) {
                                                         setRenderKanban(prev => !prev)
                                                     }}
                                                     ref={(itemPositionId[0] === i && itemPositionId[1] === j && itemPositionId[2] === 'Status') ? clickedLablesMenuParentRef : null}>
-                                                    <p>{statusColumnValues[i].text}</p>
+                                                    <p> 
+                                                        {no_status 
+                                                        ? 'No status'
+                                                        : statusColumnValues[i].text
+                                                        }
+                                                    </p>
                                                     {(itemPositionId[0] === i && itemPositionId[1] === j && itemPositionId[2] === 'Status' && showLabelsMenu && clickedLablesMenuParentRef) &&
                                                         <div>
                                                             <LabelsMenu k={statusColumnOrder} associatedColumn={statusColumn} columnValues={flat_columnValues[j]} userToken={props.userToken} 
@@ -74,7 +86,7 @@ function Kanban(props) {
                                                         </div>
                                                     }
                                             </div>
-                                        }
+                                        
                                         {flat_columnValues[j][priorityColumnOrder].value_text != '' &&
                                             <div className={`text-sm mt-2 bg-slate-100 w-fit px-2 py-[1px] border-${priorityValueColor} border-l-4 rounded-sm cursor-pointer`}
                                                 onClick={() => {

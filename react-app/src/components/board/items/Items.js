@@ -3,6 +3,22 @@ import { useBoardValues } from "../../../contexts/BoardValuesContext";
 import SelectItem from "./SelectItem";
 import ItemColumnValue from "../columns/ItemColumnValue";
 
+export function editItem(itemContent, itemId, userToken, setRenderComponent) {
+    fetch('http://127.0.0.1:8000/board/edit-item/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Token ${userToken}`
+        },
+        body: JSON.stringify({
+            item_id: itemId,
+            item_name: itemContent,
+        })
+    })
+    .then(res => res.json())
+    .then(data => setRenderComponent(prev => !prev))
+}
+
 function Items(props) {
     const boardValues = useBoardValues()
 
@@ -43,7 +59,7 @@ function Items(props) {
                                     setEditingItemContents(groupsData.itemsInfo[i][j].name)
                                     boardValues.setRenderGroups(!boardValues.renderGroups)
                                 }}
-                                onBlur={(e) => editItem(e.target.value, groupsData.itemsInfo[i][j].id)}
+                                onBlur={(e) => editItem(e.target.value, groupsData.itemsInfo[i][j].id, props.userToken, boardValues.setRenderComponent)}
                                 onChange={(e) => {
                                     setEditingItemContents(e.target.value)
                                     boardValues.setRenderGroups(!boardValues.renderGroups)
@@ -54,7 +70,6 @@ function Items(props) {
                                         truncate text-ellipsis min-w-8 w-full focus:border-sky-600 h-fit self-center`}
                                 onKeyDown={(e) => {
                                     if (e.key === 'Enter') {
-                                        editItem(editingItemContents, groupsData.itemsInfo[i][j].id)
                                         e.target.blur()
                                     }
                                 }}
@@ -70,22 +85,6 @@ function Items(props) {
             setitemsHtml(tempItemsHtml)
     }
     }, [boardValues.renderGroups])
-
-    function editItem(itemContent, itemId) {
-        fetch('http://127.0.0.1:8000/board/edit-item/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${props.userToken}`
-            },
-            body: JSON.stringify({
-                item_id: itemId,
-                item_name: itemContent,
-            })
-        })
-        .then(res => res.json())
-        .then(data => boardValues.setRenderComponent(!boardValues.renderComponent))
-    }
 
     return (
         <div>
