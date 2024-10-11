@@ -9,7 +9,6 @@ import { useLocation } from "react-router-dom";
 import BoardViews from "./board-views/BoardViews";
 import Kanban from "./board-views/Kanban";
 
-
 function Board(props) {
     const { renderSideBar, setRenderSideBar } = useOutletContext()
     const boardValues = useBoardValues()
@@ -66,6 +65,7 @@ function Board(props) {
         boardValues.setReloadGroupsInitial(true)
         
         document.addEventListener('click', handleDocumentClick)
+            
     }, [boardId, boardValues.renderComponent])
 
     useEffect(() => {
@@ -75,7 +75,6 @@ function Board(props) {
     useEffect(() => {
         boardValues.setRenderGroups(prev => !prev)
     }, [boardValues.groupsData])
-
 
     useEffect(() => {
         boardValues.setIsItemSelected(false)
@@ -105,9 +104,9 @@ function Board(props) {
 
 
     return (
-        <div className="bg-white rounded-tl-lg relative flex flex-col overflow-auto h-full custom-scrollbar" id="board-id">
-            <div className="ml-10 mb-5 mr-1">
-                <div className="sticky top-0 bg-white z-10 py-5">
+        <div className="bg-white rounded-tl-lg relative  h-full custom-scrollbar min-w-fit overflow-auto" id="board-id">
+            <div className={`ml-10 mb-5 mr-1`}>
+                <div className="sticky top-0 bg-white z-10 py-5 w-full">
                     <div >
                         <p ref={boardTitleRef} className="text-2xl hover:bg-slate-100 w-fit p-2 py-0 rounded-[4px] cursor-pointer peer" onClick={() => boardValues.setShowBoardInfo(true)}>
                             {boardValues.boardTitle}

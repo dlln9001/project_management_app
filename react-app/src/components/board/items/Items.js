@@ -52,7 +52,7 @@ function Items(props) {
                         <SelectItem i={i} j={j} currentGroup={props.currentGroup}/>
 
                         {/* this is where the user inputs the item content */}
-                        <div className="px-2 border-t flex border-t-slate-300 min-w-[33%] border-r border-r-slate-300">
+                        <div className="px-2 border-t flex border-t-slate-300 min-w-[500px] border-r border-r-slate-300">
                             <input type="text" 
                                 onFocus={() => {
                                     setFocusedItem([i, j])

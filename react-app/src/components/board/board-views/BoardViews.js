@@ -52,7 +52,7 @@ function BoardViews(props) {
     }
 
     return (
-        <div className="border-b border-slate-300 mt-3 flex">
+        <div className="border-b border-slate-300 mt-3 flex w-full">
             {boardViewsHtml}
             <AddBoardView userToken={props.userToken} boardId={props.boardId}/>
         </div>

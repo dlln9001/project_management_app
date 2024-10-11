@@ -73,7 +73,7 @@ function Groups(props) {
 
                                 <GroupSelectAllItems groupId={groupId}/>
 
-                                <div className="min-w-[33%] px-2 border-r border-r-slate-300 flex items-center justify-center">
+                                <div className="min-w-[500px] px-2 border-r border-r-slate-300 flex items-center justify-center">
                                     <p className="text-sm text-slate-600 self-center  text-center">Item</p>
                                 </div>
 

@@ -48,10 +48,10 @@ function AddBoardView(props) {
             {showAddBoardViewOptions && 
                 <div className="absolute bg-white shadow-all-sides p-2 rounded-md w-60 left-0 top-7 text-sm">
                     <p className=" opacity-65 mx-2 mb-3">Board views</p>
-                    <div className="flex items-center gap-2 px-2 py-1 cursor-pointer hover:bg-slate-100">
+                    {/* <div className="flex items-center gap-2 px-2 py-1 cursor-pointer hover:bg-slate-100">
                         <CiViewTable className="text-base" />
                         <p>Table</p>
-                    </div>
+                    </div> */}
                     <div className="flex items-center gap-2 px-2 py-1 cursor-pointer hover:bg-slate-100" onClick={() => addBoardView('Kanban', 'Kanban')}>
                         <LuKanban className="text-base"/>
                         <p>Kanban</p>

@@ -18,7 +18,7 @@ function Layout() {
                     <div className="flex-none">
                         <Topbar />
                     </div>
-                    <div className="flex overflow-hidden h-full">
+                    <div className="flex h-full overflow-y-hidden custom-scrollbar">
                         <Sidebar renderSideBar={renderSideBar} setRenderSideBar={setRenderSideBar} deletedBoardName={deletedBoardName} setDeletedBoardName={setDeletedBoardName} />
                         <main className="w-full">
                             <Outlet context={{ renderSideBar, setRenderSideBar, deletedBoardName, setDeletedBoardName }} />
