@@ -38,7 +38,8 @@ function BoardViews(props) {
                             <BsThreeDots />
                         </div>
                         {(showBoardViewOption && boardView.id === boardViewOptionsId) &&
-                            <BoardViewsOptions boardViewOptionsId={boardViewOptionsId} setBoardViewOptionsId={setBoardViewOptionsId} userToken={props.userToken} boardId={props.boardId}/>
+                            <BoardViewsOptions boardViewOptionsId={boardViewOptionsId} setBoardViewOptionsId={setBoardViewOptionsId} userToken={props.userToken} boardId={props.boardId}
+                                                boardView={boardView}/>
                         }
                     </div>
                 </div>
