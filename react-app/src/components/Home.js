@@ -12,7 +12,6 @@ function Home() {
             <p>username: {username}</p>
             <p>name: {name}</p>
             <p>token: {token}</p>
-            <LogOut/>
         </div>
     )
 }

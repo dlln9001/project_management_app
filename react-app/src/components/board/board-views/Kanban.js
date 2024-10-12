@@ -50,7 +50,10 @@ function Kanban(props) {
                 for (let j=0; j<flat_columnValues.length; j++) {
                     // if the type of the status is equal to the type being made on the kanban board. E.g status with "done" will be put under the "done" list in the kanban board
                     if (flat_columnValues[j][statusColumnOrder].value_text === statusColumnValues[i].text) {
-                        let priorityValueColor = flat_columnValues[j][priorityColumnOrder].value_color.replace('bg-', '')
+                        let priorityValueColor
+                        if (priorityColumn) {
+                            priorityValueColor = flat_columnValues[j][priorityColumnOrder].value_color.replace('bg-', '')
+                        }
                         let no_status = false
                         if (statusColumnValues[i].text === '') {
                             no_status = true
@@ -59,9 +62,6 @@ function Kanban(props) {
                         // columnvalues and itemsinfo both have same indexes that refer to the same item
                         itemsHtml.push(
                             <div key={j} className="bg-white border border-slate-300 rounded-md p-2 min-h-20 text-sm">
-                                {/* <p>
-                                    {flat_itemsInfo[j].name}
-                                </p> */}
                                 <KanbanItemInput itemInfo={flat_itemsInfo[j]} userToken={props.userToken}/>
 
                                     <div className="flex gap-2"> 
@@ -87,7 +87,7 @@ function Kanban(props) {
                                                     }
                                             </div>
                                         
-                                        {flat_columnValues[j][priorityColumnOrder].value_text != '' &&
+                                        {(priorityColumn && flat_columnValues[j][priorityColumnOrder].value_text != '') &&
                                             <div className={`text-sm mt-2 bg-slate-100 w-fit px-2 py-[1px] border-${priorityValueColor} border-l-4 rounded-sm cursor-pointer`}
                                                 onClick={() => {
                                                     setShowLabelsMenu(true)
@@ -131,7 +131,7 @@ function Kanban(props) {
             }
             else {
                 tempKanbanListsHtml.push(
-                    <p className=" font-bold text-lg my-5">
+                    <p className=" font-bold text-lg my-5" key={1}>
                         Add a status column to see your Kanban
                     </p>
                 )
