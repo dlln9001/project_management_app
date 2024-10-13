@@ -10,7 +10,7 @@ function Layout() {
     const { showCreateWorkspaceItem, setShowCreateWorkspaceItem } = useCreateElement()
     const [renderSideBar, setRenderSideBar] = useState(false)
     const [deletedBoardName, setDeletedBoardName] = useState('')
-    console.log(deletedBoardName)
+
     return (
         <>
             <div className="bg-gradient-to-b from-indigo-100 to-slate-50 relative h-screen">
