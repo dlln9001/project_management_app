@@ -29,7 +29,7 @@ function SiteOptionsButton() {
                 <div className="absolute right-0 bg-white rounded-full h-8 w-8 translate-x-4 flex items-center justify-center text-white">
                     {is_default_profile_picture 
                     ? <p className=" font-medium bg-slate-400 w-full h-full rounded-full flex justify-center items-center">{name[0].toUpperCase()}</p>
-                    : <img src={pfpUrl} alt="" className='rounded-full'/>
+                    : <img src={pfpUrl} alt="" className='rounded-full object-cover h-full w-full'/>
                     }
                 </div>
                 {showPopup &&

@@ -37,6 +37,23 @@ function Profile(props) {
         .then(data => {
             localStorage.setItem('userInfo', JSON.stringify(data.user))
             props.setPfpUrl('http://127.0.0.1:8000' + JSON.parse(localStorage.getItem('userInfo')).profile_picture)
+            setShowChangePfp(false)
+        })
+    }
+
+    function removePfp(e) {
+        fetch('http://127.0.0.1:8000/user/delete-pfp/', {
+            method: "DELETE",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${token}`
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            localStorage.setItem('userInfo', JSON.stringify(data.user))
+            props.setPfpUrl('')
+            setShowChangePfp(false)
         })
     }
 
@@ -57,7 +74,7 @@ function Profile(props) {
                                 onClick={() => setShowChangePfp(true)}>
                                 {props.is_default_profile_picture 
                                 ? <p className=' text-7xl bg-slate-400 w-full h-full rounded-full flex justify-center items-center'>{name[0].toUpperCase()}</p>
-                                : <img src={props.pfpUrl} alt="" className=' rounded-full' />
+                                : <img src={props.pfpUrl} alt="" className=' rounded-full object-cover h-full w-full' />
                                 }
                                 <div className='absolute bg-black opacity-60 h-full w-full rounded-full invisible group-hover:visible'></div>
                                 <div className='absolute text-center flex flex-col justify-center items-center w-2/3 invisible group-hover:visible'>
@@ -76,7 +93,7 @@ function Profile(props) {
                                         </label>
                                         <input type="file" accept='image/*' className='hidden' id='choose-profile-pic' onChange={changePfp}/>
                                     </form>
-                                    <div className='flex gap-2 hover:bg-slate-100 cursor-pointer px-2 py-1 rounded-sm'>
+                                    <div className='flex gap-2 hover:bg-slate-100 cursor-pointer px-2 py-1 rounded-sm' onClick={removePfp}>
                                         <FiTrash />
                                         <p className='text-xs'>Remove profile picture</p>
                                     </div>

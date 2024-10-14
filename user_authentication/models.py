@@ -28,4 +28,13 @@ class User(AbstractUser):
                 os.remove(self.profile_picture.path)
         
         self.profile_picture = new_picture
+        self.is_default_profile_picture = False
+        self.save()
+
+    def delete_profile_picture(self):
+        if self.profile_picture:
+            if os.path.isfile(self.profile_picture.path):
+                os.remove(self.profile_picture.path)
+                
+        self.is_default_profile_picture = True
         self.save()
