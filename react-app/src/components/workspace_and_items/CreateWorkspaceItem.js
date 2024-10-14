@@ -26,7 +26,7 @@ function CreateWorkspaceItem() {
 
     return (
         <>
-            <div className=" bg-white w-[500px] z-30 p-8 rounded-lg flex flex-col shadow-all-sides">
+            <div className=" bg-white w-[500px] z-40 p-8 rounded-lg flex flex-col shadow-all-sides">
                 <p className=" text-3xl text-slate-700">Create {lowerItemType}</p>
                 <div className="mt-7 mb-7">
                     <p className="text-sm text-slate-600 mb-2">{itemType} name</p>

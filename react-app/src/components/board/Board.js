@@ -106,7 +106,7 @@ function Board(props) {
     return (
         <div className="bg-white rounded-tl-lg relative  h-full custom-scrollbar min-w-fit overflow-auto" id="board-id">
             <div className={`ml-10 mb-5 mr-1`}>
-                <div className="sticky top-0 bg-white z-10 py-5 w-full">
+                <div className="sticky top-0 bg-white z-20 py-5 w-full">
                     <div >
                         <p ref={boardTitleRef} className="text-2xl hover:bg-slate-100 w-fit p-2 py-0 rounded-[4px] cursor-pointer peer" onClick={() => boardValues.setShowBoardInfo(true)}>
                             {boardValues.boardTitle}

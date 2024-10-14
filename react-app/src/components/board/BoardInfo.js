@@ -35,7 +35,7 @@ const BoardInfo = React.forwardRef((props, ref) => {
     }, [boardDescription, updateEffect])
 
     function getOwnerInfo() {
-        fetch('http://127.0.0.1:8000/authorize/get-user-info/', {
+        fetch('http://127.0.0.1:8000/user/get-user-info/', {
             method: 'POST',
             headers: {  
                 'Content-Type': 'application/json',

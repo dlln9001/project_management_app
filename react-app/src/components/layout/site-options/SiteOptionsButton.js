@@ -4,8 +4,10 @@ import Profile from './Profile'
 
 function SiteOptionsButton() {
     const name = JSON.parse(localStorage.getItem('userInfo')).name
+    const is_default_profile_picture = JSON.parse(localStorage.getItem('userInfo')).is_default_profile_picture
     const [showPopup, setShowPopup] = useState(false)
     const [showProfile, setShowProfile] = useState(false)
+    const [pfpUrl, setPfpUrl] = useState('http://127.0.0.1:8000' + JSON.parse(localStorage.getItem('userInfo')).profile_picture)
     const siteOptionsButtonRef = useRef('')
 
     useEffect(() => {
@@ -24,15 +26,18 @@ function SiteOptionsButton() {
                 ${showPopup ? `bg-sky-100` : `hover:bg-slate-100 bg-white`}`}
                 onClick={() => setShowPopup(true)}>
                 <img src={process.env.PUBLIC_URL + 'images/TaskTrackLogoOnlyImage.png'} alt="" className="h-6 mr-4 ml-1"/>
-                <div className="absolute right-0 bg-slate-400 rounded-full h-8 w-8 translate-x-4 flex items-center justify-center text-white">
-                    <p className=" font-medium">{name[0].toUpperCase()}</p>
+                <div className="absolute right-0 bg-white rounded-full h-8 w-8 translate-x-4 flex items-center justify-center text-white">
+                    {is_default_profile_picture 
+                    ? <p className=" font-medium bg-slate-400 w-full h-full rounded-full flex justify-center items-center">{name[0].toUpperCase()}</p>
+                    : <img src={pfpUrl} alt="" className='rounded-full'/>
+                    }
                 </div>
                 {showPopup &&
                     <SiteOptionsPopup showProfile={showProfile} setShowProfile={setShowProfile}/>
                 }
             </div>
             {showProfile &&
-                <Profile showProfile={showProfile} setShowProfile={setShowProfile}/>
+                <Profile showProfile={showProfile} setShowProfile={setShowProfile} is_default_profile_picture={is_default_profile_picture} pfpUrl={pfpUrl} setPfpUrl={setPfpUrl}/>
             }
         </>
     )
