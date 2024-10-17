@@ -14,6 +14,39 @@ class GoogleSignInView(APIView):
     permission_classes = [AllowAny]
     def post(self, request):    
         token = request.data.get('token')
+
+       # logic for changing email address with google
+        if request.data.get('link_new_account'):
+            
+            # Fetch new Google account info using the token
+            try:
+                user_info_response = requests.get(
+                    'https://www.googleapis.com/oauth2/v3/userinfo',
+                    headers={'Authorization': f'Bearer {token}'}
+                )
+                user_info = user_info_response.json()
+                
+                if user_info_response.status_code != 200:
+                    return Response({'status': 'Failed to fetch Google account info'}, status=status.HTTP_400_BAD_REQUEST)
+
+                new_google_email = user_info['email']
+                new_google_id = user_info['sub']  # Google ID
+                
+            except Exception as e:
+                return Response({'status': 'Error fetching Google account info', 'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+            user = User.objects.get(id=request.data['user_id'])
+
+            # Ensure the new Google account isn't already linked to another user
+            if User.objects.filter(google_id=new_google_id).exclude(id=user.id).exists():
+                return Response({'status': 'This Google account is already linked to another user'}, status=status.HTTP_400_BAD_REQUEST)
+            
+            # Update user's Google credentials
+            user.email = new_google_email
+            user.google_id = new_google_id
+            user.username = new_google_email
+            user.save()
+        
         try:
             user_info_response = requests.get(
                 'https://www.googleapis.com/oauth2/v3/userinfo',
@@ -83,3 +116,16 @@ def login(request):
     token = Token.objects.create(user=user)
     serializer = UserSerializer(instance=user)
     return Response({'status': 'success', 'user': serializer.data, 'token': token.key})
+
+
+@api_view(['POST', 'GET'])
+def change_standard_email(request):
+    user = request.user
+    if User.objects.filter(email=request.data['new_email']).exists():
+        return Response({'status': 'This account is already linked to another user'}, status=status.HTTP_400_BAD_REQUEST)
+    else:
+        user.username = request.data['new_email']
+        user.email = request.data['new_email']
+        user.save()
+        user_serialized = UserSerializer(user)
+        return Response({'status': 'success', 'user': user_serialized.data}, status=status.HTTP_200_OK)

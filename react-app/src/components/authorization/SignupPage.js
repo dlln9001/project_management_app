@@ -20,7 +20,7 @@ function SigninPage() {
         <>
             <form className="flex flex-col items-center min-h-screen w-fit mx-auto mt-44" onSubmit={continueSignin} ref={emailForm}>
                 <h1 className="text-center text-3xl mb-10">Welcome to TaskTrack</h1>
-                <GoogleLogIn/>
+                <GoogleLogIn linkNewAccount={false} userToken={-1}/>
                 <div className="flex items-end gap-3 mt-5 w-full justify-center mb-5">
                     <div className=" w-full border-t-slate-300 border-t min-h-4"></div>
                     <p>or</p>

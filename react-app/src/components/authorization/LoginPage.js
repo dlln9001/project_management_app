@@ -68,7 +68,7 @@ function LoginPage() {
                     <div className="w-full border-t-slate-300 border-t-2"></div>
                 </div>
                 <div className=" mb-7">
-                    <GoogleLogIn/>
+                    <GoogleLogIn linkNewAccount={false} userToken={-1}/>
                 </div>
                 <div className="flex gap-2">
                     <p>Don't have an account yet?</p>

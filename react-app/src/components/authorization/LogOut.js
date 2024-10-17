@@ -1,15 +1,18 @@
 import { googleLogout } from'@react-oauth/google'
 import { useNavigate } from 'react-router-dom'
 import { CiLogout } from "react-icons/ci";
+import { useUserContext } from '../../contexts/UserContext';
 
 function LogOut() {
     const navigate = useNavigate()
+    const { userInfo, setUserInfo } = useUserContext()
     
     function logout() {
         googleLogout()
         localStorage.removeItem('userInfo')
         localStorage.removeItem('userToken')
         navigate('/')
+        setUserInfo('')
     }
     return (
         <div onClick={() => logout()} className="flex gap-2 items-center px-3 py-2">

@@ -1,10 +1,11 @@
 import { useState } from "react"
-import LogOut from "./authorization/LogOut"
+import { useUserContext } from "../contexts/UserContext"
 
 function Home() {
-    const [username, setUsername] = useState(JSON.parse(localStorage.getItem('userInfo')).username)
-    const [name, setName] = useState(JSON.parse(localStorage.getItem('userInfo')).name)
-    const [token, setToken] = useState(localStorage.getItem('userToken'))
+    const { userInfo, setUserInfo } = useUserContext()
+    const username = JSON.parse(localStorage.getItem('userInfo')).username
+    const name = JSON.parse(localStorage.getItem('userInfo')).name
+    const token = JSON.parse(localStorage.getItem('userToken'))
 
     return (
         <div className=" bg-white h-screen rounded-tl-lg p-5">
