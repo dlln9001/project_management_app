@@ -4,12 +4,34 @@ import { CiMail } from "react-icons/ci";
 import {useState, useRef, useEffect} from 'react'
 import ProfilePicture from './ProfilePicture';
 import ChangeEmail from './ChangeEmail';
+import { useUserContext } from '../../../contexts/UserContext';
 
 function Profile(props) {
-    const name = JSON.parse(localStorage.getItem('userInfo')).name
+    const { userInfo, setUserInfo } = useUserContext()
+    const [name, setName] = useState(JSON.parse(localStorage.getItem('userInfo')).name)
     const username = JSON.parse(localStorage.getItem('userInfo')).username
     const userToken = JSON.parse(localStorage.getItem('userToken'))
     const [showChangeEmail, setShowChangeEmail] = useState(false)
+
+    function changeName() {
+        fetch('http://127.0.0.1:8000/user/change-name/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${userToken}`
+            },
+            body: JSON.stringify({
+                new_name: name
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.user) {
+                localStorage.setItem('userInfo', JSON.stringify(data.user))
+                setUserInfo(data.user)
+            }
+        })
+    }
 
 
     return document.getElementById('portal-root') ? ReactDOM.createPortal (
@@ -28,7 +50,12 @@ function Profile(props) {
                     <div className='flex'>
                         <ProfilePicture userToken={userToken} is_default_profile_picture={props.is_default_profile_picture} pfpUrl={props.pfpUrl} setPfpUrl={props.setPfpUrl} name={name}/>
                         <div className="ml-5 border border-transparent hover:border-slate-300 rounded-sm px-2 py-[2px] font-medium text-3xl has-[:focus]:border-sky-600 h-fit">
-                            <input type="text" className="focus:outline-none" value={name} />
+                            <input type="text" className="focus:outline-none" value={name} onChange={(e) => setName(e.target.value)} onBlur={changeName}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter') {
+                                            e.target.blur()
+                                        }
+                                    }}/>
                         </div>
                     </div>
                     <div className="ml-auto w-60">

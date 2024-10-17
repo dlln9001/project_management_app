@@ -31,3 +31,12 @@ def delete_pfp(request):
     user.delete_profile_picture()
     user_serialized = UserSerializer(user)
     return Response({'status': 'success', 'user': user_serialized.data}, status=status.HTTP_200_OK)
+
+
+@api_view(['POST', 'GET'])
+def change_name(request):
+    user = request.user
+    user.name = request.data['new_name']
+    user.save()
+    user_serialized = UserSerializer(user)
+    return Response({'status': 'success', 'user': user_serialized.data}, status=status.HTTP_200_OK)

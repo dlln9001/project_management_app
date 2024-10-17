@@ -61,7 +61,7 @@ function ProfilePicture(props) {
             <div className=' h-36 w-36 bg-white rounded-full flex items-center justify-center text-white font-medium relative cursor-pointer group'
                 onClick={() => setShowChangePfp(true)}>
                 {props.is_default_profile_picture 
-                ? <p className=' text-7xl bg-slate-400 w-full h-full rounded-full flex justify-center items-center'>{props.name[0].toUpperCase()}</p>
+                ? <p className=' text-7xl bg-slate-400 w-full h-full rounded-full flex justify-center items-center'>{props.name[0] && props.name[0].toUpperCase()}</p>
                 : <img src={props.pfpUrl} alt="" className=' rounded-full object-cover h-full w-full' />
                 }
                 <div className='absolute bg-black opacity-60 h-full w-full rounded-full invisible group-hover:visible'></div>
