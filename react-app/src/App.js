@@ -9,6 +9,7 @@ import Layout from './components/layout/Layout'
 import { CreateWorkspaceItemProvider } from './contexts/CreateWorkspaceItemContext'
 import Board from './components/board/Board'
 import BoardDeleted from './components/board/BoardDeleted'
+import Document from './components/document/Document'
 import { BoardValuesProvider } from './contexts/BoardValuesContext'
 import { BoardViewsProvider } from './contexts/BoardViewsContext'
 import { UserContextProvider } from './contexts/UserContext'
@@ -29,6 +30,7 @@ function App() {
                 <Route path='home' element={ <Home /> } />
                   <Route path='board' element={<BoardValuesProvider> <BoardViewsProvider> <Board /> </BoardViewsProvider></BoardValuesProvider>}/>
                   <Route path='board-deleted' element={<BoardValuesProvider> <BoardViewsProvider> <BoardDeleted /> </BoardViewsProvider></BoardValuesProvider>}/>
+                  <Route path='docs' element={ <Document/> }/>
               </Route>
             </Routes>
           </BrowserRouter>
