@@ -7,7 +7,7 @@ function BubbleMenuComponent({ editor }) {
 
     return (
         <BubbleMenu editor={editor} tippyOptions={{ duration: 100 }}>
-            <div className='shadow-all-sides p-1 rounded-md bg-white'>
+            <div className='shadow-all-sides py-1 px-2 rounded-md bg-white'>
                 <button onClick={() => editor.chain().focus().toggleBold().run()} className={`rounded w-7 h-7 hover:bg-slate-100 font-medium
                     ${editor.isActive('bold') ? 'text-sky-600 bg-sky-200' : 'bg-white'}`}>
                 B
