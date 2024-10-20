@@ -1,12 +1,14 @@
 import React from 'react'
 import './editor-styles.css';
 import { useState, useRef, useEffect } from 'react'
-import { useEditor, EditorContent, FloatingMenu, BubbleMenu } from '@tiptap/react'
+import { useEditor, EditorContent, FloatingMenu } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Underline from '@tiptap/extension-underline'
 import TextAlign from '@tiptap/extension-text-align'
 import TaskList from '@tiptap/extension-task-list'
 import TaskItem from '@tiptap/extension-task-item'
+import BubbleMenuComponent from './BubbleMenuComponent';
+import FloatingMenuComponent from './FloatingMenuComponent';
 import { MdFormatListBulleted } from "react-icons/md";
 import { FaListOl } from "react-icons/fa";
 import { FaAlignLeft } from "react-icons/fa";
@@ -35,11 +37,9 @@ const content = '<p>Hello World!</p>'
 
 function Document() {
     const [showAlignments, setShowAlignments] = useState(false)
-    const [showFloatingMenuOptions, setShowFloatingMenuOptions] = useState(false)
     const [showTurnIntoTextOptions, setShowTurnIntoTextOptions] = useState(false)
     const turnIntoTextOptionsRef = useRef('')
     const alignmentButtonRef = useRef('')
-    const floatingMenuRef = useRef('')
 
     useEffect(() => {
         document.addEventListener('click', handleDocumentClick)
@@ -53,9 +53,6 @@ function Document() {
     function handleDocumentClick(e) {
         if (alignmentButtonRef.current && !alignmentButtonRef.current.contains(e.target)) {
             setShowAlignments(false)
-        }
-        if (floatingMenuRef.current && !floatingMenuRef.current.contains(e.target)) {
-            setShowFloatingMenuOptions(false)
         }
         if (turnIntoTextOptionsRef.current && !turnIntoTextOptionsRef.current.contains(e.target)) {
             setShowTurnIntoTextOptions(false)
@@ -198,59 +195,11 @@ function Document() {
                 </div>
                 <div className='z-10 prose'>
                     <EditorContent editor={editor} className='prose'/>
-                    <FloatingMenu editor={editor} tippyOptions={{ duration: 100 }}>
-                        <div ref={floatingMenuRef}>
-                            
-                            <button onClick={() => setShowFloatingMenuOptions(true)} className={` bg-sky-600 rounded w-6 h-6 text-white flex items-center justify-center`}>
-                            +
-                            </button>
-                            
-                            {showFloatingMenuOptions &&
-                                <div className='shadow-all-sides px-2 py-2 bg-white rounded-md' onClick={() => setShowFloatingMenuOptions(false)}>
-                                    <div className=' hover:bg-slate-100 rounded-md flex gap-2 px-2 items-center py-1 cursor-pointer'
-                                        onClick={() => editor.chain().focus().setParagraph().run()}>
-                                        <RiText className=' text-lg'/>
-                                        <p className=' text-sm m-0'>Normal text</p>
-                                    </div>
-                                    <div className=' hover:bg-slate-100 rounded-md flex gap-2 px-2 items-center py-1 cursor-pointer' 
-                                        onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}>
-                                        <LuHeading1 className=' text-xl'/>
-                                        <p className=' text-sm m-0'>Large title</p>
-                                    </div>
-                                    <div className=' hover:bg-slate-100 rounded-md flex gap-2 px-2 items-center py-1 cursor-pointer' 
-                                        onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}>
-                                        <LuHeading2 className=' text-xl'/>
-                                        <p className=' text-sm m-0'>Medium title</p>
-                                    </div>
-                                    <div className=' hover:bg-slate-100 rounded-md flex gap-2 px-2 items-center py-1 cursor-pointer' 
-                                        onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}>
-                                        <LuHeading3 className=' text-xl'/>
-                                        <p className=' text-sm m-0'>Small title</p>
-                                    </div>
-                                </div>
-                            }
-                        </div>
-                    </FloatingMenu>
-                    <BubbleMenu editor={editor} tippyOptions={{ duration: 100 }}>
-                        <div className='shadow-all-sides p-1 rounded-md bg-white'>
-                            <button onClick={() => editor.chain().focus().toggleBold().run()} className={`rounded w-7 h-7 hover:bg-slate-100 font-medium
-                                ${editor.isActive('bold') ? 'text-sky-600 bg-sky-200' : 'bg-white'}`}>
-                            B
-                            </button>
-                            <button onClick={() => editor.chain().focus().toggleItalic().run()} className={`rounded w-7 h-7 hover:bg-slate-100 font-medium
-                                ${editor.isActive('italic') ? 'text-sky-600 bg-sky-200' : 'bg-white'}`}>
-                            <i>i</i>
-                            </button>
-                            <button onClick={() => editor.chain().focus().toggleUnderline().run()} className={`rounded w-7 h-7 hover:bg-slate-100 font-medium
-                                ${editor.isActive('underline') ? 'text-sky-600 bg-sky-200' : 'bg-white'}`}>
-                            <u>U</u>
-                            </button>
-                            <button onClick={() => editor.chain().focus().toggleStrike().run()} className={`rounded w-7 h-7 hover:bg-slate-100 font-medium
-                                ${editor.isActive('strike') ? 'text-sky-600 bg-sky-200' : 'bg-white'}`}>
-                            <s> S </s>
-                            </button>
-                        </div>
-                    </BubbleMenu>
+    
+                    <FloatingMenuComponent editor={editor}/>
+
+                    <BubbleMenuComponent editor={editor}/>
+
                 </div>
             </div>
         </div>
