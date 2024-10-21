@@ -9,6 +9,7 @@ import AddWorkspaceItem from "../workspace_and_items/AddWorkspaceItem";
 import { useNavigate } from "react-router-dom";
 import { useCreateElement } from "../../contexts/CreateWorkspaceItemContext";
 import WorkspaceItemOptions from "../workspace_and_items/WorkspaceItemOptions";
+import { GrDocumentText } from "react-icons/gr";
 
 
 function Sidebar(props) {
@@ -53,8 +54,34 @@ function Sidebar(props) {
                             {(workspaceItemOptionsId === i) &&
                                 <WorkspaceItemOptions renderSideBar={props.renderSideBar} setRenderSideBar={props.setRenderSideBar} workspaceItemOptionsId={workspaceItemOptionsId}
                                 setWorkspaceItemOptionsId={setWorkspaceItemOptionsId} boardId={boardId} deletedBoardName={props.deletedBoardName} 
-                                setDeletedBoardName={props.setDeletedBoardName}
+                                setDeletedBoardName={props.setDeletedBoardName} workspaceType={'board'}
                                 boardName={data.boards[i].name}/>
+                            }
+                        </div>
+                    )
+                }
+
+                for (let i = 0; i < data.documents.length; i++) {
+                    let documentId = data.documents[i].id
+                    tempWorkspaceElementsHtml.push(
+                        // key is like that so it's not duplicated with the board keys
+                        <div key={i + data.boards.length + 1} className={`bar-button text-sm flex items-center gap-2 group relative 
+                            ${workspaceItemOptionsId === (i + data.boards.length + 1) && `bg-slate-200`}`}
+                            onClick={() => navigate(`docs?id=${encodeURIComponent(documentId)}`)}>
+                            <GrDocumentText/>
+                            <p className=" truncate">{data.documents[i].title}</p>
+                            <div className={`ml-auto  group-hover:text-inherit  p-1 rounded-md 
+                                ${workspaceItemOptionsId === (i + data.boards.length + 1) ? `text-inherit hover:bg-sky-200 bg-sky-200` : `text-white hover:bg-neutral-300`}`}
+                                 onClick={(e) => {
+                                        e.stopPropagation()
+                                        setWorkspaceItemOptionsId(i + data.boards.length + 1)
+                                        props.setRenderSideBar(!props.renderSideBar)
+                                    }}>
+                                <BsThreeDots />
+                            </div>
+                            {(workspaceItemOptionsId === (i + data.boards.length + 1)) &&
+                                <WorkspaceItemOptions renderSideBar={props.renderSideBar} setRenderSideBar={props.setRenderSideBar} workspaceItemOptionsId={workspaceItemOptionsId}
+                                setWorkspaceItemOptionsId={setWorkspaceItemOptionsId} documentId={documentId} workspaceType={'doc'}/>
                             }
                         </div>
                     )

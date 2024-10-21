@@ -1,5 +1,6 @@
 import { useState, useContext } from "react"
 import { useCreateElement } from "../../contexts/CreateWorkspaceItemContext"
+import { GrDocumentText } from "react-icons/gr";
 
 function AddWorkspaceItem(props) {
     const { showCreateWorkspaceItem, setShowCreateWorkspaceItem, itemType, setItemType } = useCreateElement()
@@ -7,6 +8,11 @@ function AddWorkspaceItem(props) {
     function showCreateBoard() {
         setShowCreateWorkspaceItem(true)
         setItemType('Board')
+    }
+
+    function showCreateDoc() {
+        setShowCreateWorkspaceItem(true)
+        setItemType('Doc')
     }
 
     return (
@@ -18,6 +24,10 @@ function AddWorkspaceItem(props) {
                 <div className="bar-button text-sm flex items-center gap-2" onClick={showCreateBoard}>
                     <img src={process.env.PUBLIC_URL + 'images/boardsIcon.png'} alt="" className="h-[14px]" />
                     <p>Board</p>
+                </div>
+                <div className="bar-button text-sm flex items-center gap-2" onClick={showCreateDoc}>
+                    <GrDocumentText/>
+                    <p>Doc</p>
                 </div>
             </div>
         </>

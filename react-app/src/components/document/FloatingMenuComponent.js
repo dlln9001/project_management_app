@@ -30,7 +30,7 @@ function FloatingMenuComponent({ editor }) {
     }
     return (
         <FloatingMenu editor={editor} tippyOptions={{ duration: 100 }}>
-            <div ref={floatingMenuRef}>
+            <div ref={floatingMenuRef} className="-translate-x-11">
                 
                 <button onClick={() => setShowFloatingMenuOptions(true)} className={` bg-sky-600 rounded w-6 h-6 text-white flex items-center justify-center`}>
                 +

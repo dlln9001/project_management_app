@@ -10,14 +10,30 @@ function WorkspaceItemOptions(props) {
 
     useEffect(() => {
         document.addEventListener('click', handleDocumentClick)
+
+        return () => {
+            document.removeEventListener('click', handleDocumentClick)
+        }
     }, [])
 
     function handleDocumentClick(e) {
         if (optionsRef.current && !optionsRef.current.contains(e.target)) {
             props.setWorkspaceItemOptionsId('')
             props.setRenderSideBar(!props.renderSideBar)
-            document.removeEventListener('click', handleDocumentClick)
         }
+    }
+
+    function determineWorkspaceItem() {
+        if (props.workspaceType === 'board') {
+            deleteBoard()
+        }
+        else if (props.workspaceType === 'doc') {
+            deleteDoc()
+        }
+    }
+
+    function deleteDoc() {
+        console.log('delete doc')
     }
 
     function deleteBoard() {
@@ -44,7 +60,7 @@ function WorkspaceItemOptions(props) {
     return (
         <div ref={optionsRef} className="absolute top-8 left-56 bg-white shadow-all-sides rounded-md w-64 z-10" onClick={(e) => e.stopPropagation()}>
             <div className="flex p-[6px] hover:bg-slate-100 m-2 rounded-md items-center gap-2" 
-                onClick={deleteBoard}>
+                onClick={determineWorkspaceItem}>
                 <FiTrash/>
                 <p>Delete</p>
             </div>

@@ -26,5 +26,6 @@ urlpatterns = [
     path('authorize/', include('user_authentication.api.urls')),
     path('workspace-element/', include('workspace_elements.api.urls')),
     path('board/', include('boards.api.urls')),
-    path('user/', include('users.api.urls'))
+    path('user/', include('users.api.urls')),
+    path('document/', include('document.api.urls'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

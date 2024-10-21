@@ -49,3 +49,12 @@
 .ProseMirror ul[data-type="taskList"] {
     padding: 0px;
 }
+
+.tiptap p.is-empty::before {
+    color: #adb5bd;
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    pointer-events: none;
+  }
+  
