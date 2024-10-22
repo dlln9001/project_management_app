@@ -9,7 +9,7 @@ import { useState } from "react";
 function Layout() {
     const { showCreateWorkspaceItem, setShowCreateWorkspaceItem } = useCreateElement()
     const [renderSideBar, setRenderSideBar] = useState(false)
-    const [deletedBoardName, setDeletedBoardName] = useState('')
+    const [deletedWorkspaceName, setDeletedWorkspaceName] = useState('')
 
     return (
         <>
@@ -19,9 +19,9 @@ function Layout() {
                         <Topbar />
                     </div>
                     <div className="flex h-full overflow-y-hidden custom-scrollbar">
-                        <Sidebar renderSideBar={renderSideBar} setRenderSideBar={setRenderSideBar} deletedBoardName={deletedBoardName} setDeletedBoardName={setDeletedBoardName} />
+                        <Sidebar renderSideBar={renderSideBar} setRenderSideBar={setRenderSideBar} deletedWorkspaceName={deletedWorkspaceName} setDeletedWorkspaceName={setDeletedWorkspaceName} />
                         <main className="w-full">
-                            <Outlet context={{ renderSideBar, setRenderSideBar, deletedBoardName, setDeletedBoardName }} />
+                            <Outlet context={{ renderSideBar, setRenderSideBar, deletedWorkspaceName, setDeletedWorkspaceName }} />
                         </main>
                     </div>
                 </div>

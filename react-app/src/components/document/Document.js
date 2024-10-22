@@ -13,6 +13,9 @@ import Placeholder from '@tiptap/extension-placeholder'
 import BubbleMenuComponent from './BubbleMenuComponent';
 import FloatingMenuComponent from './FloatingMenuComponent';
 import EditorTopBar from './EditorTopBar';
+import { IoMdCreate } from "react-icons/io";
+import { FaArrowsRotate } from "react-icons/fa6";
+import { FaRegCircleCheck } from "react-icons/fa6";
 
 const extensions = 
     [StarterKit.configure({
@@ -42,7 +45,8 @@ function Document() {
 
     const [getDocumentInfo, setGetDocumentInfo] = useState(false)
     const [lastSaved, setLastSaved] = useState(Date.now())
-    const [lastSavedDate, setLastSavedDate] = useState(new Date())
+    const [createdAt, setCreatedAt] = useState('')
+    const [saving, setSaving] = useState(false)
 
     const editor = useEditor({
         extensions: extensions,
@@ -51,9 +55,10 @@ function Document() {
 
       // Debounced save on change
     useEffect(() => {
+        setSaving(true)
         const saveTimer = setTimeout(() => {
             saveDocument()
-        }, 500);
+        }, 700);
 
         return () => clearTimeout(saveTimer);
     }, [editor.getHTML()]);
@@ -87,6 +92,14 @@ function Document() {
             if (editor) {
                 editor.commands.setContent(data.documentInfo.content) // Update editor content once fetched
             }
+            let created_at_date = new Date(data.documentInfo.created_at)
+            let extraZero = ''
+            if (created_at_date.getMinutes() < 10) {
+                extraZero = '0'
+            }
+            let created_at_format = created_at_date.getMonth() + 1 + '/' + created_at_date.getDate() + '/' + created_at_date.getFullYear() + ', ' + 
+                                    created_at_date.getHours() + ':' + extraZero + created_at_date.getMinutes()
+            setCreatedAt(created_at_format)
             console.log(data)
         })
     }, [getDocumentInfo, documentId])
@@ -129,7 +142,7 @@ function Document() {
         .then(res => res.json())
         .then(data => {
             setLastSaved(Date.now())
-            setLastSavedDate(new Date())
+            setSaving(false)
         })
     }
 
@@ -142,7 +155,7 @@ function Document() {
 
                 <div className='mt-28 w-[750px]'>
     
-                    <div className='border border-transparent hover:border-slate-300 mb-8 p-1 has-[:focus]:border-sky-600 rounded-sm'>
+                    <div className='border border-transparent hover:border-slate-300 mb-2 p-1 has-[:focus]:border-sky-600 rounded-sm'>
                         <input type="text" value={titleSelected ? title : documentInfo.title} className=' text-4xl font-semibold focus:outline-none' 
                         onFocus={() => {
                             setTitle(documentInfo.title)
@@ -156,10 +169,29 @@ function Document() {
                         }}
                         onBlur={changeTitle}/>
                     </div>
+                    
+                    <div className='mb-6 flex gap-5'>
+                        <div className='text-sm flex gap-2 items-center'>
+                            <IoMdCreate /> 
+                            <div className='flex gap-1'>
+                                <p>Created</p>
+                                <strong>{createdAt && createdAt}</strong>
+                            </div>
+                        </div>
+                        {saving 
+                        ? 
+                        <div className='flex gap-2 items-center'>
+                            <FaArrowsRotate />
+                            <p className='text-sm text-slate-700'>saving...</p>
+                        </div>
+                        : 
+                        <div className='flex gap-2 items-center'>
+                            <FaRegCircleCheck />
+                            <p className='text-sm text-slate-700'>saved</p>
+                        </div>
+                        }
+                    </div>
 
-                    {/* <button onClick={saveDocument}>{lastSavedDate.toISOString()}</button> */}
-
-    
                     <div className='z-10 prose'>
                         <EditorContent editor={editor} className='prose'/>
         

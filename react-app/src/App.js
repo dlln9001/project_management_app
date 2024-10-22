@@ -8,7 +8,7 @@ import LoginPage from './components/authorization/LoginPage'
 import Layout from './components/layout/Layout'
 import { CreateWorkspaceItemProvider } from './contexts/CreateWorkspaceItemContext'
 import Board from './components/board/Board'
-import BoardDeleted from './components/board/BoardDeleted'
+import WorkspaceItemDeleted from './components/workspace_and_items/WorkspaceItemDeleted'
 import Document from './components/document/Document'
 import { BoardValuesProvider } from './contexts/BoardValuesContext'
 import { BoardViewsProvider } from './contexts/BoardViewsContext'
@@ -29,7 +29,7 @@ function App() {
               <Route element={<Layout />}>
                 <Route path='home' element={ <Home /> } />
                   <Route path='board' element={<BoardValuesProvider> <BoardViewsProvider> <Board /> </BoardViewsProvider></BoardValuesProvider>}/>
-                  <Route path='board-deleted' element={<BoardValuesProvider> <BoardViewsProvider> <BoardDeleted /> </BoardViewsProvider></BoardValuesProvider>}/>
+                  <Route path='workspace-item-deleted' element={<BoardValuesProvider> <BoardViewsProvider> <WorkspaceItemDeleted /> </BoardViewsProvider></BoardValuesProvider>}/>
                   <Route path='docs' element={ <Document/> }/>
               </Route>
             </Routes>

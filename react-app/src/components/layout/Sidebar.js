@@ -53,8 +53,8 @@ function Sidebar(props) {
                             </div>
                             {(workspaceItemOptionsId === i) &&
                                 <WorkspaceItemOptions renderSideBar={props.renderSideBar} setRenderSideBar={props.setRenderSideBar} workspaceItemOptionsId={workspaceItemOptionsId}
-                                setWorkspaceItemOptionsId={setWorkspaceItemOptionsId} boardId={boardId} deletedBoardName={props.deletedBoardName} 
-                                setDeletedBoardName={props.setDeletedBoardName} workspaceType={'board'}
+                                setWorkspaceItemOptionsId={setWorkspaceItemOptionsId} boardId={boardId} deletedWorkspaceName={props.deletedWorkspaceName} 
+                                setDeletedWorkspaceName={props.setDeletedWorkspaceName} workspaceType={'board'}
                                 boardName={data.boards[i].name}/>
                             }
                         </div>
@@ -81,7 +81,8 @@ function Sidebar(props) {
                             </div>
                             {(workspaceItemOptionsId === (i + data.boards.length + 1)) &&
                                 <WorkspaceItemOptions renderSideBar={props.renderSideBar} setRenderSideBar={props.setRenderSideBar} workspaceItemOptionsId={workspaceItemOptionsId}
-                                setWorkspaceItemOptionsId={setWorkspaceItemOptionsId} documentId={documentId} workspaceType={'doc'}/>
+                                setWorkspaceItemOptionsId={setWorkspaceItemOptionsId} documentId={documentId} workspaceType={'doc'} deletedWorkspaceName={props.deletedWorkspaceName} 
+                                setDeletedWorkspaceName={props.setDeletedWorkspaceName} docName={data.documents[i].title}/>
                             }
                         </div>
                     )

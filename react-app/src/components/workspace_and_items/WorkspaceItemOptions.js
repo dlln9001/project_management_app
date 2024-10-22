@@ -33,7 +33,22 @@ function WorkspaceItemOptions(props) {
     }
 
     function deleteDoc() {
-        console.log('delete doc')
+        fetch('http://127.0.0.1:8000/document/delete-document/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${userToken}`
+            },
+            body: JSON.stringify({
+                document_id: props.documentId
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            props.setDeletedWorkspaceName(props.docName)
+            props.setRenderSideBar(!props.renderSideBar)
+            navigate('workspace-item-deleted')
+        })
     }
 
     function deleteBoard() {
@@ -50,9 +65,9 @@ function WorkspaceItemOptions(props) {
         .then(res => res.json())
         .then(data => {
             props.setWorkspaceItemOptionsId('')
-            props.setDeletedBoardName(props.boardName)
+            props.setDeletedWorkspaceName(props.boardName)
             props.setRenderSideBar(!props.renderSideBar)
-            navigate('board-deleted')
+            navigate('workspace-item-deleted')
         })
     }
 
