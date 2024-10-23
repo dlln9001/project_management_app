@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useOutletContext } from "react-router-dom";
 import './editor-styles.css';
 import { useLocation } from "react-router-dom";
@@ -10,6 +10,7 @@ import TextAlign from '@tiptap/extension-text-align'
 import TaskList from '@tiptap/extension-task-list'
 import TaskItem from '@tiptap/extension-task-item'
 import Placeholder from '@tiptap/extension-placeholder'
+import Image from '@tiptap/extension-image'
 import BubbleMenuComponent from './BubbleMenuComponent';
 import FloatingMenuComponent from './FloatingMenuComponent';
 import EditorTopBar from './EditorTopBar';
@@ -29,7 +30,8 @@ const extensions =
     TaskItem,
     Placeholder.configure({
         placeholder: 'Write something'
-    })]
+    }),
+    Image]
 
 let content = ''
 
@@ -104,9 +106,14 @@ function Document() {
         })
     }, [getDocumentInfo, documentId])
 
+
+
+
     if (!editor) {
         return null
     }
+
+
 
     function changeTitle() {
         fetch('http://127.0.0.1:8000/document/change-title/', {
@@ -151,7 +158,7 @@ function Document() {
         {documentInfo && 
             <div className="bg-white h-full rounded-md flex justify-center relative">
     
-                <EditorTopBar editor={editor}/>
+                <EditorTopBar editor={editor} userToken={userToken} documentId={documentId}/>
 
                 <div className='mt-28 w-[750px]'>
     

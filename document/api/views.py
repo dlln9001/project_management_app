@@ -3,6 +3,7 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 from ..models import Document
 from .serializers import DocumentSerializer
+from ..models import DocumentImage
 
 @api_view(['GET', 'POST'])
 def getDocument(request):
@@ -32,3 +33,13 @@ def change_title(request):
     document.title = request.data['title']
     document.save()
     return Response({'status': 'success'}, status=status.HTTP_200_OK)
+
+
+@api_view(['GET', 'POST'])
+def add_image(request):
+    image_file = request.FILES.get('new_image')
+    document_id = request.POST.get('document_id')
+    document = Document.objects.get(id=document_id)
+    image = DocumentImage.objects.create(document=document, image=image_file)
+    image_url = image.image.url
+    return Response({'status': 'success', 'image_url': image_url}, status=status.HTTP_200_OK)

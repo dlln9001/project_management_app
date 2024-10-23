@@ -45,6 +45,7 @@ function WorkspaceItemOptions(props) {
         })
         .then(res => res.json())
         .then(data => {
+            props.setWorkspaceItemOptionsId('')
             props.setDeletedWorkspaceName(props.docName)
             props.setRenderSideBar(!props.renderSideBar)
             navigate('workspace-item-deleted')
