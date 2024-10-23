@@ -8,6 +8,7 @@ class Board(models.Model):
     description = models.CharField(max_length=2550, default="Add your board's description here")
     type = models.CharField(max_length=50, default='board', editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
+    order = models.IntegerField()
 
 class BoardView(models.Model):
     board = models.ForeignKey(Board, on_delete=models.CASCADE)

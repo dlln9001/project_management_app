@@ -107,6 +107,9 @@ function Document() {
     }, [getDocumentInfo, documentId])
 
 
+    useEffect(() => {
+        setTitle(documentInfo.title)
+    }, [documentInfo])
 
 
     if (!editor) {
@@ -116,6 +119,7 @@ function Document() {
 
 
     function changeTitle() {
+        setSaving(true)
         fetch('http://127.0.0.1:8000/document/change-title/', {
             method: 'POST',
             headers: {
@@ -131,6 +135,9 @@ function Document() {
         .then(data => {
             setGetDocumentInfo(prev => !prev)
             setRenderSideBar(prev => !prev)
+            setTimeout(() => {
+                setSaving(false)
+            }, 400)
         })
     }
 
@@ -156,56 +163,58 @@ function Document() {
     return (
         <>
         {documentInfo && 
-            <div className="bg-white h-full rounded-md flex justify-center relative">
+            <div className="bg-white h-full rounded-tl-md flex justify-center relative">
     
                 <EditorTopBar editor={editor} userToken={userToken} documentId={documentId}/>
 
-                <div className='mt-28 w-[750px]'>
-    
-                    <div className='border border-transparent hover:border-slate-300 mb-2 p-1 has-[:focus]:border-sky-600 rounded-sm'>
-                        <input type="text" value={titleSelected ? title : documentInfo.title} className=' text-4xl font-semibold focus:outline-none' 
-                        onFocus={() => {
-                            setTitle(documentInfo.title)
-                            setTitleSelected(true)
-                        }}
-                        onChange={(e) => setTitle(e.target.value)}
-                        onKeyDown={(e) => {
-                            if (e.key === 'Enter') {
-                                e.target.blur()
-                            }
-                        }}
-                        onBlur={changeTitle}/>
-                    </div>
-                    
-                    <div className='mb-6 flex gap-5'>
-                        <div className='text-sm flex gap-2 items-center'>
-                            <IoMdCreate /> 
-                            <div className='flex gap-1'>
-                                <p>Created</p>
-                                <strong>{createdAt && createdAt}</strong>
-                            </div>
-                        </div>
-                        {saving 
-                        ? 
-                        <div className='flex gap-2 items-center'>
-                            <FaArrowsRotate />
-                            <p className='text-sm text-slate-700'>saving...</p>
-                        </div>
-                        : 
-                        <div className='flex gap-2 items-center'>
-                            <FaRegCircleCheck />
-                            <p className='text-sm text-slate-700'>saved</p>
-                        </div>
-                        }
-                    </div>
-
-                    <div className='z-10 prose'>
-                        <EditorContent editor={editor} className='prose'/>
+                <div className='overflow-auto w-full flex justify-center custom-scrollbar'>
+                    <div className='mt-28 w-[750px]'>
         
-                        <FloatingMenuComponent editor={editor}/>
-    
-                        <BubbleMenuComponent editor={editor}/>
-    
+                        <div className='border border-transparent hover:border-slate-300 mb-2 p-1 has-[:focus]:border-sky-600 rounded-sm'>
+                            <input type="text" value={titleSelected ? title : documentInfo.title} className=' text-4xl font-semibold focus:outline-none' 
+                            onFocus={() => {
+                                setTitle(documentInfo.title)
+                                setTitleSelected(true)
+                            }}
+                            onChange={(e) => setTitle(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    e.target.blur()
+                                }
+                            }}
+                            onBlur={changeTitle}/>
+                        </div>
+                        
+                        <div className='mb-6 flex gap-5'>
+                            <div className='text-sm flex gap-2 items-center'>
+                                <IoMdCreate /> 
+                                <div className='flex gap-1'>
+                                    <p>Created</p>
+                                    <strong>{createdAt && createdAt}</strong>
+                                </div>
+                            </div>
+                            {saving 
+                            ? 
+                            <div className='flex gap-2 items-center'>
+                                <FaArrowsRotate />
+                                <p className='text-sm text-slate-700'>saving...</p>
+                            </div>
+                            : 
+                            <div className='flex gap-2 items-center'>
+                                <FaRegCircleCheck />
+                                <p className='text-sm text-slate-700'>saved</p>
+                            </div>
+                            }
+                        </div>
+
+                        <div className='z-10 prose'>
+                            <EditorContent editor={editor} className='prose'/>
+            
+                            <FloatingMenuComponent editor={editor}/>
+        
+                            <BubbleMenuComponent editor={editor}/>
+        
+                        </div>
                     </div>
                 </div>
             </div>

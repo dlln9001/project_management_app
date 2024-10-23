@@ -13,7 +13,6 @@ function EditorTopBar({ editor, userToken, documentId }) {
             const newImage = new FormData()
             newImage.append('new_image', e.target.files[0])
             newImage.append('document_id', documentId)
-            console.log(newImage[0])
 
             fetch('http://127.0.0.1:8000/document/add-image/', {
                 method: 'POST',
@@ -39,7 +38,7 @@ function EditorTopBar({ editor, userToken, documentId }) {
     }
 
     return (
-        <div className=' absolute px-5 py-3 left-0 border-b border-b-slate-300 w-full flex items-center gap-2'>
+        <div className=' absolute px-5 py-3 left-0 border-b border-b-slate-300 w-full flex items-center gap-2 bg-white z-10 rounded-tl-md'>
             
             <TopBarTextOptions editor={editor}/>
 

@@ -9,7 +9,7 @@ from ..models import BoardView
 class BoardSummarySerializer(serializers.ModelSerializer):
     class Meta(object):
         model = Board
-        fields = ['name', 'type', 'id']
+        fields = ['name', 'type', 'id', 'order']
 
 class BoardFullSerializer(serializers.ModelSerializer):
     class Meta(object):
