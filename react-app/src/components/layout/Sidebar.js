@@ -39,7 +39,6 @@ function Sidebar(props) {
                 for (let i = 0; i < data.boards.length; i++) {
                     let boardId = data.boards[i].id
                     selectedWorkspaceItem = JSON.parse(localStorage.getItem('selectedWorkspaceItem'))
-                    console.log(selectedWorkspaceItem, i, 'selected', selectedWorkspaceItem === i)
                     tempWorkspaceElementsHtml.push(
                         <div key={i} 
                             className={`bar-button text-sm flex items-center gap-2 group relative 
@@ -116,7 +115,12 @@ function Sidebar(props) {
 
     return (
         <div className=" bg-slate-50 mr-3 rounded-tr-lg w-72 flex flex-col">
-            <div className="bar-button mb-1 flex items-center gap-2" onClick={() => navigate('home')}>
+            <div className={`bar-button mb-1 flex items-center gap-2 ${JSON.parse(localStorage.getItem('selectedWorkspaceItem')) === -1 && `bg-sky-100`}`} 
+            onClick={() => {
+                navigate('home')
+                localStorage.setItem('selectedWorkspaceItem', -1)
+                props.setRenderSideBar(prev => !prev)
+                }}>
                 <GrHomeRounded className="text-md ml-[2px]" />
                 <p className=" text-sm text-slate-700">Home</p>
             </div>
