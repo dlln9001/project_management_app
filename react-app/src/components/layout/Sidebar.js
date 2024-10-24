@@ -22,6 +22,7 @@ function Sidebar(props) {
     const navigate = useNavigate()
     const { showCreateWorkspaceItem, setShowCreateWorkspaceItem } = useCreateElement()
     const [workspaceItemOptionsId, setWorkspaceItemOptionsId] = useState('')
+    let selectedWorkspaceItem = ''
 
     useEffect(() => {
         document.addEventListener('click', handleDocumentClick)
@@ -37,13 +38,22 @@ function Sidebar(props) {
                 let tempWorkspaceElementsHtml = []
                 for (let i = 0; i < data.boards.length; i++) {
                     let boardId = data.boards[i].id
+                    selectedWorkspaceItem = JSON.parse(localStorage.getItem('selectedWorkspaceItem'))
+                    console.log(selectedWorkspaceItem, i, 'selected', selectedWorkspaceItem === i)
                     tempWorkspaceElementsHtml.push(
-                        <div key={i} className={`bar-button text-sm flex items-center gap-2 group relative ${workspaceItemOptionsId === i && `bg-slate-200`}`}
-                            onClick={() => navigate(`board?id=${encodeURIComponent(boardId)}`)}>
+                        <div key={i} 
+                            className={`bar-button text-sm flex items-center gap-2 group relative 
+                                        ${workspaceItemOptionsId === i && `bg-slate-200`} 
+                                        ${selectedWorkspaceItem === i ? `bg-sky-100` : ``}`}
+                            onClick={() => {
+                                navigate(`board?id=${encodeURIComponent(boardId)}`)
+                                localStorage.setItem('selectedWorkspaceItem', i)
+                                props.setRenderSideBar(prev => !prev)
+                            }}>
                             <img src={process.env.PUBLIC_URL + 'images/boardsIcon.png'} alt="" className="h-4" />
                             <p className=" truncate">{data.boards[i].name}</p>
                             <div className={`ml-auto  group-hover:text-inherit  p-1 rounded-md 
-                                ${workspaceItemOptionsId === i ? `text-inherit hover:bg-sky-200 bg-sky-200` : `text-white hover:bg-neutral-300`}`}
+                                ${workspaceItemOptionsId === i ? `text-inherit hover:bg-sky-200 bg-sky-200` : `text-transparent hover:bg-neutral-300`}`}
                                  onClick={(e) => {
                                         e.stopPropagation()
                                         setWorkspaceItemOptionsId(i)
@@ -63,15 +73,22 @@ function Sidebar(props) {
 
                 for (let i = 0; i < data.documents.length; i++) {
                     let documentId = data.documents[i].id
+                    selectedWorkspaceItem = JSON.parse(localStorage.getItem('selectedWorkspaceItem'))
                     tempWorkspaceElementsHtml.push(
                         // key is like that so it's not duplicated with the board keys
-                        <div key={i + data.boards.length + 1} className={`bar-button text-sm flex items-center gap-2 group relative 
-                            ${workspaceItemOptionsId === (i + data.boards.length + 1) && `bg-slate-200`}`}
-                            onClick={() => navigate(`docs?id=${encodeURIComponent(documentId)}`)}>
+                        <div key={i + data.boards.length + 1} 
+                            className={`bar-button text-sm flex items-center gap-2 group relative 
+                            ${workspaceItemOptionsId === (i + data.boards.length + 1) && `bg-slate-200`}
+                            ${selectedWorkspaceItem === i + data.boards.length + 1 ? `bg-sky-100` : ``}`}
+                            onClick={() => {
+                                    navigate(`docs?id=${encodeURIComponent(documentId)}`)
+                                    localStorage.setItem('selectedWorkspaceItem', i + data.boards.length + 1)
+                                    props.setRenderSideBar(prev => !prev)
+                            }}>
                             <GrDocumentText/>
                             <p className=" truncate">{data.documents[i].title}</p>
                             <div className={`ml-auto  group-hover:text-inherit  p-1 rounded-md 
-                                ${workspaceItemOptionsId === (i + data.boards.length + 1) ? `text-inherit hover:bg-sky-200 bg-sky-200` : `text-white hover:bg-neutral-300`}`}
+                                ${workspaceItemOptionsId === (i + data.boards.length + 1) ? `text-inherit hover:bg-sky-200 bg-sky-200` : `text-transparent hover:bg-neutral-300`}`}
                                  onClick={(e) => {
                                         e.stopPropagation()
                                         setWorkspaceItemOptionsId(i + data.boards.length + 1)

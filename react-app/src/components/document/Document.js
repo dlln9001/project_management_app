@@ -171,7 +171,7 @@ function Document() {
                     <div className='mt-28 w-[750px]'>
         
                         <div className='border border-transparent hover:border-slate-300 mb-2 p-1 has-[:focus]:border-sky-600 rounded-sm'>
-                            <input type="text" value={titleSelected ? title : documentInfo.title} className=' text-4xl font-semibold focus:outline-none' 
+                            <input type="text" value={titleSelected ? title : documentInfo.title} className=' text-4xl font-semibold focus:outline-none text-ellipsis w-full' 
                             onFocus={() => {
                                 setTitle(documentInfo.title)
                                 setTitleSelected(true)
