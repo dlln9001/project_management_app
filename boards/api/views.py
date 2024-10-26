@@ -1,6 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
+from django.contrib.contenttypes.models import ContentType
 from ..models import Board
 from .serializers import BoardFullSerializer
 from ..models import Group
@@ -13,7 +14,8 @@ from ..models import ColumnValue
 from .serializers import ColumnValueSerializer
 from ..models import BoardView
 from .serializers import BoardViewSerializer
-
+from workspace_elements.models import WorkspaceElement
+from workspace_elements.models import RecentlyVisited
 
 @api_view(['GET', 'POST'])
 def get_board(request):
@@ -22,6 +24,11 @@ def get_board(request):
     board_views = BoardView.objects.filter(board=board)
     serialized = BoardFullSerializer(board)
     board_views_serialized = BoardViewSerializer(board_views, many=True)
+
+    # update recently viewed
+    board_content_type = ContentType.objects.get_for_model(Board)
+    workspace_element = WorkspaceElement.objects.get(content_type=board_content_type, object_id=board.id)
+    recently_visited = RecentlyVisited.update_recently_visited(user=request.user, workspace_element=workspace_element)
     return Response({'status': 'success', 'boardInfo': serialized.data, 'boardViewsInfo': board_views_serialized.data})
 
 
