@@ -27,6 +27,7 @@ function LoginPage() {
             else {
                 localStorage.setItem('userInfo', JSON.stringify(data.user))
                 localStorage.setItem('userToken', JSON.stringify(data.token))
+                localStorage.setItem('selectedWorkspaceItem', JSON.stringify({type: 'home', id: 0}))
                 navigate('/home')
             }
         })

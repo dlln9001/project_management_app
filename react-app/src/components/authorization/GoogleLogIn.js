@@ -39,6 +39,7 @@ function GoogleLogIn(props) {
                     console.log(data)
                     localStorage.setItem('userInfo', JSON.stringify(data.user))
                     localStorage.setItem('userToken', JSON.stringify(data.token))
+                    localStorage.setItem('selectedWorkspaceItem', JSON.stringify({type: 'home', id: 0}))
                     setUserInfo(data.user)
                     if (props.linkNewAccount) {
                         props.setShowChangeEmail(false)

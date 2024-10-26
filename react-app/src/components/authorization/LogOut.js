@@ -11,6 +11,7 @@ function LogOut() {
         googleLogout()
         localStorage.removeItem('userInfo')
         localStorage.removeItem('userToken')
+        localStorage.removeItem('selectedWorkspaceItem')
         navigate('/')
         setUserInfo('')
     }

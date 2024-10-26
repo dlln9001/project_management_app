@@ -60,12 +60,16 @@ def get_elements(request):
 def get_recently_visited_elements(request):
     all_recently_visited = RecentlyVisited.objects.filter(user=request.user)
     data = []
+    index = 0
     for recently_visited in all_recently_visited:
         workspace_element = recently_visited.workspace_element
+        if index > 4:
+            break
         if isinstance(workspace_element.content_object, Board):
             board_object = workspace_element.content_object
-            data.append({'element_type': 'board', 'element_name': board_object.name, 'last_visited': recently_visited.visited_at})
+            data.append({'element_type': board_object.type, 'element_name': board_object.name, 'id': board_object.id, 'last_visited': recently_visited.visited_at})
         elif isinstance(workspace_element.content_object, Document):
             document_object = workspace_element.content_object
-            data.append({'element_type': 'document', 'element_name': document_object.title, 'last_visited': recently_visited.visited_at})
+            data.append({'element_type': document_object.type, 'element_name': document_object.title, 'id': document_object.id, 'last_visited': recently_visited.visited_at})
+        index += 1
     return Response({'status': 'success', 'recently_visited_data': data}, status=status.HTTP_200_OK)

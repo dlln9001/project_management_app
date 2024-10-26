@@ -22,9 +22,10 @@ function Sidebar(props) {
     const navigate = useNavigate()
     const { showCreateWorkspaceItem, setShowCreateWorkspaceItem } = useCreateElement()
     const [workspaceItemOptionsId, setWorkspaceItemOptionsId] = useState('')
-    let selectedWorkspaceItem = ''
+    let selectedWorkspaceItem
 
     useEffect(() => {
+        
         document.addEventListener('click', handleDocumentClick)
         fetch('http://127.0.0.1:8000/workspace-element/get/', {
             method: 'POST',
@@ -43,10 +44,10 @@ function Sidebar(props) {
                         <div key={i} 
                             className={`bar-button text-sm flex items-center gap-2 group relative 
                                         ${workspaceItemOptionsId === i && `bg-slate-200`} 
-                                        ${selectedWorkspaceItem === i ? `bg-sky-100` : ``}`}
+                                        ${(selectedWorkspaceItem.type === 'board' && selectedWorkspaceItem.id === boardId) ? `bg-sky-100` : ``}`}
                             onClick={() => {
                                 navigate(`board?id=${encodeURIComponent(boardId)}`)
-                                localStorage.setItem('selectedWorkspaceItem', i)
+                                localStorage.setItem('selectedWorkspaceItem', JSON.stringify({type: 'board', id: boardId}))
                                 props.setRenderSideBar(prev => !prev)
                             }}>
                             <img src={process.env.PUBLIC_URL + 'images/boardsIcon.png'} alt="" className="h-4" />
@@ -78,10 +79,10 @@ function Sidebar(props) {
                         <div key={i + data.boards.length + 1} 
                             className={`bar-button text-sm flex items-center gap-2 group relative 
                             ${workspaceItemOptionsId === (i + data.boards.length + 1) && `bg-slate-200`}
-                            ${selectedWorkspaceItem === i + data.boards.length + 1 ? `bg-sky-100` : ``}`}
+                            ${(selectedWorkspaceItem.type === 'document' && selectedWorkspaceItem.id === documentId) ? `bg-sky-100` : ``}`}
                             onClick={() => {
                                     navigate(`docs?id=${encodeURIComponent(documentId)}`)
-                                    localStorage.setItem('selectedWorkspaceItem', i + data.boards.length + 1)
+                                    localStorage.setItem('selectedWorkspaceItem', JSON.stringify({type: 'document', id: documentId}))
                                     props.setRenderSideBar(prev => !prev)
                             }}>
                             <GrDocumentText/>
@@ -115,10 +116,11 @@ function Sidebar(props) {
 
     return (
         <div className=" bg-slate-50 mr-3 rounded-tr-lg w-72 flex flex-col">
-            <div className={`bar-button mb-1 flex items-center gap-2 ${JSON.parse(localStorage.getItem('selectedWorkspaceItem')) === -1 && `bg-sky-100`}`} 
+            <div className={`bar-button mb-1 flex items-center gap-2 
+                 ${JSON.parse(localStorage.getItem('selectedWorkspaceItem')).type === 'home' && `bg-sky-100`}`} 
             onClick={() => {
                 navigate('home')
-                localStorage.setItem('selectedWorkspaceItem', -1)
+                localStorage.setItem('selectedWorkspaceItem', JSON.stringify({type: 'home', id: 0}))
                 props.setRenderSideBar(prev => !prev)
                 }}>
                 <GrHomeRounded className="text-md ml-[2px]" />
