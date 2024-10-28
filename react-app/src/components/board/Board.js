@@ -57,7 +57,7 @@ function Board(props) {
             .then(res => res.json())
             .then(data => {
                 boardValues.setGroupsData(data)
-                console.log(data)
+                // console.log(data)
             })
 
 

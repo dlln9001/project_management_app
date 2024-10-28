@@ -92,15 +92,54 @@ def add_to_favorites(request):
         if element_type == 'board':
             board_content_type = ContentType.objects.get_for_model(Board)
             workspace_element_board = WorkspaceElement.objects.get(content_type=board_content_type, object_id=request.data['id'])
-            Favorite.objects.create(user=request.user, workspace_element=workspace_element_board)
+            check_favorite = Favorite.objects.filter(user=request.user, workspace_element=workspace_element_board)
+            # make sure it's not favorited already
+            if len(check_favorite) == 0:
+                Favorite.objects.create(user=request.user, workspace_element=workspace_element_board)
+            else:
+                return Response({'status': 'already favorited'})
 
         elif element_type == 'document':
             document_content_type = ContentType.objects.get_for_model(Document)
             workspace_element_document = WorkspaceElement.objects.get(content_type=document_content_type, object_id=request.data['id'])
-            Favorite.objects.create(user=request.user, workspace_element=workspace_element_document)
+            check_favorite = Favorite.objects.filter(user=request.user, workspace_element=workspace_element_document)
+            if len(check_favorite) == 0:
+                Favorite.objects.create(user=request.user, workspace_element=workspace_element_document)
+            else:
+                return Response({'status': 'already favorited'})
         return Response({'status': 'success'}, status=status.HTTP_200_OK)
     
     except Exception as e:
         print(e)
         return Response({'status': f'error {e}'})
         
+
+@api_view(['POST', 'GET'])
+def get_favorites(request):
+    try:
+        favorited_elements = []
+        favorites = Favorite.objects.filter(user=request.user)
+
+        for favorite in favorites:
+            workspace_element = favorite.workspace_element
+            content_object = workspace_element.content_object
+            if content_object.type == 'board':
+                favorited_elements.append({'element_type': content_object.type, 'element_name': content_object.name, 'id': content_object.id, 'favorite_model_id': favorite.id})
+            elif content_object.type == 'document':
+                favorited_elements.append({'element_type': content_object.type, 'element_name': content_object.title, 'id': content_object.id, 'favorite_model_id': favorite.id})
+        return Response({'status': 'success', 'favorites': favorited_elements}, status=status.HTTP_200_OK)
+    
+    except Exception as e:
+        print(e)
+        return Response({'status': f'error {e}'})
+    
+
+@api_view(['POST', 'GET'])
+def remove_favorite(request):
+    try:
+        favorite = Favorite.objects.get(id=request.data['favorite_id'])
+        favorite.delete()
+        return Response({'status': 'success'}, status=status.HTTP_200_OK)
+    except Exception as e:
+        print(e)
+        return Response({'status': f'error {e}'})

@@ -66,7 +66,10 @@ function Sidebar(props) {
 
             <div className="border-t border-t-slate-300"></div>
 
-            <Favorites />
+            <Favorites 
+                userToken={userToken} 
+                renderSideBar={props.renderSideBar} setRenderSideBar={props.setRenderSideBar} 
+                workspaceElementData={workspaceElementData}/>
 
             <div className="border-t border-t-slate-300"></div>
 

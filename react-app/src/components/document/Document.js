@@ -102,7 +102,7 @@ function Document() {
             let created_at_format = created_at_date.getMonth() + 1 + '/' + created_at_date.getDate() + '/' + created_at_date.getFullYear() + ', ' + 
                                     created_at_date.getHours() + ':' + extraZero + created_at_date.getMinutes()
             setCreatedAt(created_at_format)
-            console.log(data)
+            // console.log(data)
         })
     }, [getDocumentInfo, documentId])
 

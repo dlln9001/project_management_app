@@ -30,7 +30,7 @@ function WorkspaceItemOptions(props) {
         if (props.workspaceType === 'board') {
             deleteBoard()
         }
-        else if (props.workspaceType === 'doc') {
+        else if (props.workspaceType === 'document') {
             deleteDoc()
         }
     }
@@ -90,9 +90,12 @@ function WorkspaceItemOptions(props) {
             })
         })
         .then(res => res.json())
-        .then(data => console.log(data))
+        .then(data => {
+            props.setWorkspaceItemOptionsId('')
+            props.setRenderSideBar(!props.renderSideBar)
+        })
     }
-    
+
 
     return document.getElementById('portal-root') && props.position ? ReactDOM.createPortal (
         <div 

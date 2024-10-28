@@ -12,7 +12,7 @@ function SidebarWorkspaceElements(props) {
 
     function updatePosition(e) {
         const threeDocsRect = e.target.getBoundingClientRect()
-        console.log(threeDocsRect, threeDocsRect.top)
+
         setThreeDotsPosition({
             top: threeDocsRect.top + 20,
             left: threeDocsRect.left
@@ -112,7 +112,7 @@ function SidebarWorkspaceElements(props) {
                                 renderSideBar={props.renderSideBar} setRenderSideBar={props.setRenderSideBar} 
                                 workspaceItemOptionsId={workspaceItemOptionsId} setWorkspaceItemOptionsId={setWorkspaceItemOptionsId} 
                                 documentId={documentId} 
-                                workspaceType={'doc'} 
+                                workspaceType={'document'} 
                                 deletedWorkspaceName={props.deletedWorkspaceName} setDeletedWorkspaceName={props.setDeletedWorkspaceName} 
                                 docName={props.data.documents[i].title} 
                                 position={threeDotsPosition}/>
