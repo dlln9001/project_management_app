@@ -35,6 +35,7 @@ function Home() {
                     <p className=" font-medium">Quickly access your boards and documents</p>
                 </div>
             </div>
+            
             <div className={`shadow-all-sides rounded-md py-6 px-7 mx-24`}>
                 <p className="font-medium mb-4">Recently Visited</p>
                 <div className="flex gap-4">

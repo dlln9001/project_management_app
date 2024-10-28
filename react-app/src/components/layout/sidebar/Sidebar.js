@@ -85,9 +85,14 @@ function Sidebar(props) {
                 </div>
             </div>
 
-            <div className=" overflow-y-auto custom-scrollbar">
+            <div className=" overflow-y-auto custom-scrollbar" id="sidebar-workspace-elements-id">
                 {workspaceElementData &&
-                    <SidebarWorkspaceElements data={workspaceElementData} renderSideBar={props.renderSideBar} setRenderSideBar={props.setRenderSideBar}/>
+                    <SidebarWorkspaceElements 
+                        data={workspaceElementData} 
+                        renderSideBar={props.renderSideBar} 
+                        setRenderSideBar={props.setRenderSideBar}
+                        deletedWorkspaceName={props.deletedWorkspaceName}
+                        setDeletedWorkspaceName={props.setDeletedWorkspaceName} />
                 }
             </div>
         </div>

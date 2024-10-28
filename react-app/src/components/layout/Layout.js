@@ -1,5 +1,5 @@
 import { Outlet, useOutletContext } from "react-router-dom";
-import Sidebar from "./Sidebar";
+import Sidebar from "./sidebar/Sidebar";
 import Topbar from "./Topbar";
 import CreateWorkspaceItem from "../workspace_and_items/CreateWorkspaceItem";
 import { useCreateElement } from "../../contexts/CreateWorkspaceItemContext";

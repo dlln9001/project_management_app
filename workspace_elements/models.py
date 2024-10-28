@@ -43,3 +43,8 @@ class RecentlyVisited(models.Model):
 
     class Meta:
         ordering = ['-visited_at']  # Most recent first
+
+class Favorite(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    workspace_element = models.ForeignKey(WorkspaceElement, on_delete=models.CASCADE)
+    

@@ -9,6 +9,8 @@ from document.models import Document
 from document.api.serializers import DocumentSerializer
 from ..models import WorkspaceElement
 from ..models import RecentlyVisited
+from ..models import Favorite
+
 
 @api_view(['POST', 'GET'])
 def create_element(request):
@@ -19,11 +21,13 @@ def create_element(request):
     all_docs = Document.objects.filter(author=user)
     num_of_boards = len(all_boards)
     num_of_docs = len(all_docs)
+
     if element_type == 'board':
         board = Board.objects.create(user=user, name=element_name, order=num_of_boards)
         board_view = BoardView.objects.create(board=board, name='Main Table', type='Table', order=0)
         board_content_type = ContentType.objects.get_for_model(Board)
         workspace_element_board = WorkspaceElement.objects.create(content_type=board_content_type, object_id=board.id)
+
     if element_type == 'doc':
         document = Document.objects.create(author=user, title=element_name, content='', order=num_of_docs)
         document_content_type = ContentType.objects.get_for_model(Document)
@@ -60,16 +64,43 @@ def get_elements(request):
 def get_recently_visited_elements(request):
     all_recently_visited = RecentlyVisited.objects.filter(user=request.user)
     data = []
+
     index = 0
     for recently_visited in all_recently_visited:
         workspace_element = recently_visited.workspace_element
+
         if index > 4:
             break
+
         if isinstance(workspace_element.content_object, Board):
             board_object = workspace_element.content_object
             data.append({'element_type': board_object.type, 'element_name': board_object.name, 'id': board_object.id, 'last_visited': recently_visited.visited_at})
+
         elif isinstance(workspace_element.content_object, Document):
             document_object = workspace_element.content_object
             data.append({'element_type': document_object.type, 'element_name': document_object.title, 'id': document_object.id, 'last_visited': recently_visited.visited_at})
         index += 1
+
     return Response({'status': 'success', 'recently_visited_data': data}, status=status.HTTP_200_OK)
+
+
+@api_view(['POST', 'GET'])
+def add_to_favorites(request):
+    try:
+        element_type = request.data['element_type']
+
+        if element_type == 'board':
+            board_content_type = ContentType.objects.get_for_model(Board)
+            workspace_element_board = WorkspaceElement.objects.get(content_type=board_content_type, object_id=request.data['id'])
+            Favorite.objects.create(user=request.user, workspace_element=workspace_element_board)
+
+        elif element_type == 'document':
+            document_content_type = ContentType.objects.get_for_model(Document)
+            workspace_element_document = WorkspaceElement.objects.get(content_type=document_content_type, object_id=request.data['id'])
+            Favorite.objects.create(user=request.user, workspace_element=workspace_element_document)
+        return Response({'status': 'success'}, status=status.HTTP_200_OK)
+    
+    except Exception as e:
+        print(e)
+        return Response({'status': f'error {e}'})
+        
