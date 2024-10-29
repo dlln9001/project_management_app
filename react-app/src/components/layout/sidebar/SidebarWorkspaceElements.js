@@ -61,7 +61,7 @@ function SidebarWorkspaceElements(props) {
                                     setRenderSideBar={props.setRenderSideBar} 
                                     workspaceItemOptionsId={workspaceItemOptionsId}
                                     setWorkspaceItemOptionsId={setWorkspaceItemOptionsId} 
-                                    boardId={boardId} 
+                                    elementId={boardId} 
                                     deletedWorkspaceName={props.deletedWorkspaceName}
                                     setDeletedWorkspaceName={props.setDeletedWorkspaceName} 
                                     workspaceType={'board'}
@@ -111,7 +111,7 @@ function SidebarWorkspaceElements(props) {
                             <WorkspaceItemOptions 
                                 renderSideBar={props.renderSideBar} setRenderSideBar={props.setRenderSideBar} 
                                 workspaceItemOptionsId={workspaceItemOptionsId} setWorkspaceItemOptionsId={setWorkspaceItemOptionsId} 
-                                documentId={documentId} 
+                                elementId={documentId} 
                                 workspaceType={'document'} 
                                 deletedWorkspaceName={props.deletedWorkspaceName} setDeletedWorkspaceName={props.setDeletedWorkspaceName} 
                                 docName={props.data.documents[i].title} 

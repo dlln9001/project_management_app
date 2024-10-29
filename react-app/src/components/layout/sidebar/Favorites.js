@@ -8,6 +8,20 @@ import { GrDocumentText } from "react-icons/gr";
 import { BsThreeDots } from "react-icons/bs";
 
 
+export function getFavorites(setFavoritesData, userToken) {
+    fetch('http://127.0.0.1:8000/workspace-element/get-favorites/', {
+        method: 'GET',
+        headers: {
+            'Authorization': `Token ${userToken}`
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        setFavoritesData(data.favorites)
+    })
+}
+
+
 function Favorites(props) {
     const navigate = useNavigate()
     const [workspaceItemOptionsId, setWorkspaceItemOptionsId] = useState('')
@@ -27,7 +41,7 @@ function Favorites(props) {
     }, [])
 
     useEffect(() => {
-        getFavorites()
+        getFavorites(setFavoritesData, props.userToken)
     }, [favoritesExpanded, props.workspaceElementData])
 
     function handleDocumentClick() {
@@ -41,20 +55,6 @@ function Favorites(props) {
             left: threeDotsRect.left
         })
     }
-
-    function getFavorites() {
-        fetch('http://127.0.0.1:8000/workspace-element/get-favorites/', {
-            method: 'GET',
-            headers: {
-                'Authorization': `Token ${props.userToken}`
-            }
-        })
-        .then(res => res.json())
-        .then(data => {
-            setFavoritesData(data.favorites)
-        })
-    }
-
 
     return (
         <div className={`transition-all duration-200 overflow-auto custom-scrollbar ${favoritesExpanded ? `h-[1000px]` : `h-11`} `}>

@@ -91,6 +91,7 @@ function Sidebar(props) {
             <div className=" overflow-y-auto custom-scrollbar" id="sidebar-workspace-elements-id">
                 {workspaceElementData &&
                     <SidebarWorkspaceElements 
+                        userToken={userToken}
                         data={workspaceElementData} 
                         renderSideBar={props.renderSideBar} 
                         setRenderSideBar={props.setRenderSideBar}
