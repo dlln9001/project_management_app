@@ -15,6 +15,7 @@ function Favorites(props) {
     const [favoritesExpanded, setFavoritesExpanded] = useState(false)
     const [favoritesData, setFavoritesData] = useState('')
     const favoritedOptionsRef = useRef('')
+    const [favoriteOptionsPosition, setFavoriteOptionsPosition] = useState({top: 0, left: 0})
 
     useEffect(() => {
         document.addEventListener('click', handleDocumentClick)
@@ -33,6 +34,14 @@ function Favorites(props) {
         setWorkspaceItemOptionsId('')
     }
 
+    function setOptionsPosition(e) {
+        const threeDotsRect = e.target.getBoundingClientRect()
+        setFavoriteOptionsPosition({
+            top: threeDotsRect.top + 20,
+            left: threeDotsRect.left
+        })
+    }
+
     function getFavorites() {
         fetch('http://127.0.0.1:8000/workspace-element/get-favorites/', {
             method: 'GET',
@@ -48,7 +57,7 @@ function Favorites(props) {
 
 
     return (
-        <div className={`transition-all duration-200 ${favoritesExpanded ? `h-[1000px]` : `h-11`}`}>
+        <div className={`transition-all duration-200 overflow-auto custom-scrollbar ${favoritesExpanded ? `h-[1000px]` : `h-11`} `}>
             <div className="bar-button flex items-center gap-2" onClick={() => setFavoritesExpanded(prev => !prev)}>
                 <FaRegStar className="text-lg ml-[2px]" />
                 <p className="text-sm text-slate-700">Favorites</p>
@@ -96,6 +105,7 @@ function Favorites(props) {
                                                     ${workspaceItemOptionsId === i ? `text-inherit hover:bg-sky-200 bg-sky-200` : `text-transparent hover:bg-neutral-300`}`}
                                             onClick={(e) => {
                                                 e.stopPropagation()
+                                                setOptionsPosition(e)
                                                 setWorkspaceItemOptionsId(i)
                                                 props.setRenderSideBar(!props.renderSideBar)
                                             }}>
@@ -110,6 +120,7 @@ function Favorites(props) {
                                                 setWorkspaceItemOptionsId={setWorkspaceItemOptionsId}
                                                 itemData={item}
                                                 setRenderSideBar={props.setRenderSideBar}
+                                                optionsPosition={favoriteOptionsPosition}
                                                 />
                                         }
                                     </div>
