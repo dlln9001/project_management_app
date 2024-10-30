@@ -68,8 +68,12 @@ function Kanban(props) {
                                         
                                             <div className={`text-sm mt-2 bg-slate-100 w-fit px-2 py-[1px] border-${columnValueColor} border-l-4 rounded-sm cursor-pointer flex justify-center`}
                                                     onClick={() => {
+                                                        if (!(itemPositionId[0] === i && itemPositionId[1] === j && itemPositionId[2] === 'Status')) {
+                                                            clickedLablesMenuParentRef.current = ''
+                                                            setItemPositionId([i, j, 'Status'])
+                                                        }
+
                                                         setShowLabelsMenu(true)
-                                                        setItemPositionId([i, j, 'Status'])
                                                         setRenderKanban(prev => !prev)
                                                     }}
                                                     ref={(itemPositionId[0] === i && itemPositionId[1] === j && itemPositionId[2] === 'Status') ? clickedLablesMenuParentRef : null}>
@@ -90,8 +94,11 @@ function Kanban(props) {
                                         {(priorityColumn && flat_columnValues[j][priorityColumnOrder].value_text != '') &&
                                             <div className={`text-sm mt-2 bg-slate-100 w-fit px-2 py-[1px] border-${priorityValueColor} border-l-4 rounded-sm cursor-pointer`}
                                                 onClick={() => {
+                                                    if (!(itemPositionId[0] === i && itemPositionId[1] === j && itemPositionId[2] === 'Priority')) {
+                                                        clickedLablesMenuParentRef.current = ''
+                                                        setItemPositionId([i, j, 'Priority'])
+                                                    }
                                                     setShowLabelsMenu(true)
-                                                    setItemPositionId([i, j, 'Priority'])
                                                     setRenderKanban(prev => !prev)
                                                 }}
                                                 ref={(itemPositionId[0] === i && itemPositionId[1] === j && itemPositionId[2] === 'Priority') ? clickedLablesMenuParentRef : null}>
@@ -142,13 +149,16 @@ function Kanban(props) {
 
     useEffect(() => {
         document.addEventListener('click', handleDocumentClick)
+
+        return () => {
+            document.removeEventListener('click', handleDocumentClick)
+        }
     })
 
     function handleDocumentClick(e) {
         if (clickedLablesMenuParentRef.current && !clickedLablesMenuParentRef.current.contains(e.target)) {
             setShowLabelsMenu(false)
             setRenderKanban(prev => !prev)
-            clickedLablesMenuParentRef.current = ''
         }
     }
 

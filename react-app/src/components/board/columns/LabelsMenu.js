@@ -39,6 +39,7 @@ const LabelsMenu = forwardRef(function (props, ref) {
     const [position, setPosition] = useState({ top: 0, left: 0 });
 
     const boardElement = document.querySelector('#board-id')
+
     
     useEffect(() => {
 
@@ -80,7 +81,7 @@ const LabelsMenu = forwardRef(function (props, ref) {
                 }
             }
         };
-    
+
         // Initial position set
         updatePosition();
         

@@ -61,10 +61,11 @@ function Sidebar(props) {
                 <p className=" text-sm text-slate-700">Home</p>
             </div>
 
-            <div className="bar-button mb-1 flex items-center gap-2">
+            {/* hide for now */}
+            {/* <div className="bar-button mb-1 flex items-center gap-2">
                 <PiCalendarCheck className="text-xl" />
                 <p className="text-sm text-slate-700">My work</p>
-            </div>
+            </div> */}
 
             <div className="border-t border-t-slate-300"></div>
 
