@@ -23,6 +23,8 @@ function Sidebar(props) {
     const { showCreateWorkspaceItem, setShowCreateWorkspaceItem } = useCreateElement()
     const [workspaceElementData, setWorkspaceElementData] = useState('')
 
+    const [searchInput, setSearchInput] = useState('')
+
 
     useEffect(() => {
         document.addEventListener('click', handleDocumentClick)
@@ -46,7 +48,7 @@ function Sidebar(props) {
     }
 
     return (
-        <div className=" bg-slate-50 mr-3 rounded-tr-lg w-72 flex flex-col">
+        <div className=" bg-slate-50 mr-3 rounded-tr-lg max-w-72 min-w-72 flex flex-col">
 
             <div className={`bar-button mb-1 flex items-center gap-2 
                  ${JSON.parse(localStorage.getItem('selectedWorkspaceItem')).type === 'home' && `bg-sky-100`}`}
@@ -77,8 +79,9 @@ function Sidebar(props) {
                 <div className="p-2 focus:outline-none border border-slate-300 rounded-md text-sm h-[34px] 
                     transition ease-in hover:border-slate-900 cursor-pointer flex gap-2">
                     <CiSearch />
-                    <input type="text" placeholder="Search" ref={searchBar}
-                        className=" bg-inherit focus:outline-none cursor-pointer" />
+                    <input type="text" placeholder="Search" ref={searchBar} value={searchInput}
+                        className=" bg-inherit focus:outline-none cursor-pointer" 
+                        onChange={(e) => setSearchInput(e.target.value)}/>
                 </div>
                 <div className="border p-1 border-slate-300 rounded-md hover:bg-slate-100 cursor-pointer relative" onClick={() => setShowAddWorkspaceItem(true)} ref={addWorkspaceItemButton}>
                     <AiOutlinePlus className=" text-2xl" />
@@ -93,6 +96,7 @@ function Sidebar(props) {
                     <SidebarWorkspaceElements 
                         userToken={userToken}
                         data={workspaceElementData} 
+                        searchInput={searchInput}
                         renderSideBar={props.renderSideBar} 
                         setRenderSideBar={props.setRenderSideBar}
                         deletedWorkspaceName={props.deletedWorkspaceName}
