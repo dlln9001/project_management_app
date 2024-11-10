@@ -16,7 +16,7 @@ function AddColumn(props) {
         document.addEventListener('click', handleDocumentClick)
 
         let tempColumnOptionsHtml = []
-        for (let i=0; i < columnOptions.length; i++) {
+        for (let i = 0; i < columnOptions.length; i++) {
             const lowerCase = columnOptions[i].toLowerCase()
             tempColumnOptionsHtml.push(
                 <div key={i} className="hover:bg-slate-100 rounded-md p-2 cursor-pointer flex items-center gap-2"
@@ -43,11 +43,11 @@ function AddColumn(props) {
     }
 
     function addColumn(columnType) {
-        fetch('http://127.0.0.1:8000/board/create-column/', {
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/board/create-column/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Token ${props.userToken}`
+                'Authorization': `Token ${ props.userToken }`
             },
             body: JSON.stringify({
                 column_type: columnType,
@@ -77,12 +77,12 @@ function AddColumn(props) {
                 </div>
                 
             }
-            <IoIosAdd className={`hover:bg-slate-100   rounded-sm cursor-pointer peer 
-                    ${(showAddColumn && addColumnsId === props.groupId) ? `bg-slate-100 text-sky-600` : `text-slate-500 hover:text-slate-700`}`}/>
+            <IoIosAdd className={`hover: bg-slate-100   rounded-sm cursor-pointer peer 
+                    ${(showAddColumn && addColumnsId === props.groupId) ? `bg-slate-100 text-sky-600` : `text-slate-500 hover:text-slate-700`} `}/>
             <div 
                 className={`absolute scale-0 justify-center bg-slate-700 py-[7px] px-4 rounded-md z-10 min-w-28 bottom-10 shadow-lg
-                        peer-hover:flex peer-hover:scale-100 transition ease-in duration-0 peer-hover:duration-100 peer-hover:delay-300
-                        `}>
+    peer-hover:flex peer-hover:scale-100 transition ease-in duration-0 peer-hover:duration-100 peer-hover:delay-300
+        `}>
                 <p className="bg-slate-700 text-white m-0 text-sm">Add column</p>
                 <div className="text-slate-700 absolute top-[25px] text-2xl
                 " >

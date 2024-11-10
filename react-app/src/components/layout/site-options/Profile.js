@@ -1,7 +1,7 @@
 import ReactDOM from 'react-dom'
 import { IoIosClose } from "react-icons/io";
 import { CiMail } from "react-icons/ci";
-import {useState, useRef, useEffect} from 'react'
+import { useState, useRef, useEffect } from 'react'
 import ProfilePicture from './ProfilePicture';
 import ChangeEmail from './ChangeEmail';
 import { useUserContext } from '../../../contexts/UserContext';
@@ -14,11 +14,11 @@ function Profile(props) {
     const [showChangeEmail, setShowChangeEmail] = useState(false)
 
     function changeName() {
-        fetch('http://127.0.0.1:8000/user/change-name/', {
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/user/change-name/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Token ${userToken}`
+                'Authorization': `Token ${ userToken }`
             },
             body: JSON.stringify({
                 new_name: name

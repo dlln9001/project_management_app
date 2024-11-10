@@ -21,11 +21,11 @@ function BoardViewsOptions(props) {
     }
 
     function deleteBoardView() {
-        fetch('http://127.0.0.1:8000/board/delete-board-view/', {
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/board/delete-board-view/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Token ${props.userToken}`
+                'Authorization': `Token ${ props.userToken }`
             },
             body: JSON.stringify({
                 board_view_option_id: props.boardViewOptionsId,

@@ -26,7 +26,7 @@ function Board(props) {
     const [toSetInitialBoardView, setToSetInitialBoardView] = useState(true)
 
     useEffect(() => {
-        fetch('http://127.0.0.1:8000/board/get/', {
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/board/get/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -44,7 +44,7 @@ function Board(props) {
                 boardViewsValues.setBoardViewsInfo(data.boardViewsInfo)
             })
 
-        fetch('http://127.0.0.1:8000/board/get-groups/', {
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/board/get-groups/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

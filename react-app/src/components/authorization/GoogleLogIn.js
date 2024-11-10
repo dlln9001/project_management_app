@@ -19,7 +19,7 @@ function GoogleLogIn(props) {
         onSuccess: async tokenResponse => {
 
             try {
-                const response = await fetch('http://127.0.0.1:8000/authorize/auth/google/', {
+                const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/authorize/auth/google/`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

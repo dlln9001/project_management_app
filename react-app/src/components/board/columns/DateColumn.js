@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react"
-import { DayPicker, getDefaultClassNames  } from "react-day-picker";
+import { DayPicker, getDefaultClassNames } from "react-day-picker";
 import { useBoardValues } from "../../../contexts/BoardValuesContext";
 import "react-day-picker/style.css";
 
@@ -28,11 +28,11 @@ function DateColumn(props) {
     }
 
     function editDateColumn(selectedDate) {
-        fetch('http://127.0.0.1:8000/board/edit-date-column/', {
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/board/edit-date-column/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Token ${props.userToken}`,
+                'Authorization': `Token ${ props.userToken }`,
             },
             body: JSON.stringify({
                 column_value_id: columnValueId,
@@ -45,8 +45,8 @@ function DateColumn(props) {
 
     return (
         <div className="min-w-36 relative flex justify-center border-t border-t-slate-300 border-r border-r-slate-300 group" ref={datePickerRef}>
-            <div className={`border  w-[90%] relative self-center cursor-text peer min-h-[22px] bg-white text-center
-                    ${openDatePicker ? `border-sky-600` : `hover:border-slate-400 border-transparent`}`}
+            <div className={`border  w-[90 %] relative self-center cursor-text peer min-h-[22px] bg-white text-center
+                    ${ openDatePicker? `border-sky-600` : `hover:border-slate-400 border-transparent`} `}
                  onClick={() => setOpenDatePicker(true)}>
                 {selectedDate && selectedDate.toLocaleDateString()}
             </div>

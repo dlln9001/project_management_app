@@ -4,19 +4,19 @@ import { useState, useEffect } from "react"
 function DocumentTitle(props) {
     const [title, setTitle] = useState('')
     const [titleSelected, setTitleSelected] = useState(false)
-    
+
     useEffect(() => {
         setTitle(props.documentInfo.title)
     }, [props.documentInfo])
 
-    
+
     function changeTitle() {
         props.setSaving(true)
-        fetch('http://127.0.0.1:8000/document/change-title/', {
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/document/change-title/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Token ${props.userToken}`
+                'Authorization': `Token ${ props.userToken }`
             },
             body: JSON.stringify({
                 title: title,

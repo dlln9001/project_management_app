@@ -20,7 +20,7 @@ function AddBoardView(props) {
     }
 
     function addBoardView(name, type) {
-        fetch('http://127.0.0.1:8000/board/add-board-view/', {
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/board/add-board-view/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

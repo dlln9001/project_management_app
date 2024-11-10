@@ -6,7 +6,7 @@ import { useBoardValues } from "../../../contexts/BoardValuesContext";
 function GroupNameInput(props) {
     const boardValues = useBoardValues()
 
-    let groupId = props.groupId    
+    let groupId = props.groupId
     let groupNameTextColor = props.currentGroup.color.replace('bg', 'text')
 
     const [editingGroupName, setEditingGroupName] = useState('')
@@ -18,14 +18,14 @@ function GroupNameInput(props) {
 
     const [updated, setUpdated] = useState(0)
 
-    if (!editingGroupName && updated <=5) {
+    if (!editingGroupName && updated <= 5) {
         adjustGroupNameWidth()
     }
 
     useEffect(() => {
         setUpdated(0)
     }, [props.boardId])
-    
+
     // this is so we can change the group name's input's width dynamically, will fit the width 
     function adjustGroupNameWidth() {
         if (groupInputRef.current && measureGroupInputRef.current) {
@@ -37,11 +37,11 @@ function GroupNameInput(props) {
     }
 
     function editGroupName(groupId, groupName) {
-        fetch('http://127.0.0.1:8000/board/edit-group-name/', {
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/board/edit-group-name/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Token ${props.userToken}`
+                'Authorization': `Token ${ props.userToken }`
             },
             body: JSON.stringify({
                 group_name: groupName,
@@ -57,7 +57,7 @@ function GroupNameInput(props) {
     }
 
     return (
-        <div className={`flex items-center gap-1 group ${isEditingGroupName && `w-full`} w-fit relative`}>
+        <div className={`flex items-center gap-1 group ${ isEditingGroupName && `w-full`} w-fit relative`}>
 
             {/* for color options */}
             {(isEditingGroupName && editingGroupId === groupId) && 
@@ -65,8 +65,8 @@ function GroupNameInput(props) {
             }
 
             <input type="text" 
-            className={`text-lg border px-1 py-0 text-center rounded-[4px] border-transparent hover:border-slate-300 focus:outline-none focus:border-sky-600 focus:min-w-[70%] 
-                    focus:text-start peer ${(isEditingGroupName && editingGroupId === groupId) && `pl-8`} ${groupNameTextColor} font-medium`}
+            className={`text-lg border px-1 py-0 text-center rounded-[4px] border-transparent hover:border-slate-300 focus:outline-none focus: border-sky-600 focus: min-w-[70 %]
+    focus:text-start peer ${ (isEditingGroupName && editingGroupId === groupId) && `pl-8` } ${ groupNameTextColor } font-medium`}
             value={(isEditingGroupName && editingGroupId === groupId) ? editingGroupName : props.currentGroup.name} 
             ref={groupInputRef}
             onFocus={(e) => {
@@ -99,14 +99,14 @@ function GroupNameInput(props) {
             {!isEditingGroupName && 
                 <div 
                     className={`absolute scale-0 justify-center bg-slate-700 py-[7px] px-4 rounded-md bottom-10 z-20 min-w-28 shadow-lg
-                            peer-hover:flex peer-hover:scale-100 transition ease-in duration-0 peer-hover:duration-100 peer-hover:delay-500`}>
+    peer-hover:flex peer-hover:scale-100 transition ease-in duration-0 peer-hover:duration-100 peer-hover:delay-500`}>
                     <p className="bg-slate-700 text-white m-0 text-sm">Click to Edit</p>
                     <div className="text-slate-700 absolute top-[25px] text-2xl">
                         <GoTriangleDown/>
                     </div>
                 </div>
             }
-            <p className={`transition ease-in group-hover:text-slate-400 text-sm text-white w-fit peer-focus:hidden `}>{props.currentGroupsItems.length} Items</p>
+            <p className={`transition ease-in group-hover:text-slate-400 text-sm text-white w-fit peer-focus:hidden`}>{props.currentGroupsItems.length} Items</p>
             {/* hidden span to measure the length of the input so we can manually set the width */}
             <span ref={measureGroupInputRef} className="text-lg p-1 px-2 invisible absolute min-w-3"></span>
         </div>

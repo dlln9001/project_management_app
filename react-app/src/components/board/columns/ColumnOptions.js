@@ -8,7 +8,7 @@ function ColumnOptions(props) {
     let i = props.i
     const columnOptionsSelectedRef = useRef('')
 
-    
+
     useEffect(() => {
         document.addEventListener('click', handleDocumentClick)
     }, [])
@@ -21,11 +21,11 @@ function ColumnOptions(props) {
     }
 
     function deleteColumn(columnId) {
-        fetch('http://127.0.0.1:8000/board/delete-column/', {
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/board/delete-column/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Token ${props.userToken}`
+                'Authorization': `Token ${ props.userToken }`
             },
             body: JSON.stringify({
                 column_id: columnId,
@@ -44,9 +44,9 @@ function ColumnOptions(props) {
         {boardValues.groupsData.columnsInfo[props.j] &&
             <div data-testid="open-column-options"
                 className={`absolute right-0 mr-2  p-1 rounded-[4px] cursor-pointer  
-                ${(props.columnOptionsSelectedId[0] === boardValues.groupsData.columnsInfo[props.j].id && props.columnOptionsSelectedId[1] === i) 
-                    ? `text-slate-600 bg-sky-100` 
-                    : `group-hover:text-inherit hover:bg-slate-200 text-white`}`}
+                ${(props.columnOptionsSelectedId[0] === boardValues.groupsData.columnsInfo[props.j].id && props.columnOptionsSelectedId[1] === i)
+            ? `text-slate-600 bg-sky-100`
+            : `group-hover:text-inherit hover:bg-slate-200 text-white`} `}
                 onClick={() => {
                 props.setColumnOptionsSelectedId([boardValues.groupsData.columnsInfo[props.j].id, i])
                 boardValues.setRenderGroups(!boardValues.renderGroups)

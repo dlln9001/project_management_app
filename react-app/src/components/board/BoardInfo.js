@@ -35,7 +35,7 @@ const BoardInfo = React.forwardRef((props, ref) => {
     }, [boardDescription, updateEffect])
 
     function getOwnerInfo() {
-        fetch('http://127.0.0.1:8000/user/get-user-info/', {
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/user/get-user-info/`, {
             method: 'POST',
             headers: {  
                 'Content-Type': 'application/json',
@@ -50,7 +50,7 @@ const BoardInfo = React.forwardRef((props, ref) => {
     }
 
     function changeBoardName(boardName) {
-        fetch('http://127.0.0.1:8000/board/change-board-name/', {
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/board/change-board-name/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -69,7 +69,7 @@ const BoardInfo = React.forwardRef((props, ref) => {
     }
 
     function changeBoardDescription(boardDescription) {
-        fetch('http://127.0.0.1:8000/board/change-board-description/', {
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/board/change-board-description/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

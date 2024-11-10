@@ -6,12 +6,12 @@ function ColumnNameInput(props) {
 
     const [columnEditingName, setColumnEditingName] = useState('')
     const [columnNameEdited, setColumnNameEdited] = useState(false)
-    const [columnNameEditedIndexes, setColumnNameEditedIndexes] = useState('')
+    const [columnNameEditedIndexes, setColumnNameEditedIndexes] = useState([])
 
     let i = props.i
 
     function editColumnName(columnName, columnId) {
-        fetch('http://127.0.0.1:8000/board/edit-column-name/', {
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/board/edit-column-name/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

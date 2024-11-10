@@ -23,9 +23,10 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', TemplateView.as_view(template_name='index.html')),
-    path('authorize/', include('user_authentication.api.urls')),
-    path('workspace-element/', include('workspace_elements.api.urls')),
-    path('board/', include('boards.api.urls')),
-    path('user/', include('users.api.urls')),
-    path('document/', include('document.api.urls'))
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path('api/authorize/', include('user_authentication.api.urls')),
+    path('api/workspace-element/', include('workspace_elements.api.urls')),
+    path('api/board/', include('boards.api.urls')),
+    path('api/user/', include('users.api.urls')),
+    path('api/document/', include('document.api.urls'))
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) \
+  + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

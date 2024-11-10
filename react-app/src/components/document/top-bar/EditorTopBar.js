@@ -14,59 +14,59 @@ function EditorTopBar({ editor, userToken, documentId }) {
         newImage.append('new_image', e.target.files[0])
         newImage.append('document_id', documentId)
 
-        fetch('http://127.0.0.1:8000/document/add-image/', {
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/document/add-image/`, {
             method: 'POST',
             headers: {
-                'Authorization': `Token ${userToken}`
+                'Authorization': `Token ${ userToken }`
             },
             body: newImage
         })
             .then(res => res.json())
             .then(data => {
-                const imageUrl = 'http://127.0.0.1:8000' + data.image_url
+                const imageUrl = `${ process.env.REACT_APP_API_BASE_URL }` + data.image_url
                 if (editor && imageUrl) {
-                    console.log(imageUrl)
-                    editor.chain().focus().setImage({ src: imageUrl }).run()
-                }
-            })
+            console.log(imageUrl)
+            editor.chain().focus().setImage({ src: imageUrl }).run()
+        }
+    })
 
 
-    }
+}
 
-    if (!editor) {
-        return null
-    }
+if (!editor) {
+    return null
+}
 
-    return (
-        <div className=' absolute px-5 py-3 left-0 border-b border-b-slate-300 w-full flex items-center gap-2 bg-white z-10 rounded-tl-md'>
+return (
+    <div className=' absolute px-5 py-3 left-0 border-b border-b-slate-300 w-full flex items-center gap-2 bg-white z-10 rounded-tl-md'>
 
-            <TopBarTextOptions editor={editor} />
+        <TopBarTextOptions editor={editor} />
 
-            <TopBarAlign editor={editor} />
+        <TopBarAlign editor={editor} />
 
-            <div className="border-l border-slate-300 h-7"></div>
+        <div className="border-l border-slate-300 h-7"></div>
 
-            <button onClick={() => editor.chain().focus().toggleBulletList().run()} className={`rounded w-8 h-8 hover:bg-slate-100 font-medium flex justify-center items-center text-lg
+        <button onClick={() => editor.chain().focus().toggleBulletList().run()} className={`rounded w-8 h-8 hover:bg-slate-100 font-medium flex justify-center items-center text-lg
                             bg-white`}>
-                <MdFormatListBulleted />
-            </button>
-            <button onClick={() => editor.chain().focus().toggleOrderedList().run()} className={`rounded w-8 h-8 hover:bg-slate-100 font-medium flex justify-center items-center text-md
+            <MdFormatListBulleted />
+        </button>
+        <button onClick={() => editor.chain().focus().toggleOrderedList().run()} className={`rounded w-8 h-8 hover:bg-slate-100 font-medium flex justify-center items-center text-md
                             bg-white`}>
-                <FaListOl />
-            </button>
-            <button onClick={() => editor.chain().focus().toggleTaskList().run()} className={`rounded w-8 h-8 hover:bg-slate-100 font-medium flex justify-center items-center text-md
+            <FaListOl />
+        </button>
+        <button onClick={() => editor.chain().focus().toggleTaskList().run()} className={`rounded w-8 h-8 hover:bg-slate-100 font-medium flex justify-center items-center text-md
                             bg-white`}>
-                <FaRegCheckSquare />
-            </button>
-            <form action="" className="cursor-pointer">
-                <label htmlFor="insert-picture" className={`rounded w-8 h-8 hover:bg-slate-100 font-medium flex justify-center items-center text-lg bg-white cursor-pointer`}>
-                    <MdOutlineImage />
-                </label>
-                <input type="file" id="insert-picture" accept='image/*' className='hidden' onChange={addImage} />
-            </form>
+            <FaRegCheckSquare />
+        </button>
+        <form action="" className="cursor-pointer">
+            <label htmlFor="insert-picture" className={`rounded w-8 h-8 hover:bg-slate-100 font-medium flex justify-center items-center text-lg bg-white cursor-pointer`}>
+                <MdOutlineImage />
+            </label>
+            <input type="file" id="insert-picture" accept='image/*' className='hidden' onChange={addImage} />
+        </form>
 
-        </div>
-    )
+    </div>
+)
 }
 
 export default EditorTopBar

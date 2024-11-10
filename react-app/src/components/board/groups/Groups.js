@@ -21,20 +21,20 @@ function Groups(props) {
     const [columnOptionsSelectedId, setColumnOptionsSelectedId] = useState('')
     const [columnNameFocused, setColumnNameFocused] = useState(false)
 
-     // renders all the groups in a separate use effect than the fetch
-     useEffect(() => {
+    // renders all the groups in a separate use effect than the fetch
+    useEffect(() => {
         if (Object.keys(groupsData).length != 0) {
             let tempGroupHtml = []
 
             // set the group html
-            for (let i=0; i<groupsData.groupsInfo.length; i++) {
-                let currentGroup = groupsData.groupsInfo[i]  
+            for (let i = 0; i < groupsData.groupsInfo.length; i++) {
+                let currentGroup = groupsData.groupsInfo[i]
                 let groupId = currentGroup.id
                 let currentGroupsItems = groupsData.itemsInfo[i]
 
                 // set the column type html. In the group for loop so it can know which group it is on to open column options on the right group
                 let columnHtml = []
-                for (let j=0; j<groupsData.columnsInfo.length; j++) {
+                for (let j = 0; j < groupsData.columnsInfo.length; j++) {
                     // j is each column
                     columnHtml.push(
                         <div key={j} className={`min-w-36 text-sm border-r border-r-slate-300 flex justify-center items-center text-slate-600  relative group max-w-20
@@ -42,13 +42,13 @@ function Groups(props) {
                                 ? `bg-slate-100`
                                 : `hover:bg-slate-100`
                             }`}>
-                            <ColumnNameInput i={i} j={j} userToken={props.userToken} columnNameFocused={columnNameFocused} setColumnNameFocused={setColumnNameFocused}/>
+                            <ColumnNameInput i={i} j={j} userToken={props.userToken} columnNameFocused={columnNameFocused} setColumnNameFocused={setColumnNameFocused} />
 
-                             
-                             {!columnNameFocused && 
+
+                            {!columnNameFocused &&
                                 <ColumnOptions i={i} j={j} userToken={props.userToken} boardId={props.boardId}
-                                               columnOptionsSelectedId={columnOptionsSelectedId} setColumnOptionsSelectedId={setColumnOptionsSelectedId}/>
-                             }
+                                    columnOptionsSelectedId={columnOptionsSelectedId} setColumnOptionsSelectedId={setColumnOptionsSelectedId} />
+                            }
 
                         </div>
                     )
@@ -59,10 +59,10 @@ function Groups(props) {
                     <div key={i} className="mt-10">
                         <div className="flex items-center mb-2 group">
 
-                            <GroupOptions groupId={groupId} userToken={props.userToken} boardId={props.boardId}/>
+                            <GroupOptions groupId={groupId} userToken={props.userToken} boardId={props.boardId} />
 
                             <GroupNameInput groupId={groupId} userToken={props.userToken} currentGroup={currentGroup} i={i}
-                                            currentGroupsItems={currentGroupsItems} boardId={props.boardId}/>
+                                currentGroupsItems={currentGroupsItems} boardId={props.boardId} />
 
                         </div>
 
@@ -71,7 +71,7 @@ function Groups(props) {
 
                                 <div className={`${currentGroup.color} min-w-[6px] justify-self-start rounded-tl-md`}></div>
 
-                                <GroupSelectAllItems groupId={groupId}/>
+                                <GroupSelectAllItems groupId={groupId} />
 
                                 <div className="min-w-[500px] px-2 border-r border-r-slate-300 flex items-center justify-center">
                                     <p className="text-sm text-slate-600 self-center  text-center">Item</p>
@@ -79,34 +79,34 @@ function Groups(props) {
 
                                 {columnHtml}
 
-                                <AddColumn userToken={props.userToken} boardId={props.boardId} groupId={groupId}/>
+                                <AddColumn userToken={props.userToken} boardId={props.boardId} groupId={groupId} />
 
                                 <div className="w-full"></div>
 
                             </div>
 
-                                <Items i={i} currentGroup={currentGroup} userToken={props.userToken}/>
+                            <Items i={i} currentGroup={currentGroup} userToken={props.userToken} />
 
-                                <GroupAddItem i={i} currentGroup={currentGroup} userToken={props.userToken} groupId={groupId} boardId={props.boardId}/>
+                            <GroupAddItem i={i} currentGroup={currentGroup} userToken={props.userToken} groupId={groupId} boardId={props.boardId} />
                         </div>
                     </div>
                 )
             }
-            
+
             setGroupHtml(tempGroupHtml)
             if (boardValues.reloadGroupsInitial) {
                 boardValues.setRenderGroups(!boardValues.renderGroups)
                 boardValues.setReloadGroupsInitial(false)
             }
         }
-    }, [boardValues.renderGroups])   
+    }, [boardValues.renderGroups])
 
     function createGroup() {
-        fetch('http://127.0.0.1:8000/board/create-group/', {
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/board/create-group/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Token ${props.userToken}`,
+                'Authorization': `Token ${ props.userToken }`,
             },
             body: JSON.stringify({
                 board_id: props.boardId,

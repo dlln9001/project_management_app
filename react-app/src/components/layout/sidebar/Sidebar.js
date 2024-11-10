@@ -28,11 +28,11 @@ function Sidebar(props) {
 
     useEffect(() => {
         document.addEventListener('click', handleDocumentClick)
-        fetch('http://127.0.0.1:8000/workspace-element/get/', {
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/workspace-element/get/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Token ${userToken}`,
+                'Authorization': `Token ${ userToken }`,
             }
         })
             .then(res => res.json())
@@ -51,7 +51,7 @@ function Sidebar(props) {
         <div className=" bg-slate-50 mr-3 rounded-tr-lg max-w-72 min-w-72 flex flex-col">
 
             <div className={`bar-button mb-1 flex items-center gap-2 
-                 ${JSON.parse(localStorage.getItem('selectedWorkspaceItem')).type === 'home' && `bg-sky-100`}`}
+                 ${ JSON.parse(localStorage.getItem('selectedWorkspaceItem')).type === 'home' && `bg-sky-100` }`}
                 onClick={() => {
                     navigate('home')
                     localStorage.setItem('selectedWorkspaceItem', JSON.stringify({ type: 'home', id: 0 }))

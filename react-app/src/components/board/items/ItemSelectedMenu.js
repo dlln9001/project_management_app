@@ -6,11 +6,11 @@ function ItemSelectedMenu(props) {
     const boardValues = useBoardValues()
 
     function deleteSelectedItems() {
-        fetch('http://127.0.0.1:8000/board/delete-item/', {
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/board/delete-item/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Token ${props.userToken}`
+                'Authorization': `Token ${ props.userToken }`
             },
             body: JSON.stringify({
                 item_ids: boardValues.itemSelected

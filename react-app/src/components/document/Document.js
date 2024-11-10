@@ -80,11 +80,11 @@ function Document() {
 
 
     useEffect(() => {
-        fetch('http://127.0.0.1:8000/document/get-document/', {
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/document/get-document/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Token ${userToken}`
+                'Authorization': `Token ${ userToken }`
             },
             body: JSON.stringify({
                 document_id: documentId
@@ -114,78 +114,78 @@ function Document() {
 
 
     function saveDocument() {
-        fetch('http://127.0.0.1:8000/document/save-document/', {
+        fetch(`${ process.env.REACT_APP_API_BASE_URL }/document/save-document/`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${userToken}`
-            },
+            'Content-Type': 'application/json',
+            'Authorization': `Token ${userToken}`
+        },
             body: JSON.stringify({
                 document_content: editor.getHTML(),
                 document_id: documentId
             })
         })
-            .then(res => res.json())
-            .then(data => {
-                setLastSaved(Date.now())
-                setSaving(false)
-            })
-    }
+        .then(res => res.json())
+        .then(data => {
+            setLastSaved(Date.now())
+            setSaving(false)
+        })
+}
 
 
-    return (
-        <>
-            {documentInfo &&
-                <div className="bg-white h-full rounded-tl-md flex justify-center relative">
+return (
+    <>
+        {documentInfo &&
+            <div className="bg-white h-full rounded-tl-md flex justify-center relative">
 
-                    <EditorTopBar editor={editor} userToken={userToken} documentId={documentId} />
+                <EditorTopBar editor={editor} userToken={userToken} documentId={documentId} />
 
-                    <div className='overflow-auto w-full flex justify-center custom-scrollbar'>
-                        <div className='mt-28 w-[750px]'>
+                <div className='overflow-auto w-full flex justify-center custom-scrollbar'>
+                    <div className='mt-28 w-[750px]'>
 
-                            <DocumentTitle
-                                userToken={userToken}
-                                documentInfo={documentInfo}
-                                documentId={documentId}
-                                setSaving={setSaving}
-                                setGetDocumentInfo={setGetDocumentInfo}
-                                setRenderSideBar={setRenderSideBar} />
+                        <DocumentTitle
+                            userToken={userToken}
+                            documentInfo={documentInfo}
+                            documentId={documentId}
+                            setSaving={setSaving}
+                            setGetDocumentInfo={setGetDocumentInfo}
+                            setRenderSideBar={setRenderSideBar} />
 
-                            <div className='mb-6 flex gap-5'>
-                                <div className='text-sm flex gap-2 items-center'>
-                                    <IoMdCreate />
-                                    <div className='flex gap-1'>
-                                        <p>Created</p>
-                                        <strong>{createdAt && createdAt}</strong>
-                                    </div>
+                        <div className='mb-6 flex gap-5'>
+                            <div className='text-sm flex gap-2 items-center'>
+                                <IoMdCreate />
+                                <div className='flex gap-1'>
+                                    <p>Created</p>
+                                    <strong>{createdAt && createdAt}</strong>
                                 </div>
-                                {saving
-                                    ?
-                                    <div className='flex gap-2 items-center'>
-                                        <FaArrowsRotate />
-                                        <p className='text-sm text-slate-700'>saving...</p>
-                                    </div>
-                                    :
-                                    <div className='flex gap-2 items-center'>
-                                        <FaRegCircleCheck />
-                                        <p className='text-sm text-slate-700'>saved</p>
-                                    </div>
-                                }
                             </div>
+                            {saving
+                                ?
+                                <div className='flex gap-2 items-center'>
+                                    <FaArrowsRotate />
+                                    <p className='text-sm text-slate-700'>saving...</p>
+                                </div>
+                                :
+                                <div className='flex gap-2 items-center'>
+                                    <FaRegCircleCheck />
+                                    <p className='text-sm text-slate-700'>saved</p>
+                                </div>
+                            }
+                        </div>
 
-                            <div className='z-10 prose'>
-                                <EditorContent editor={editor} className='prose' />
+                        <div className='z-10 prose'>
+                            <EditorContent editor={editor} className='prose' />
 
-                                <FloatingMenuComponent editor={editor} />
+                            <FloatingMenuComponent editor={editor} />
 
-                                <BubbleMenuComponent editor={editor} />
-                            </div>
+                            <BubbleMenuComponent editor={editor} />
                         </div>
                     </div>
                 </div>
-            }
-        </>
-    )
+            </div>
+        }
+    </>
+)
 }
 
 export default Document

@@ -8,9 +8,9 @@ import { forwardRef } from "react";
 export function getStatusColumnValues(columnValueId) {
     // if you only need the text and color values, you can pass in a dummy Id, like -1.
 
-    const statusColumnValues = [{id: columnValueId, text: 'Done', color: 'bg-green-500'}, {id: columnValueId, text: 'Working on it', color: 'bg-orange-300'}, 
-        {id: columnValueId, text: 'Stuck', color: 'bg-red-500'},{id: columnValueId, text: '', color: 'bg-neutral-400'},
-        ]
+    const statusColumnValues = [{ id: columnValueId, text: 'Done', color: 'bg-green-500' }, { id: columnValueId, text: 'Working on it', color: 'bg-orange-300' },
+    { id: columnValueId, text: 'Stuck', color: 'bg-red-500' }, { id: columnValueId, text: '', color: 'bg-neutral-400' },
+    ]
 
     return statusColumnValues
 }
@@ -18,10 +18,10 @@ export function getStatusColumnValues(columnValueId) {
 export function getPriorityColumnValues(columnValueId) {
     // if you only need the text and color values, you can pass in a dummy Id, like -1.
 
-    const priorityColumnValues = [{id: columnValueId, text: 'Critical ⚠', color: 'bg-slate-800'}, {id: columnValueId, text: 'High', color: 'bg-violet-900'}, 
-        {id: columnValueId, text: 'Medium', color: 'bg-indigo-500'},{id: columnValueId, text: 'low', color: 'bg-blue-400'},
-        {id: columnValueId, text: '', color: 'bg-neutral-400'}
-        ]
+    const priorityColumnValues = [{ id: columnValueId, text: 'Critical ⚠', color: 'bg-slate-800' }, { id: columnValueId, text: 'High', color: 'bg-violet-900' },
+    { id: columnValueId, text: 'Medium', color: 'bg-indigo-500' }, { id: columnValueId, text: 'low', color: 'bg-blue-400' },
+    { id: columnValueId, text: '', color: 'bg-neutral-400' }
+    ]
 
     return priorityColumnValues
 }
@@ -31,7 +31,7 @@ const LabelsMenu = forwardRef(function (props, ref) {
     const columnValueId = props.columnValues[props.k].id
     const [statusColumnValuesHtml, setStatusColumnValuesHtml] = useState('')
     const statusColumnValues = getStatusColumnValues(columnValueId)
-    
+
     const [priorityColumnValuesHtml, setPriorityColumnValuesHtml] = useState('')
     const priorityColumnValues = getPriorityColumnValues(columnValueId)
 
@@ -40,25 +40,25 @@ const LabelsMenu = forwardRef(function (props, ref) {
 
     const boardElement = document.querySelector('#board-id')
 
-    
+
     useEffect(() => {
 
         // set the status options
         let tempStatusColumnValuesHtml = []
-        for (let i=0; i < statusColumnValues.length; i++) {
+        for (let i = 0; i < statusColumnValues.length; i++) {
             tempStatusColumnValuesHtml.push(
-                <div key={i} className={`w-full ${statusColumnValues[i].color} text-white p-[6px] rounded-sm cursor-pointer min-h-8 hover:opacity-90`} 
-                onClick={() => editLabelColumn(statusColumnValues[i].id, statusColumnValues[i].color, statusColumnValues[i].text)}>{statusColumnValues[i].text}</div>
+                <div key={i} className={`w-full ${statusColumnValues[i].color} text-white p-[6px] rounded-sm cursor-pointer min-h-8 hover:opacity-90`}
+                    onClick={() => editLabelColumn(statusColumnValues[i].id, statusColumnValues[i].color, statusColumnValues[i].text)}>{statusColumnValues[i].text}</div>
             )
         }
         setStatusColumnValuesHtml(tempStatusColumnValuesHtml)
 
         // set the priority options
         let tempPriorityColumnValuesHtml = []
-        for (let i=0; i < priorityColumnValues.length; i++) {
+        for (let i = 0; i < priorityColumnValues.length; i++) {
             tempPriorityColumnValuesHtml.push(
-                <div key={i} className={`w-full ${priorityColumnValues[i].color} text-white p-[6px] rounded-sm cursor-pointer min-h-8 hover:opacity-90`} 
-                onClick={() => editLabelColumn(priorityColumnValues[i].id, priorityColumnValues[i].color, priorityColumnValues[i].text)}>{priorityColumnValues[i].text}</div>
+                <div key={i} className={`w-full ${priorityColumnValues[i].color} text-white p-[6px] rounded-sm cursor-pointer min-h-8 hover:opacity-90`}
+                    onClick={() => editLabelColumn(priorityColumnValues[i].id, priorityColumnValues[i].color, priorityColumnValues[i].text)}>{priorityColumnValues[i].text}</div>
             )
         }
         setPriorityColumnValuesHtml(tempPriorityColumnValuesHtml)
@@ -84,25 +84,25 @@ const LabelsMenu = forwardRef(function (props, ref) {
 
         // Initial position set
         updatePosition();
-        
+
         // Update position when scrolling or resizing
         boardElement.addEventListener('scroll', updatePosition);
         boardElement.addEventListener('resize', updatePosition);
-    
+
         // Cleanup event listeners on component unmount
         return () => {
             boardElement.removeEventListener('scroll', updatePosition);
             boardElement.removeEventListener('resize', updatePosition);
         };
-        }, [props.parentRef, labelMenuRef]);
-    
+    }, [props.parentRef, labelMenuRef]);
+
 
     function editLabelColumn(columnValueId, color, text) {
-        fetch('http://127.0.0.1:8000/board/edit-label-column/', {
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/board/edit-label-column/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Token ${props.userToken}`
+                'Authorization': `Token ${ props.userToken }`
             },
             body: JSON.stringify({
                 column_value_id: columnValueId,

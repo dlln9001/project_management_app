@@ -24,11 +24,11 @@ function GroupOptions(props) {
     }
 
     function deleteGroup() {
-        fetch('http://127.0.0.1:8000/board/delete-group/', {
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/board/delete-group/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Token ${props.userToken}`,
+                'Authorization': `Token ${ props.userToken }`,
             },
             body: JSON.stringify({
                 group_id: props.groupId,
@@ -41,7 +41,7 @@ function GroupOptions(props) {
 
     return (
         <div ref={groupOptionsId === props.groupId ? groupOptionsRef : null} className={`absolute left-3 group-hover:text-inherit  p-1 rounded-md cursor-pointer 
-            ${showGroupOptions && groupOptionsId === props.groupId ? `bg-sky-200 text-inherit` : `hover:bg-slate-300 text-white`}`}
+            ${ showGroupOptions && groupOptionsId === props.groupId ? `bg-sky-200 text-inherit` : `hover:bg-slate-300 text-white`} `}
             onClick={() => {
                setShowGroupOptions(true)
                setGroupOptionsId(props.groupId)

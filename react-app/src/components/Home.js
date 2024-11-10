@@ -15,7 +15,7 @@ function Home() {
     const token = JSON.parse(localStorage.getItem('userToken'))
 
     useEffect(() => {
-        fetch('http://127.0.0.1:8000/workspace-element/get-recently-visited-elements/', {
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/workspace-element/get-recently-visited-elements/`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

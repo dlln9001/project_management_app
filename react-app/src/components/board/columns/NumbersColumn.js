@@ -10,11 +10,11 @@ function NumbersColumn(props) {
     const inputRef = useRef('')
 
     function editNumbersColumn(numberValue) {
-        fetch('http://127.0.0.1:8000/board/edit-numbers-column/', {
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/board/edit-numbers-column/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Token ${props.userToken}`
+                'Authorization': `Token ${ props.userToken }`
             },
             body: JSON.stringify({
                 column_value_id: columnValueId,

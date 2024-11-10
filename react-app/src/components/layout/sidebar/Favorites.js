@@ -9,10 +9,10 @@ import { BsThreeDots } from "react-icons/bs";
 
 
 export function getFavorites(setFavoritesData, userToken) {
-    fetch('http://127.0.0.1:8000/workspace-element/get-favorites/', {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/workspace-element/get-favorites/`, {
         method: 'GET',
         headers: {
-            'Authorization': `Token ${userToken}`
+            'Authorization': `Token ${ userToken }`
         }
     })
     .then(res => res.json())
@@ -57,7 +57,7 @@ function Favorites(props) {
     }
 
     return (
-        <div className={`transition-all duration-200 overflow-auto custom-scrollbar ${favoritesExpanded ? `h-[1000px]` : `h-11`} `}>
+        <div className={`transition-all duration-200 overflow-auto custom-scrollbar ${ favoritesExpanded? `h-[1000px]` : `h-11`} `}>
             <div className="bar-button flex items-center gap-2" onClick={() => setFavoritesExpanded(prev => !prev)}>
                 <FaRegStar className="text-lg ml-[2px]" />
                 <p className="text-sm text-slate-700">Favorites</p>
@@ -77,15 +77,15 @@ function Favorites(props) {
                             return (
                                 <div key={i} 
                                 className={`bar-button text-sm flex items-center gap-2 group relative 
-                                    ${workspaceItemOptionsId === i && `bg-slate-200`} 
-                                    ${(selectedWorkspaceItem.type === item.element_type && selectedWorkspaceItem.id === item.id) ? `bg-sky-100` : ``}`}                    
+                                    ${ workspaceItemOptionsId === i && `bg-slate-200` } 
+                                    ${ (selectedWorkspaceItem.type === item.element_type && selectedWorkspaceItem.id === item.id) ? `bg-sky-100` : `` } `}                    
                                 onClick={() => {
 
                                     if (item.element_type === 'board') {
-                                        navigate(`board?id=${encodeURIComponent(item.id)}`)
+                                        navigate(`board ? id = ${ encodeURIComponent(item.id) } `)
                                     }
                                     else if (item.element_type === 'document') {
-                                        navigate(`docs?id=${encodeURIComponent(item.id)}`)
+                                        navigate(`docs ? id = ${ encodeURIComponent(item.id) } `)
                                     }
                                     
                                     localStorage.setItem('selectedWorkspaceItem', JSON.stringify({ type: item.element_type, id: item.id }))
@@ -101,8 +101,8 @@ function Favorites(props) {
                                     
                                     <div className="relative ml-auto" ref={favoritedOptionsRef}>
                                         <div 
-                                            className={`group-hover:text-inherit  p-1 rounded-md 
-                                                    ${workspaceItemOptionsId === i ? `text-inherit hover:bg-sky-200 bg-sky-200` : `text-transparent hover:bg-neutral-300`}`}
+                                            className={`group-hover: text-inherit  p-1 rounded-md 
+                                                    ${ workspaceItemOptionsId === i ? `text-inherit hover:bg-sky-200 bg-sky-200` : `text-transparent hover:bg-neutral-300` } `}
                                             onClick={(e) => {
                                                 e.stopPropagation()
                                                 setOptionsPosition(e)

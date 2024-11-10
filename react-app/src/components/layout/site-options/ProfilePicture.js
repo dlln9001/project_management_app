@@ -1,4 +1,4 @@
-import {useState, useRef, useEffect} from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { BsPersonFillAdd } from "react-icons/bs";
 import { MdOutlineFileUpload } from "react-icons/md";
 import { FiTrash } from "react-icons/fi";
@@ -21,10 +21,10 @@ function ProfilePicture(props) {
     function changePfp(e) {
         const profile_picture = new FormData()
         profile_picture.append('pfp_file', e.target.files[0])
-        fetch('http://127.0.0.1:8000/user/change-pfp/', {
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/user/change-pfp/`, {
             method: 'POST',
             headers: {
-                'Authorization': `Token ${props.userToken}`,
+                'Authorization': `Token ${ props.userToken }`,
             },
             body: profile_picture
         })
@@ -32,18 +32,18 @@ function ProfilePicture(props) {
         .then(data => {
             if (data.user) {
                 localStorage.setItem('userInfo', JSON.stringify(data.user))
-                props.setPfpUrl('http://127.0.0.1:8000' + JSON.parse(localStorage.getItem('userInfo')).profile_picture)
+                props.setPfpUrl(`${ process.env.REACT_APP_API_BASE_URL }` + JSON.parse(localStorage.getItem('userInfo')).profile_picture)
                 setShowChangePfp(false)
             }
-        })
+})
     }
 
-    function removePfp(e) {
-        fetch('http://127.0.0.1:8000/user/delete-pfp/', {
+function removePfp(e) {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/user/delete-pfp/`, {
             method: "DELETE",
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Token ${props.userToken}`
+                'Authorization': `Token ${ props.userToken }`
             }
         })
         .then(res => res.json())

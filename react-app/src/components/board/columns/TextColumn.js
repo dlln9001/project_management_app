@@ -10,11 +10,11 @@ function TextColumn(props) {
     const inputRef = useRef('')
 
     function editTextColumn(textValue) {
-        fetch('http://127.0.0.1:8000/board/edit-text-column/', {
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/board/edit-text-column/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Token ${props.userToken}`
+                'Authorization': `Token ${ props.userToken }`
             },
             body: JSON.stringify({
                 column_value_id: columnValueId,

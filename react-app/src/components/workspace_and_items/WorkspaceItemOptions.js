@@ -12,7 +12,7 @@ function WorkspaceItemOptions(props) {
     const optionsRef = useRef('')
     const navigate = useNavigate()
     const [favoritesData, setFavoritesData] = useState('')
-    const [favorited, setFavorited] = useState({isFavorited: false, finishedCheck: false})
+    const [favorited, setFavorited] = useState({ isFavorited: false, finishedCheck: false })
     const [favoritedId, setFavoritedId] = useState('')
 
     useEffect(() => {
@@ -31,13 +31,13 @@ function WorkspaceItemOptions(props) {
             let not_favorited = true
             favoritesData.map((item, i) => {
                 if (item.element_type === props.workspaceType && item.id === props.elementId) {
-                    setFavorited({isFavorited: true, finishedCheck: true})
+                    setFavorited({ isFavorited: true, finishedCheck: true })
                     setFavoritedId(item.favorite_model_id)
                     not_favorited = false
                 }
             })
             if (not_favorited) {
-                setFavorited({isFavorited: false, finishedCheck: true})
+                setFavorited({ isFavorited: false, finishedCheck: true })
             }
             console.log('workdpsaceoptions', favoritesData, favorited)
         }
@@ -61,11 +61,11 @@ function WorkspaceItemOptions(props) {
     }
 
     function deleteDoc() {
-        fetch('http://127.0.0.1:8000/document/delete-document/', {
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/document/delete-document/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Token ${userToken}`
+                'Authorization': `Token ${ userToken }`
             },
             body: JSON.stringify({
                 document_id: props.elementId
@@ -81,12 +81,12 @@ function WorkspaceItemOptions(props) {
     }
 
     function deleteBoard() {
-        fetch('http://127.0.0.1:8000/board/delete-board/', {
+        fetch(`${ process.env.REACT_APP_API_BASE_URL }/board/delete-board/`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${userToken}`
-            },
+            'Content-Type': 'application/json',
+            'Authorization': `Token ${userToken}`
+        },
             body: JSON.stringify({
                 board_id: props.elementId
             })
@@ -98,14 +98,14 @@ function WorkspaceItemOptions(props) {
             props.setRenderSideBar(!props.renderSideBar)
             navigate('workspace-item-deleted')
         })
-    }
+}
 
-    function addToFavorites() {
-        fetch('http://127.0.0.1:8000/workspace-element/add-to-favorites/', {
+function addToFavorites() {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/workspace-element/add-to-favorites/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Token ${userToken}`
+                'Authorization': `Token ${ userToken }`
             },
             body: JSON.stringify({
                 element_type: props.workspaceType,

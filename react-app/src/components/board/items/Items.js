@@ -4,11 +4,11 @@ import SelectItem from "./SelectItem";
 import ItemColumnValue from "../columns/ItemColumnValue";
 
 export function editItem(itemContent, itemId, userToken, setRenderComponent) {
-    fetch('http://127.0.0.1:8000/board/edit-item/', {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/board/edit-item/`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Token ${userToken}`
+            'Authorization': `Token ${ userToken }`
         },
         body: JSON.stringify({
             item_id: itemId,

@@ -1,13 +1,13 @@
 import { useState } from "react"
 import { useBoardValues } from "../../../contexts/BoardValuesContext"
 
-export function createItem(groupId, addItemContent, setAddItemContent='', boardId, userToken, renderComponent, setRenderComponent, renderGroups, setRenderGroups) {
+export function createItem(groupId, addItemContent, setAddItemContent = '', boardId, userToken, renderComponent, setRenderComponent, renderGroups, setRenderGroups) {
     if (addItemContent) {
-        fetch('http://127.0.0.1:8000/board/create-item/', {
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/board/create-item/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Token ${userToken}`
+                'Authorization': `Token ${ userToken }`
             },
             body: JSON.stringify({
                 group_id: groupId,
@@ -55,7 +55,7 @@ function GroupAddItem(props) {
 
     return (
         <div className={`flex`}>
-            <div className={`${props.currentGroup.color} w-[6px] justify-self-start rounded-bl-md opacity-50`}></div>
+            <div className={`${ props.currentGroup.color } w-[6px] justify-self-start rounded-bl-md opacity-50`}></div>
             <div className="p-2 flex items-center border-r border-r-slate-300 border-t border-t-slate-300">
                 <div className="w-4 h-4 border border-slate-200 rounded-sm"></div>
             </div>

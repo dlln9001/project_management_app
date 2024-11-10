@@ -13,11 +13,11 @@ function ChangeEmail(props) {
         e.preventDefault()
         const form = e.target
         if (form.checkValidity()) {
-            fetch('http://127.0.0.1:8000/authorize/change-standard-email/', {
+            fetch(`${process.env.REACT_APP_API_BASE_URL}/authorize/change-standard-email/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Token ${props.userToken}`
+                    'Authorization': `Token ${ props.userToken }`
                 },
                 body: JSON.stringify({
                     new_email: newEmail
@@ -40,7 +40,7 @@ function ChangeEmail(props) {
 
     return (
         <form className="absolute bg-white top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-1/4 px-8 py-5 rounded-xl flex flex-col" onSubmit={changeStandardEmail}>
-            <div className=" self-end text-3xl cursor-pointer" onClick={() => props.setShowChangeEmail(false)}>
+            <div className="self-end text-3xl cursor-pointer" onClick={() => props.setShowChangeEmail(false)}>
                 <IoIosClose />
             </div>
             <h1 className="text-3xl font-medium mb-4">Change email address</h1>

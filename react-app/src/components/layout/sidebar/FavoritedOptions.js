@@ -3,11 +3,11 @@ import { FaRegStar } from "react-icons/fa";
 
 export function removeFavorite(e, userToken, favorite_id, setWorkspaceItemOptionsId, setRenderSideBar) {
     e.stopPropagation()
-    fetch('http://127.0.0.1:8000/workspace-element/remove-favorite/', {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/workspace-element/remove-favorite/`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Token ${userToken}`
+            'Authorization': `Token ${ userToken }`
         },
         body: JSON.stringify({
             favorite_id: favorite_id
