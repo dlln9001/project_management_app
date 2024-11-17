@@ -32,7 +32,7 @@ function ProfilePicture(props) {
         .then(data => {
             if (data.user) {
                 localStorage.setItem('userInfo', JSON.stringify(data.user))
-                props.setPfpUrl(`${ process.env.REACT_APP_API_BASE_URL }` + JSON.parse(localStorage.getItem('userInfo')).profile_picture)
+                props.setPfpUrl(`${ process.env.REACT_APP_MEDIA_BASE_URL }` + JSON.parse(localStorage.getItem('userInfo')).profile_picture)
                 setShowChangePfp(false)
             }
 })

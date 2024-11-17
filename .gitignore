@@ -6,4 +6,4 @@ media/
 Dockerfile
 staticfiles/
 docker-compose.yml
-apache
+nginx

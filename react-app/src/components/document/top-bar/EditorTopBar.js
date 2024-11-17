@@ -23,7 +23,7 @@ function EditorTopBar({ editor, userToken, documentId }) {
         })
             .then(res => res.json())
             .then(data => {
-                const imageUrl = `${ process.env.REACT_APP_API_BASE_URL }` + data.image_url
+                const imageUrl = `${ process.env.REACT_APP_MEDIA_BASE_URL }` + data.image_url
                 if (editor && imageUrl) {
             console.log(imageUrl)
             editor.chain().focus().setImage({ src: imageUrl }).run()

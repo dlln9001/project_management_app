@@ -2,6 +2,9 @@ import { useState, useEffect, useRef } from "react"
 import { useBoardValues } from "../../../contexts/BoardValuesContext";
 import SelectItem from "./SelectItem";
 import ItemColumnValue from "../columns/ItemColumnValue";
+import ItemUpdates from "./ItemUpdates";
+import { BiCommentAdd } from "react-icons/bi";
+
 
 export function editItem(itemContent, itemId, userToken, setRenderComponent) {
     fetch(`${process.env.REACT_APP_API_BASE_URL}/board/edit-item/`, {
@@ -31,6 +34,11 @@ function Items(props) {
 
     const [itemsHtml, setitemsHtml] = useState('')
 
+    const [showItemUpdates, setShowItemUpdates] = useState(false)
+    const [itemUpdateName, setItemUpdateName] = useState('')
+    const [itemUpdateId, setItemUpdateId] = useState('')
+    const itemUpdateButtonRef = useRef('')
+
     useEffect(() => {
         if (Object.keys(groupsData.itemsInfo).length != 0 && groupsData.itemsInfo[i]) {
             let itemHtml = []
@@ -51,8 +59,8 @@ function Items(props) {
                         {/* the box that allows for selecting icons */}
                         <SelectItem i={i} j={j} currentGroup={props.currentGroup}/>
 
-                        {/* this is where the user inputs the item content */}
-                        <div className="px-2 border-t flex border-t-slate-300 min-w-[500px] border-r border-r-slate-300">
+                        <div className=" border-t flex border-t-slate-300 min-w-[500px] border-r border-r-slate-300 items-center">
+                            {/* this is where the user inputs the item content */}
                             <input type="text" 
                                 onFocus={() => {
                                     setFocusedItem([i, j])
@@ -67,13 +75,25 @@ function Items(props) {
                                 value={(focusedItem[0] === i && focusedItem[1] === j) ? editingItemContents : groupsData.itemsInfo[i][j].name}
                                 tabIndex={0}
                                 className={`border border-transparent focus:outline-none hover:border hover:border-slate-300 rounded-sm px-1 focus:bg-white 
-                                        truncate text-ellipsis min-w-8 w-full focus:border-sky-600 h-fit self-center`}
+                                        truncate text-ellipsis min-w-8 w-full focus:border-sky-600 h-fit self-center mx-2`}
                                 onKeyDown={(e) => {
                                     if (e.key === 'Enter') {
                                         e.target.blur()
                                     }
                                 }}
                             />
+                            
+                            <div ref={itemUpdateId === groupsData.itemsInfo[i][j].id ? itemUpdateButtonRef : null} 
+                                className="border-l border-l-slate-300 flex justify-center h-full items-center px-4 text-lg cursor-pointer hover:text-sky-600"
+                                onClick={() => {
+                                    setItemUpdateName(groupsData.itemsInfo[i][j].name)
+                                    setItemUpdateId(groupsData.itemsInfo[i][j].id)
+                                    setShowItemUpdates(true)
+                                    boardValues.setRenderGroups(prev => !prev)
+                                }}>
+                                <BiCommentAdd />
+                            </div>
+
                         </div>
                         {columnValuesHtml}
                         <div className=" w-full border-t border-t-slate-300"></div>
@@ -86,10 +106,23 @@ function Items(props) {
     }
     }, [boardValues.renderGroups])
 
+
     return (
-        <div>
-            {itemsHtml}
-        </div>
+        <>
+            <div>
+                {itemsHtml}
+            </div>
+            
+            {showItemUpdates &&
+                <ItemUpdates 
+                    itemUpdateName={itemUpdateName}
+                    setItemUpdateName={setItemUpdateName}
+                    itemUpdateId={itemUpdateId}
+                    setShowItemUpdates={setShowItemUpdates}
+                    itemUpdateButtonRef={itemUpdateButtonRef}
+                    userToken={props.userToken}/>
+            }
+        </>
     )
 }
 

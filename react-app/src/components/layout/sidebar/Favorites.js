@@ -82,10 +82,10 @@ function Favorites(props) {
                                 onClick={() => {
 
                                     if (item.element_type === 'board') {
-                                        navigate(`board ? id = ${ encodeURIComponent(item.id) } `)
+                                        navigate(`board?id=${encodeURIComponent(item.id)}`)
                                     }
                                     else if (item.element_type === 'document') {
-                                        navigate(`docs ? id = ${ encodeURIComponent(item.id) } `)
+                                        navigate(`docs?id=${encodeURIComponent(item.id)}`)
                                     }
                                     
                                     localStorage.setItem('selectedWorkspaceItem', JSON.stringify({ type: item.element_type, id: item.id }))
@@ -101,7 +101,7 @@ function Favorites(props) {
                                     
                                     <div className="relative ml-auto" ref={favoritedOptionsRef}>
                                         <div 
-                                            className={`group-hover: text-inherit  p-1 rounded-md 
+                                            className={`group-hover:text-inherit  p-1 rounded-md 
                                                     ${ workspaceItemOptionsId === i ? `text-inherit hover:bg-sky-200 bg-sky-200` : `text-transparent hover:bg-neutral-300` } `}
                                             onClick={(e) => {
                                                 e.stopPropagation()

@@ -7,7 +7,7 @@ function SiteOptionsButton() {
     const is_default_profile_picture = JSON.parse(localStorage.getItem('userInfo')).is_default_profile_picture
     const [showPopup, setShowPopup] = useState(false)
     const [showProfile, setShowProfile] = useState(false)
-    const [pfpUrl, setPfpUrl] = useState(`${process.env.REACT_APP_API_BASE_URL}` + JSON.parse(localStorage.getItem('userInfo')).profile_picture)
+    const [pfpUrl, setPfpUrl] = useState(`${process.env.REACT_APP_MEDIA_BASE_URL}` + JSON.parse(localStorage.getItem('userInfo')).profile_picture)
     const siteOptionsButtonRef = useRef('')
 
     useEffect(() => {

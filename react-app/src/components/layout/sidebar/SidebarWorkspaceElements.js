@@ -43,7 +43,7 @@ function SidebarWorkspaceElements(props) {
             
                                 <p className=" truncate">{item.name}</p>
             
-                                <div className={`ml-auto  group-hover:text-inherit  p-1 rounded-md 
+                                <div className={`ml-auto group-hover:text-inherit p-1 rounded-md 
                                     ${workspaceItemOptionsId === i ? `text-inherit hover:bg-sky-200 bg-sky-200` : `text-transparent hover:bg-neutral-300`}`}
                                     onClick={(e) => {
                                         e.stopPropagation()

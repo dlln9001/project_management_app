@@ -57,7 +57,7 @@ function GroupNameInput(props) {
     }
 
     return (
-        <div className={`flex items-center gap-1 group ${ isEditingGroupName && `w-full`} w-fit relative`}>
+        <div className={`flex items-center gap-1 group ${isEditingGroupName ? `w-full` : 'w-fit'} relative`}>
 
             {/* for color options */}
             {(isEditingGroupName && editingGroupId === groupId) && 
@@ -65,14 +65,15 @@ function GroupNameInput(props) {
             }
 
             <input type="text" 
-            className={`text-lg border px-1 py-0 text-center rounded-[4px] border-transparent hover:border-slate-300 focus:outline-none focus: border-sky-600 focus: min-w-[70 %]
-    focus:text-start peer ${ (isEditingGroupName && editingGroupId === groupId) && `pl-8` } ${ groupNameTextColor } font-medium`}
+            className={`text-lg border px-1 py-0 text-center rounded-[4px] border-transparent hover:border-slate-300 focus:outline-none focus:border-sky-600 focus:min-w-[70 %]
+                       focus:text-start peer ${ (isEditingGroupName && editingGroupId === groupId) && `pl-8` } ${ groupNameTextColor } font-medium`}
             value={(isEditingGroupName && editingGroupId === groupId) ? editingGroupName : props.currentGroup.name} 
             ref={groupInputRef}
             onFocus={(e) => {
                 setEditingGroupName(e.target.value)
                 setEditingGroupId(groupId)
                 setIsEditingGroupName(true)
+                groupInputRef.current.style.width = `${measureGroupInputRef.current.offsetWidth + 30}px`
                 boardValues.setRenderGroups(!boardValues.renderGroups)
             }}
             onChange={(e) => {

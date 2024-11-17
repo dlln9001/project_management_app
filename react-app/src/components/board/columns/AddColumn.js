@@ -77,7 +77,7 @@ function AddColumn(props) {
                 </div>
                 
             }
-            <IoIosAdd className={`hover: bg-slate-100   rounded-sm cursor-pointer peer 
+            <IoIosAdd className={`hover:bg-slate-100   rounded-sm cursor-pointer peer 
                     ${(showAddColumn && addColumnsId === props.groupId) ? `bg-slate-100 text-sky-600` : `text-slate-500 hover:text-slate-700`} `}/>
             <div 
                 className={`absolute scale-0 justify-center bg-slate-700 py-[7px] px-4 rounded-md z-10 min-w-28 bottom-10 shadow-lg
