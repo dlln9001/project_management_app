@@ -28,6 +28,12 @@ class Item(models.Model):
     board = models.ForeignKey(Board, on_delete=models.CASCADE)
     order = models.IntegerField()
 
+class ItemUpdate(models.Model):
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.CharField(max_length=2000, default='')
+    created_at = models.DateTimeField(auto_now_add=True)
+
 class Column(models.Model):
     board = models.ForeignKey(Board, on_delete=models.CASCADE)
     # name is for user's reference (if the user wants to name it something else), while column type is for application's reference
@@ -47,3 +53,4 @@ class ColumnValue(models.Model):
 
     class Meta:
         ordering = ['column__order']
+

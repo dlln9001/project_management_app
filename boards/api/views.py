@@ -14,8 +14,11 @@ from ..models import ColumnValue
 from .serializers import ColumnValueSerializer
 from ..models import BoardView
 from .serializers import BoardViewSerializer
+from ..models import ItemUpdate
+from .serializers import ItemUpdateSerializer
 from workspace_elements.models import WorkspaceElement
 from workspace_elements.models import RecentlyVisited
+
 
 @api_view(['GET', 'POST'])
 def get_board(request):
@@ -195,6 +198,27 @@ def delete_item(request):
             item.save()
             index += 1
     return Response({'status': 'success'})
+
+
+@api_view(['GET', 'POST'])
+def add_item_update(request):
+    try:
+        item = Item.objects.get(id=request.data['item_id'])
+        item_update = ItemUpdate.objects.create(item=item, content=request.data['update_content'], author=request.user)
+        return Response({'Status': 'success'}, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({'Status': f'error {e}'})
+
+
+@api_view(['GET', 'POST'])
+def get_item_update(request):
+    try:
+        item = Item.objects.get(id=request.data['item_id'])
+        item_updates = ItemUpdate.objects.filter(item=item)
+        item_updates_serialized = ItemUpdateSerializer(item_updates, many=True)
+        return Response({'status': 'success', 'item_updates_data': item_updates_serialized.data}, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({'status': f'error {e}'})
 
 
 @api_view(['GET', 'POST'])
