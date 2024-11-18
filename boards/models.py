@@ -4,7 +4,7 @@ from user_authentication.models import User
 # Create your models here.
 class Board(models.Model):
     name = models.CharField(max_length=255, default='New Board')
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE) # this user is the author
     description = models.CharField(max_length=2550, default="Add your board's description here")
     type = models.CharField(max_length=50, default='board', editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
