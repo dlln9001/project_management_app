@@ -9,12 +9,13 @@ import { SlOptions } from "react-icons/sl";
 
 function ItemUpdates(props) {
     const itemUpdateRef = useRef('')
+    const updateOptionsRef = useRef('')
     const boardValues = useBoardValues()
     const [addingUpdate, setAddingUpdate] = useState(false)
     const [addUpdateContent, setAddUpdateContent] = useState('')
     const [itemUpdatesData, setItemUpdatesData] = useState([])
-    const [showUpdateOptions, setShowUpdateOptions] = useState('')
-    const [updateOptionsIndex, setUpdateOptionsIndex] = useState(0)
+    const [updateOptionsIndex, setUpdateOptionsIndex] = useState('')
+    const [updateData, setUpdateData] = useState(false)
 
     useEffect(() => {
         document.addEventListener('click', handleDocumentClick)
@@ -25,9 +26,13 @@ function ItemUpdates(props) {
         }
     }, [])
 
+    useEffect(() => {
+        getItemUpdate()
+    }, [updateData, props.itemUpdateId])
+
     function handleDocumentClick(e) {
-        if (itemUpdateRef.current && props.itemUpdateButtonRef.current && !itemUpdateRef.current.contains(e.target) && !props.itemUpdateButtonRef.current.contains(e.target)) {
-            props.setShowItemUpdates(false)
+        if (updateOptionsRef.current && !updateOptionsRef.current.contains(e.target)) {
+            setUpdateOptionsIndex(false)
         }
     }
 
@@ -69,7 +74,7 @@ function ItemUpdates(props) {
     }
 
     return ReactDom.createPortal(
-        <div ref={itemUpdateRef} style={{top: 48, right:0}} className='fixed z-40 bg-white w-[40%] h-full shadow-all-sides'>
+        <div ref={itemUpdateRef} style={{top: 48, right:0}} className='fixed z-40 bg-white w-[40%] h-full shadow-all-sides overflow-clip'>
             <div className='mx-6 my-5'>
                 
                 <div className='text-4xl text-slate-500 cursor-pointer hover:bg-slate-100 rounded-md w-fit mb-1' onClick={() => props.setShowItemUpdates(false)}>
@@ -96,7 +101,12 @@ function ItemUpdates(props) {
                 <input type="text" placeholder='Write an update...' value={addUpdateContent}
                     className='border border-sky-600 rounded-md px-3 py-2 focus:outline-none hover:bg-slate-100 w-full mt-10 text-lg' 
                     onFocus={() => setAddingUpdate(true)}
-                    onChange={(e) => setAddUpdateContent(e.target.value)}/>
+                    onChange={(e) => setAddUpdateContent(e.target.value)}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                            addItemUpdate()
+                        }
+                    }}/>
 
                 {addingUpdate &&
                     <button 
@@ -107,7 +117,7 @@ function ItemUpdates(props) {
                 }
             </div>
 
-            <div className='mx-6 mt-7'>
+            <div className='mt-7 h-[65%] overflow-auto custom-scrollbar'>
                 {itemUpdatesData.map((item, i) => {
                     let date = new Date(item.created_at)
                     const options = { 
@@ -118,7 +128,7 @@ function ItemUpdates(props) {
                         minute: "2-digit"
                       }
                     return (
-                        <div className='border rounded-md border-slate-300 p-5 my-3'>
+                        <div key={i} className='border rounded-md border-slate-300 p-5 my-3 mx-6'>
                             <div className='flex'>               
                                 <div className='flex items-center gap-2'>
                                     {item.author.is_default_profile_picture 
@@ -137,11 +147,20 @@ function ItemUpdates(props) {
                                         <CiClock2 />
                                     </div>
                                     <p className='text-sm'>{date.toLocaleString('en-US', options)}</p>
-                                    <div className='relative'>
-                                        <div className='hover:bg-slate-100 rounded-md cursor-pointer text-xs p-1 ml-1'>
+                                    <div className='relative' ref={updateOptionsIndex === i ? updateOptionsRef : null}>
+                                        <div className={`hover:bg-slate-100 rounded-md cursor-pointer text-xs p-1 ml-1 ${updateOptionsIndex === i && `bg-sky-100`}`}
+                                            onClick={() => {
+                                                setUpdateOptionsIndex(i)
+                                            }}>
                                             <SlOptions />
                                         </div>
-                                        <UpdateOptions/>
+                                        {updateOptionsIndex === i &&
+                                            <UpdateOptions 
+                                                setUpdateOptionsIndex={setUpdateOptionsIndex} 
+                                                itemUpdateId={item.id} 
+                                                userToken={props.userToken}
+                                                setUpdateData={setUpdateData}/>
+                                        }
                                     </div>
                                 </div>
                             </div>

@@ -15,6 +15,7 @@ urlpatterns = [
     path('delete-item/', views.delete_item, name='delete-item'),
     path('add-item-update/', views.add_item_update, name='add-item-update'),
     path('get-item-update/', views.get_item_update, name='get-item-update'),
+    path('delete-item-update/', views.delete_item_update, name='delete-item-update'),
     path('edit-group-name/', views.edit_group_name, name='edit-group-name'),
     path('delete-group/', views.delete_group, name='delete-group'),
     path('edit-group-color/', views.edit_group_color, name='edit-group-color'),

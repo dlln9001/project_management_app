@@ -47,4 +47,4 @@ class ItemUpdateSerializer(serializers.ModelSerializer):
     author = SummaryUserSerializer()
     class Meta(object):
         model = ItemUpdate
-        fields = ['author', 'content', 'created_at']
+        fields = ['id', 'author', 'content', 'created_at']

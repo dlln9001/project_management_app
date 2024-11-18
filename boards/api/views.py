@@ -214,12 +214,20 @@ def add_item_update(request):
 def get_item_update(request):
     try:
         item = Item.objects.get(id=request.data['item_id'])
-        item_updates = ItemUpdate.objects.filter(item=item)
+        item_updates = ItemUpdate.objects.filter(item=item).order_by('-created_at')
         item_updates_serialized = ItemUpdateSerializer(item_updates, many=True)
         return Response({'status': 'success', 'item_updates_data': item_updates_serialized.data}, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({'status': f'error {e}'})
 
+@api_view(['GET', 'POST'])
+def delete_item_update(request):
+    try:
+        item_update = ItemUpdate.objects.get(id=request.data['item_update_id'])
+        item_update.delete()
+        return Response({'status': 'success'}, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({'status': f'error {e}'})
 
 @api_view(['GET', 'POST'])
 def create_column(request):

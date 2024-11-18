@@ -83,7 +83,7 @@ function Items(props) {
                                 }}
                             />
                             
-                            <div ref={itemUpdateId === groupsData.itemsInfo[i][j].id ? itemUpdateButtonRef : null} 
+                            <div 
                                 className="border-l border-l-slate-300 flex justify-center h-full items-center px-4 text-lg cursor-pointer hover:text-sky-600"
                                 onClick={() => {
                                     setItemUpdateName(groupsData.itemsInfo[i][j].name)
