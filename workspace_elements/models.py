@@ -7,12 +7,14 @@ from django.dispatch import receiver
 from django.contrib.contenttypes.models import ContentType
 from document.models import Document
 from boards.models import Board
+from workspace.models import Workspace
 # Create your models here.
 
 class WorkspaceElement(models.Model):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
+    workspace = models.ForeignKey(Workspace, on_delete=models.CASCADE)
 
 @receiver(post_delete, sender=Board)
 @receiver(post_delete, sender=Document)

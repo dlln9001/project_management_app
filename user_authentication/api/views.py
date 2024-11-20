@@ -8,6 +8,7 @@ from rest_framework.permissions import AllowAny
 from django.shortcuts import get_object_or_404
 from ..models import User
 from .serializers import UserSerializer
+from workspace.models import Workspace
 
 class GoogleSignInView(APIView):
     authentication_classes = []
@@ -72,9 +73,12 @@ class GoogleSignInView(APIView):
                     'registration_method': 'google'
                 }
             )
+
             if created:
                 user.set_unusable_password()
                 user.save()
+                workspace = Workspace.objects.create(author=user)
+                workspace.members.add(user)
 
             serializer = UserSerializer(user)
             # deletes old token if it already exists
@@ -95,9 +99,14 @@ def signup(request):
     serializer = UserSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
+
         user = User.objects.get(email=request.data['email'])
         user.set_password(request.data['password'])
         user.save()
+
+        workspace = Workspace.objects.create(author=user)
+        workspace.members.add(user)
+        
         token = Token.objects.create(user=user)
         return Response({'status': 'success', 'user': serializer.data, 'token': token.key})
     return Response({'username_taken': 'A user with that email already exists'})
