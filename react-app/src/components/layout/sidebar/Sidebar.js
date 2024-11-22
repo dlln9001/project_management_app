@@ -8,6 +8,7 @@ import AddWorkspaceItem from "../../workspace_and_items/AddWorkspaceItem";
 import { useCreateElement } from "../../../contexts/CreateWorkspaceItemContext";
 import SidebarWorkspaceElements from "./SidebarWorkspaceElements";
 import Favorites from "./Favorites";
+import Workspaces from "./Workspaces";
 
 
 function Sidebar(props) {
@@ -25,21 +26,34 @@ function Sidebar(props) {
 
     const [searchInput, setSearchInput] = useState('')
 
+    const [selectedWorkspaceId, setSelectedWorkspaceId] = useState('')
 
     useEffect(() => {
         document.addEventListener('click', handleDocumentClick)
-        fetch(`${process.env.REACT_APP_API_BASE_URL}/workspace-element/get/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${ userToken }`,
-            }
-        })
+
+        if (selectedWorkspaceId !== '') {
+            fetch(`${process.env.REACT_APP_API_BASE_URL}/workspace-element/get/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${ userToken }`,
+                },
+                body: JSON.stringify({
+                    selected_workspace_id: selectedWorkspaceId
+                })
+            })
             .then(res => res.json())
             .then(data => {
                 setWorkspaceElementData(data)
             })
-    }, [showCreateWorkspaceItem, props.renderSideBar])
+        }
+
+
+        return () => {
+            document.removeEventListener('click', handleDocumentClick)
+        }
+
+    }, [showCreateWorkspaceItem, props.renderSideBar, selectedWorkspaceId])
 
     function handleDocumentClick(e) {
         if (addWorkspaceItemRef.current && !addWorkspaceItemRef.current.contains(e.target) && !addWorkspaceItemButton.current.contains(e.target)) {
@@ -76,33 +90,38 @@ function Sidebar(props) {
 
             <div className="border-t border-t-slate-300"></div>
 
-            <div className="flex mx-2 my-2 items-center gap-2 mr-4 relative" onClick={() => searchBar.current.focus()}>
-                <div className="p-2 focus:outline-none border border-slate-300 rounded-md text-sm h-[34px] 
-                    transition ease-in hover:border-slate-900 cursor-pointer flex gap-2">
-                    <CiSearch />
-                    <input type="text" placeholder="Search" ref={searchBar} value={searchInput}
-                        className=" bg-inherit focus:outline-none cursor-pointer" 
-                        onChange={(e) => setSearchInput(e.target.value)}/>
-                </div>
-                <div className="border p-1 border-slate-300 rounded-md hover:bg-slate-100 cursor-pointer relative" onClick={() => setShowAddWorkspaceItem(true)} ref={addWorkspaceItemButton}>
-                    <AiOutlinePlus className=" text-2xl" />
-                </div>
-                <div ref={addWorkspaceItemRef}>
-                    <AddWorkspaceItem showAddWorkspaceItem={showAddWorkspaceItem} setShowAddWorkspaceItem={setShowAddWorkspaceItem} />
-                </div>
-            </div>
+            <div className="ml-3">
 
-            <div className=" overflow-y-auto custom-scrollbar" id="sidebar-workspace-elements-id">
-                {workspaceElementData &&
-                    <SidebarWorkspaceElements 
-                        userToken={userToken}
-                        data={workspaceElementData} 
-                        searchInput={searchInput}
-                        renderSideBar={props.renderSideBar} 
-                        setRenderSideBar={props.setRenderSideBar}
-                        deletedWorkspaceName={props.deletedWorkspaceName}
-                        setDeletedWorkspaceName={props.setDeletedWorkspaceName} />
-                }
+                <Workspaces userToken={userToken} setSelectedWorkspaceId={setSelectedWorkspaceId}/>
+
+                <div className="flex my-2 items-center gap-2 mr-4 relative" onClick={() => searchBar.current.focus()}>
+                    <div className="p-2 focus:outline-none border border-slate-300 rounded-md text-sm h-[34px] 
+                        transition ease-in hover:border-slate-900 cursor-pointer flex gap-2">
+                        <CiSearch />
+                        <input type="text" placeholder="Search" ref={searchBar} value={searchInput}
+                            className=" bg-inherit focus:outline-none cursor-pointer" 
+                            onChange={(e) => setSearchInput(e.target.value)}/>
+                    </div>
+                    <div className="border p-1 border-slate-300 rounded-md hover:bg-slate-100 cursor-pointer relative" onClick={() => setShowAddWorkspaceItem(true)} ref={addWorkspaceItemButton}>
+                        <AiOutlinePlus className=" text-2xl" />
+                    </div>
+                    <div ref={addWorkspaceItemRef}>
+                        <AddWorkspaceItem showAddWorkspaceItem={showAddWorkspaceItem} setShowAddWorkspaceItem={setShowAddWorkspaceItem} />
+                    </div>
+                </div>
+
+                <div className=" overflow-y-auto custom-scrollbar" id="sidebar-workspace-elements-id">
+                    {workspaceElementData &&
+                        <SidebarWorkspaceElements 
+                            userToken={userToken}
+                            data={workspaceElementData} 
+                            searchInput={searchInput}
+                            renderSideBar={props.renderSideBar} 
+                            setRenderSideBar={props.setRenderSideBar}
+                            deletedWorkspaceName={props.deletedWorkspaceName}
+                            setDeletedWorkspaceName={props.setDeletedWorkspaceName} />
+                    }
+                </div>
             </div>
         </div>
     )

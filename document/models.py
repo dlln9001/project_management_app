@@ -15,6 +15,9 @@ class Document(models.Model):
     type = models.CharField(max_length=50, default='document', editable=False)
     order = models.IntegerField()
 
+    class Meta:
+        ordering = ['order']  
+
 
 class DocumentImage(models.Model):
     document = models.ForeignKey(Document, on_delete=models.CASCADE)

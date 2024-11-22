@@ -27,6 +27,7 @@ urlpatterns = [
     path('api/workspace-element/', include('workspace_elements.api.urls')),
     path('api/board/', include('boards.api.urls')),
     path('api/user/', include('users.api.urls')),
-    path('api/document/', include('document.api.urls'))
+    path('api/document/', include('document.api.urls')),
+    path('api/workspace/', include('workspace.api.urls')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) \
   + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

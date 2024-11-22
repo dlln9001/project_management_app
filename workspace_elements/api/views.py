@@ -7,6 +7,7 @@ from boards.api.serializers import BoardSummarySerializer
 from boards.models import BoardView
 from document.models import Document
 from document.api.serializers import DocumentSerializer
+from workspace.models import Workspace
 from ..models import WorkspaceElement
 from ..models import RecentlyVisited
 from ..models import Favorite
@@ -16,9 +17,12 @@ from ..models import Favorite
 def create_element(request):
     element_type = request.data['element_type']
     element_name = request.data['element_name']
+
     user = request.user
+    
     all_boards = Board.objects.filter(user=user)
     all_docs = Document.objects.filter(author=user)
+    
     num_of_boards = len(all_boards)
     num_of_docs = len(all_docs)
 
@@ -37,25 +41,36 @@ def create_element(request):
 
 @api_view(['POST', 'GET'])
 def get_elements(request):
-    boards = Board.objects.filter(user=request.user).order_by('order')
+    workspace = Workspace.objects.get(id=request.data['selected_workspace_id'])
+
+    board_content_type = ContentType.objects.get_for_model(Board)
+
+    workspace_elements = WorkspaceElement.objects.filter(content_type=board_content_type, workspace=workspace)
+    boards = [element.content_object for element in workspace_elements]
+
     # reorder all the boards
     index = 0
     for board in boards:
         board.order = index
         board.save()
         index += 1
-    boards = Board.objects.filter(user=request.user).order_by('order')
+    workspace_elements = WorkspaceElement.objects.filter(content_type=board_content_type, workspace=workspace)
+    boards = [element.content_object for element in workspace_elements]
     boards_serialized = BoardSummarySerializer(boards, many=True)
 
-    # if shared documents are added, this would need to change (the author part)
-    documents = Document.objects.filter(author=request.user).order_by('order')
+
+    document_content_type = ContentType.objects.get_for_model(Document)
+    workspace_elements = WorkspaceElement.objects.filter(content_type=document_content_type, workspace=workspace)
+    documents = [element.content_object for element in workspace_elements]
+
     # reorder all the documents
     index = 0
     for document in documents:
         document.order = index
         document.save()
         index += 1
-    documents = Document.objects.filter(author=request.user).order_by('order')
+    workspace_elements = WorkspaceElement.objects.filter(content_type=document_content_type, workspace=workspace)
+    documents = [element.content_object for element in workspace_elements]
     documents_serialized = DocumentSerializer(documents, many=True)
     return Response({'status': 'success', 'boards': boards_serialized.data, 'documents': documents_serialized.data})
 

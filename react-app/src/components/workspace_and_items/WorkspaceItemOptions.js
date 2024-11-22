@@ -39,7 +39,6 @@ function WorkspaceItemOptions(props) {
             if (not_favorited) {
                 setFavorited({ isFavorited: false, finishedCheck: true })
             }
-            console.log('workdpsaceoptions', favoritesData, favorited)
         }
     }, [favoritesData])
 

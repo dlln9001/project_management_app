@@ -19,6 +19,8 @@ function SidebarWorkspaceElements(props) {
         })
     }
 
+    console.log(props.data, 'sidebarWE')
+
     return (
         <>
         {props.data.boards &&
@@ -30,7 +32,7 @@ function SidebarWorkspaceElements(props) {
 
                     return (
                             <div key={i}
-                                className={`bar-button text-sm flex items-center gap-2 group relative 
+                                className={`bar-button ml-0 text-sm flex items-center gap-2 group relative 
                                             ${workspaceItemOptionsId === i && `bg-slate-200`} 
                                             ${(selectedWorkspaceItem.type === 'board' && selectedWorkspaceItem.id === boardId) ? `bg-sky-100` : ``}`}
                                 onClick={() => {
@@ -83,7 +85,7 @@ function SidebarWorkspaceElements(props) {
                     let selectedWorkspaceItem = JSON.parse(localStorage.getItem('selectedWorkspaceItem'))
                     return (
                         <div key={i + props.data.boards.length + 1}
-                            className={`bar-button text-sm flex items-center gap-2 group relative 
+                            className={`bar-button ml-0 text-sm flex items-center gap-2 group relative 
                                     ${workspaceItemOptionsId === (i + props.data.boards.length + 1) && `bg-slate-200`}
                                     ${(selectedWorkspaceItem.type === 'document' && selectedWorkspaceItem.id === documentId) ? `bg-sky-100` : ``}`}
                             onClick={() => {

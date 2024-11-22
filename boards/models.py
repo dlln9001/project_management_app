@@ -10,6 +10,9 @@ class Board(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     order = models.IntegerField()
 
+    class Meta:
+        ordering = ['order']  
+
 class BoardView(models.Model):
     board = models.ForeignKey(Board, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
