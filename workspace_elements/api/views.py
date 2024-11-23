@@ -79,6 +79,25 @@ def get_elements(request):
 
 @api_view(['POST', 'GET'])
 def get_recently_visited_elements(request):
+    
+    # deletes any duplicates
+    duplicates = (
+        RecentlyVisited.objects
+        .values('workspace_element')
+        .annotate(count=Count('id'))
+        .filter(count__gt=1)
+    )
+
+    for dup in duplicates:
+        records = RecentlyVisited.objects.filter(
+            workspace_element=dup['workspace_element']
+        ).order_by('-visited_at')
+        
+        # Keep the most recent one, delete others
+        latest = records.first()
+        records.exclude(id=latest.id).delete()
+
+
     all_recently_visited = RecentlyVisited.objects.filter(user=request.user)
     data = []
 
