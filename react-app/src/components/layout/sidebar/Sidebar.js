@@ -92,7 +92,10 @@ function Sidebar(props) {
 
             <div className="ml-3">
 
-                <Workspaces userToken={userToken} setSelectedWorkspaceId={setSelectedWorkspaceId}/>
+                <Workspaces 
+                    userToken={userToken} 
+                    setSelectedWorkspaceId={setSelectedWorkspaceId}
+                    setRenderSideBar={props.setRenderSideBar} />
 
                 <div className="flex my-2 items-center gap-2 mr-4 relative" onClick={() => searchBar.current.focus()}>
                     <div className="p-2 focus:outline-none border border-slate-300 rounded-md text-sm h-[34px] 

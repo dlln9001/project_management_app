@@ -17,6 +17,7 @@ function CreateWorkspaceItem() {
             body: JSON.stringify({
                 element_name: itemName,
                 element_type: lowerItemType,
+                workspace_id: JSON.parse(localStorage.getItem('selectedWorkspaceInfo')).id
             }
             )
         })

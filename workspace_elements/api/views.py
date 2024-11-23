@@ -8,6 +8,7 @@ from boards.models import BoardView
 from document.models import Document
 from document.api.serializers import DocumentSerializer
 from workspace.models import Workspace
+from django.db.models import Count
 from ..models import WorkspaceElement
 from ..models import RecentlyVisited
 from ..models import Favorite
@@ -22,6 +23,7 @@ def create_element(request):
     
     all_boards = Board.objects.filter(user=user)
     all_docs = Document.objects.filter(author=user)
+    workspace = Workspace.objects.get(id=request.data['workspace_id'])
     
     num_of_boards = len(all_boards)
     num_of_docs = len(all_docs)
@@ -30,12 +32,12 @@ def create_element(request):
         board = Board.objects.create(user=user, name=element_name, order=num_of_boards)
         board_view = BoardView.objects.create(board=board, name='Main Table', type='Table', order=0)
         board_content_type = ContentType.objects.get_for_model(Board)
-        workspace_element_board = WorkspaceElement.objects.create(content_type=board_content_type, object_id=board.id)
+        workspace_element_board = WorkspaceElement.objects.create(content_type=board_content_type, object_id=board.id, workspace=workspace)
 
     if element_type == 'doc':
         document = Document.objects.create(author=user, title=element_name, content='', order=num_of_docs)
         document_content_type = ContentType.objects.get_for_model(Document)
-        workspace_element_document = WorkspaceElement.objects.create(content_type=document_content_type, object_id=document.id)
+        workspace_element_document = WorkspaceElement.objects.create(content_type=document_content_type, object_id=document.id, workspace=workspace)
     return Response({'status': 'success'})
 
 

@@ -15,3 +15,14 @@ def get_workspace(request):
     except Exception as e:
         print(e)
         return Response({'status': f'error {e}'})
+
+
+@api_view(['GET', 'POST'])
+def create_workspace(request):
+    try:
+        workspace = Workspace.objects.create(author=request.user, name=request.data['workspace_name'], is_main=False)
+        workspace.members.add(request.user)
+        return Response({'status': 'success'}, status=status.HTTP_200_OK)
+    except Exception as e:
+        print(e)
+        return Response({'status': f'error {e}'})

@@ -53,6 +53,14 @@ function Workspaces(props) {
         })
     }
 
+    function selectWorkspace(workspace, index) {
+        localStorage.setItem('selectedWorkspaceInfo', JSON.stringify({'index': index, 'id': workspace.id}))
+        setSelectedWorkspaceIndex(index)
+        props.setSelectedWorkspaceId(workspace.id)
+        setWorkspacesExpanded(false)
+        props.setRenderSideBar(prev => !prev)
+    }
+
 
     return (
         <div className="relative" ref={workspaceButtonRef}>
@@ -76,8 +84,12 @@ function Workspaces(props) {
                         <div className="m-2">
                             <p className="text-slate-500 mb-1 text-sm">My workspaces</p>
                             {workspaceData.map((item, index) => {
+                                let selectedWorkspace = JSON.parse(localStorage.getItem('selectedWorkspaceInfo'))
                                 return (
-                                    <div key={index} className="flex gap-2 hover:bg-slate-100 p-2 cursor-pointer rounded-md">
+                                    <div key={index}
+                                        className={`flex gap-2 p-2 cursor-pointer rounded-md 
+                                            ${selectedWorkspace.id === item.id ? `bg-sky-100` : `hover:bg-slate-100`}`}
+                                        onClick={() => selectWorkspace(item, index)}>
                                         <div className={`${item.color} text-white rounded-md h-5 w-5 flex items-center justify-center text-sm`}>{item.name[0].toUpperCase()}</div>
                                         <p className="text-sm">{item.name}</p>
                                     </div>
