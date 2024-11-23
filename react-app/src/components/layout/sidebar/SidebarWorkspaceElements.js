@@ -19,8 +19,6 @@ function SidebarWorkspaceElements(props) {
         })
     }
 
-    console.log(props.data, 'sidebarWE')
-
     return (
         <>
         {props.data.boards &&
