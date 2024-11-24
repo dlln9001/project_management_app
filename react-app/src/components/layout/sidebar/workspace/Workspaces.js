@@ -10,8 +10,14 @@ function Workspaces(props) {
     const [workspacesExpanded, setWorkspacesExpanded] = useState(false)
     const workspaceButtonRef = useRef('')
     const [selectedWorkspaceIndex, setSelectedWorkspaceIndex] = useState('')
+
     const [showAddWorkspace, setShowAddWorkspace] = useState(false)
     const [updateWorkspaces, setUpdateWorkspaces] = useState(false)
+
+    const [isEditingName, setIsEditingName] = useState(false)
+    const [workspaceName, setWorkspaceName] = useState('')
+    const [changeWorkspaceName, setChangeWorkspaceName] = useState(false)
+    const workspaceNameRef = useRef('')
 
     useEffect(() => {
         document.addEventListener('click', handleDocumentClick)
@@ -24,6 +30,13 @@ function Workspaces(props) {
     useEffect(() => {
         getWorkspaces()
     }, [updateWorkspaces])
+
+
+    useEffect(() => {
+        if (isEditingName) {
+            workspaceNameRef.current.focus()
+        }
+    }, [isEditingName])
 
 
     function handleDocumentClick(e) {
@@ -72,10 +85,30 @@ function Workspaces(props) {
                             ref={workspaceButtonRef}
                             className="flex gap-2 items-center my-2 hover:bg-slate-200 px-2 py-1 cursor-pointer mr-1 rounded-md w-[200px]" 
                             onClick={() => setWorkspacesExpanded(true)}>
+
                             <div className={`${workspaceData[selectedWorkspaceIndex].color} text-white rounded-md min-h-5 min-w-5 flex items-center justify-center text-sm`}>
                                 {workspaceData[selectedWorkspaceIndex].name[0].toUpperCase()}
                             </div>
-                            <p className=" font-medium mr-1 truncate">{workspaceData[selectedWorkspaceIndex].name}</p>
+                            {isEditingName
+                            ?
+                                <input type="text" className="font-medium mr-1 truncate w-full bg-inherit focus:outline-none border border-sky-600 rounded-md"
+                                    ref={workspaceNameRef} 
+                                    value={workspaceName} 
+                                    onChange={(e) => setWorkspaceName(e.target.value)}
+                                    onBlur={() => {
+                                        setIsEditingName(false)
+                                        setChangeWorkspaceName(true)
+                                    }}
+                                    onClick={(e) => e.stopPropagation()}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter') {
+                                            e.target.blur()
+                                        }
+                                    }}/>
+                            :
+                                <p className=" font-medium mr-1 truncate">{workspaceData[selectedWorkspaceIndex].name}</p>
+                            }
+
                             <div className="w-fit ml-auto" >
                                 {workspacesExpanded
                                     ? <IoIosArrowUp />
@@ -83,7 +116,18 @@ function Workspaces(props) {
                                 }
                             </div>
                         </div>
-                        <WorkspaceOptions userToken={props.userToken} setUpdateWorkspaces={setUpdateWorkspaces}/>
+
+                        <WorkspaceOptions 
+                            userToken={props.userToken} 
+                            setUpdateWorkspaces={setUpdateWorkspaces}
+                            setIsEditingName={setIsEditingName}
+                            isEditingName={isEditingName}
+                            setWorkspaceName={setWorkspaceName}
+                            workspaceName={workspaceName}
+                            initialWorkspaceName={workspaceData[selectedWorkspaceIndex].name}
+                            changeWorkspaceName={changeWorkspaceName}
+                            setChangeWorkspaceName={setChangeWorkspaceName}/>
+
                     </div>
 
                     {workspacesExpanded &&

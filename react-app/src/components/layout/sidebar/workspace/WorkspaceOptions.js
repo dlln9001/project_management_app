@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { BsThreeDots } from "react-icons/bs";
 import { FiTrash } from "react-icons/fi";
 import { IoMdArrowDropleft } from "react-icons/io";
+import { GoPencil } from "react-icons/go";
 
 function WorkspaceOptions(props) {
     const [showWorkpaceOptionsPopup, setShowWorkspaceOptionsPopup] = useState(false)
@@ -15,6 +16,12 @@ function WorkspaceOptions(props) {
             document.removeEventListener('click', handleDocumentClick)
         }
     }, [])
+
+    useEffect(() => {
+        if (props.changeWorkspaceName) {
+            changeWorkspaceName()
+        }
+    }, [props.changeWorkspaceName])
 
     function handleDocumentClick(e) {
         if (workspaceOptionsRef.current && !workspaceOptionsRef.current.contains(e.target)) {
@@ -32,9 +39,29 @@ function WorkspaceOptions(props) {
         })
         .then(res => res.json())
         .then(data => {
-            localStorage.removeItem('selectedWorkspaceInfo')
+            localStorage.removeItem('selectedWorkspaceInfo') // workspace component will detect the missing info, send a request to fill it in again. 
             selectedWorkspace = ''
             setShowWorkspaceOptionsPopup(false)
+            props.setUpdateWorkspaces(prev => !prev)
+        })
+    }
+
+    function changeWorkspaceName() {
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/workspace/change-workspace-name/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${props.userToken}`
+            },
+            body: JSON.stringify({
+                workspace_name: props.workspaceName,
+                workspace_id: selectedWorkspace.id
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            localStorage.removeItem('selectedWorkspaceInfo')
+            props.setChangeWorkspaceName(false)
             props.setUpdateWorkspaces(prev => !prev)
         })
     }
@@ -47,9 +74,21 @@ function WorkspaceOptions(props) {
             </div>
             {showWorkpaceOptionsPopup && selectedWorkspace && 
                 <div className="absolute bg-white w-64 shadow-all-sides z-40 p-2 rounded-md">
+                    <div 
+                        className="flex items-center gap-2 px-2 py-2 cursor-pointer hover:bg-slate-100 rounded-md"
+                        onClick={() => {
+                            props.setIsEditingName(true)
+                            props.setWorkspaceName(props.initialWorkspaceName)
+                            setShowWorkspaceOptionsPopup(false)
+                        }}>
+                        <div>
+                            <GoPencil />
+                        </div>
+                        <p className="text-sm">Rename workspace</p>
+                    </div>
                     {selectedWorkspace.is_main
                     ?
-                    <div className="flex items-center gap-2 px-2 py-1 cursor-pointer rounded-sm relative group">
+                    <div className="flex items-center gap-2 px-2 py-1 cursor-pointer rounded-md relative group">
                         <div className="opacity-50">
                             <FiTrash/>
                         </div>
@@ -62,7 +101,7 @@ function WorkspaceOptions(props) {
                         </div>
                     </div>
                     :
-                    <div className="flex items-center gap-2 px-2 py-1 cursor-pointer hover:bg-slate-100 rounded-sm" onClick={deleteWorkspace}>
+                    <div className="flex items-center gap-2 px-2 py-2 cursor-pointer hover:bg-slate-100 rounded-md" onClick={deleteWorkspace}>
                         <div>
                             <FiTrash/>
                         </div>

@@ -38,3 +38,15 @@ def delete_workspace(request, id):
     except Exception as e:
         print(e)
         return Response({'status': f'error {e}'})
+
+
+@api_view(['GET', "POST"])
+def change_workspace_name(request):
+    try:
+        workspace = Workspace.objects.get(id=request.data['workspace_id'])
+        workspace.name = request.data['workspace_name']
+        workspace.save()
+        return Response({'status': 'success'}, status=status.HTTP_200_OK)
+    except Exception as e:
+        print(e)
+        return Response({'status': f'error {e}'})
