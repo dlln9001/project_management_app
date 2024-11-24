@@ -5,6 +5,7 @@ from django.db.models import Q
 from ..models import Workspace
 from .serializers import WorkspaceSerializer
 
+
 @api_view(['GET', 'POST'])
 def get_workspace(request):
     try:
@@ -22,6 +23,17 @@ def create_workspace(request):
     try:
         workspace = Workspace.objects.create(author=request.user, name=request.data['workspace_name'], is_main=False)
         workspace.members.add(request.user)
+        return Response({'status': 'success'}, status=status.HTTP_200_OK)
+    except Exception as e:
+        print(e)
+        return Response({'status': f'error {e}'})
+
+
+@api_view(['DELETE'])
+def delete_workspace(request, id):
+    try:
+        workspace = Workspace.objects.get(id=id)
+        workspace.delete()
         return Response({'status': 'success'}, status=status.HTTP_200_OK)
     except Exception as e:
         print(e)

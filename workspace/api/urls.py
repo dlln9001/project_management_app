@@ -3,5 +3,6 @@ from . import views
 
 urlpatterns = [
     path('get-workspaces/', views.get_workspace),
-    path('create-workspace/', views.create_workspace)
+    path('create-workspace/', views.create_workspace),
+    path('delete-workspace/<int:id>/', views.delete_workspace)
 ] 

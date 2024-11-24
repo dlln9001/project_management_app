@@ -8,7 +8,7 @@ import AddWorkspaceItem from "../../workspace_and_items/AddWorkspaceItem";
 import { useCreateElement } from "../../../contexts/CreateWorkspaceItemContext";
 import SidebarWorkspaceElements from "./SidebarWorkspaceElements";
 import Favorites from "./Favorites";
-import Workspaces from "./Workspaces";
+import Workspaces from "./workspace/Workspaces";
 
 
 function Sidebar(props) {
@@ -36,16 +36,16 @@ function Sidebar(props) {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Token ${ userToken }`,
+                    'Authorization': `Token ${userToken}`,
                 },
                 body: JSON.stringify({
                     selected_workspace_id: selectedWorkspaceId
                 })
             })
-            .then(res => res.json())
-            .then(data => {
-                setWorkspaceElementData(data)
-            })
+                .then(res => res.json())
+                .then(data => {
+                    setWorkspaceElementData(data)
+                })
         }
 
 
@@ -65,7 +65,7 @@ function Sidebar(props) {
         <div className=" bg-slate-50 mr-3 rounded-tr-lg max-w-72 min-w-72 flex flex-col">
 
             <div className={`bar-button mb-1 flex items-center gap-2 
-                 ${ JSON.parse(localStorage.getItem('selectedWorkspaceItem')).type === 'home' && `bg-sky-100` }`}
+                 ${JSON.parse(localStorage.getItem('selectedWorkspaceItem')).type === 'home' && `bg-sky-100`}`}
                 onClick={() => {
                     navigate('home')
                     localStorage.setItem('selectedWorkspaceItem', JSON.stringify({ type: 'home', id: 0 }))
@@ -83,17 +83,17 @@ function Sidebar(props) {
 
             <div className="border-t border-t-slate-300"></div>
 
-            <Favorites 
-                userToken={userToken} 
-                renderSideBar={props.renderSideBar} setRenderSideBar={props.setRenderSideBar} 
-                workspaceElementData={workspaceElementData}/>
+            <Favorites
+                userToken={userToken}
+                renderSideBar={props.renderSideBar} setRenderSideBar={props.setRenderSideBar}
+                workspaceElementData={workspaceElementData} />
 
             <div className="border-t border-t-slate-300"></div>
 
             <div className="ml-3">
 
-                <Workspaces 
-                    userToken={userToken} 
+                <Workspaces
+                    userToken={userToken}
                     setSelectedWorkspaceId={setSelectedWorkspaceId}
                     setRenderSideBar={props.setRenderSideBar} />
 
@@ -102,8 +102,8 @@ function Sidebar(props) {
                         transition ease-in hover:border-slate-900 cursor-pointer flex gap-2">
                         <CiSearch />
                         <input type="text" placeholder="Search" ref={searchBar} value={searchInput}
-                            className=" bg-inherit focus:outline-none cursor-pointer" 
-                            onChange={(e) => setSearchInput(e.target.value)}/>
+                            className=" bg-inherit focus:outline-none cursor-pointer"
+                            onChange={(e) => setSearchInput(e.target.value)} />
                     </div>
                     <div className="border p-1 border-slate-300 rounded-md hover:bg-slate-100 cursor-pointer relative" onClick={() => setShowAddWorkspaceItem(true)} ref={addWorkspaceItemButton}>
                         <AiOutlinePlus className=" text-2xl" />
@@ -115,11 +115,11 @@ function Sidebar(props) {
 
                 <div className=" overflow-y-auto custom-scrollbar" id="sidebar-workspace-elements-id">
                     {workspaceElementData &&
-                        <SidebarWorkspaceElements 
+                        <SidebarWorkspaceElements
                             userToken={userToken}
-                            data={workspaceElementData} 
+                            data={workspaceElementData}
                             searchInput={searchInput}
-                            renderSideBar={props.renderSideBar} 
+                            renderSideBar={props.renderSideBar}
                             setRenderSideBar={props.setRenderSideBar}
                             deletedWorkspaceName={props.deletedWorkspaceName}
                             setDeletedWorkspaceName={props.setDeletedWorkspaceName} />
