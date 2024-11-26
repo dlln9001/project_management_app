@@ -4,7 +4,7 @@ import Topbar from "./Topbar";
 import CreateWorkspaceItem from "../workspace_and_items/CreateWorkspaceItem";
 import { useCreateElement } from "../../contexts/CreateWorkspaceItemContext";
 import { useState } from "react";
-
+import { WorkpaceContextProvider } from "../../contexts/WorkspaceContext";
 
 function Layout() {
     const { showCreateWorkspaceItem, setShowCreateWorkspaceItem } = useCreateElement()
@@ -18,12 +18,14 @@ function Layout() {
                     <div className="flex-none">
                         <Topbar />
                     </div>
-                    <div className="flex h-full overflow-y-hidden custom-scrollbar">
-                        <Sidebar renderSideBar={renderSideBar} setRenderSideBar={setRenderSideBar} deletedWorkspaceName={deletedWorkspaceName} setDeletedWorkspaceName={setDeletedWorkspaceName} />
-                        <main className="w-full">
-                            <Outlet context={{ renderSideBar, setRenderSideBar, deletedWorkspaceName, setDeletedWorkspaceName }} />
-                        </main>
-                    </div>
+                    <WorkpaceContextProvider>
+                        <div className="flex h-full overflow-y-hidden custom-scrollbar">
+                            <Sidebar renderSideBar={renderSideBar} setRenderSideBar={setRenderSideBar} deletedWorkspaceName={deletedWorkspaceName} setDeletedWorkspaceName={setDeletedWorkspaceName} />
+                            <main className="w-full">
+                                <Outlet context={{ renderSideBar, setRenderSideBar, deletedWorkspaceName, setDeletedWorkspaceName }} />
+                            </main>
+                        </div>
+                    </WorkpaceContextProvider>
                 </div>
                 {showCreateWorkspaceItem &&
                     <>

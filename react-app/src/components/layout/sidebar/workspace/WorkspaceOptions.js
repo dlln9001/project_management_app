@@ -3,11 +3,34 @@ import { BsThreeDots } from "react-icons/bs";
 import { FiTrash } from "react-icons/fi";
 import { IoMdArrowDropleft } from "react-icons/io";
 import { GoPencil } from "react-icons/go";
+import { GoGear } from "react-icons/go";
+import { useNavigate } from "react-router-dom"
+
+export function changeWorkspaceName(userToken, workspaceName, workspaceId, setChangeWorkspaceName, setUpdateWorkspaces) {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/workspace/change-workspace-name/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Token ${userToken}`
+        },
+        body: JSON.stringify({
+            workspace_name: workspaceName,
+            workspace_id: workspaceId
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        localStorage.removeItem('selectedWorkspaceInfo')
+        setChangeWorkspaceName(false)
+        setUpdateWorkspaces(prev => !prev)
+    })
+}
 
 function WorkspaceOptions(props) {
     const [showWorkpaceOptionsPopup, setShowWorkspaceOptionsPopup] = useState(false)
     const workspaceOptionsRef = useRef('')
     let selectedWorkspace = JSON.parse(localStorage.getItem('selectedWorkspaceInfo'))
+    const navigate = useNavigate()
 
     useEffect(() => {
         document.addEventListener('click', handleDocumentClick)
@@ -19,7 +42,7 @@ function WorkspaceOptions(props) {
 
     useEffect(() => {
         if (props.changeWorkspaceName) {
-            changeWorkspaceName()
+            changeWorkspaceName(props.userToken, props.workspaceName, selectedWorkspace.id, props.setChangeWorkspaceName, props.setUpdateWorkspaces)
         }
     }, [props.changeWorkspaceName])
 
@@ -46,26 +69,6 @@ function WorkspaceOptions(props) {
         })
     }
 
-    function changeWorkspaceName() {
-        fetch(`${process.env.REACT_APP_API_BASE_URL}/workspace/change-workspace-name/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${props.userToken}`
-            },
-            body: JSON.stringify({
-                workspace_name: props.workspaceName,
-                workspace_id: selectedWorkspace.id
-            })
-        })
-        .then(res => res.json())
-        .then(data => {
-            localStorage.removeItem('selectedWorkspaceInfo')
-            props.setChangeWorkspaceName(false)
-            props.setUpdateWorkspaces(prev => !prev)
-        })
-    }
-
     return (
         <div className="ml-1 relative" ref={workspaceOptionsRef}>
             <div className={` cursor-pointer p-2 rounded-md ${showWorkpaceOptionsPopup ? `bg-sky-100` : `hover:bg-slate-200`}`} 
@@ -74,6 +77,16 @@ function WorkspaceOptions(props) {
             </div>
             {showWorkpaceOptionsPopup && selectedWorkspace && 
                 <div className="absolute bg-white w-64 shadow-all-sides z-40 p-2 rounded-md">
+                    <div className="flex items-center gap-2 px-2 py-2 cursor-pointer hover:bg-slate-100 rounded-md" 
+                        onClick={() => {
+                            navigate('/manage-workspace')
+                            setShowWorkspaceOptionsPopup(false)
+                            }}>
+                        <div>
+                            <GoGear />
+                        </div>
+                        <p className="text-sm">Manage workspace</p>
+                    </div>
                     <div 
                         className="flex items-center gap-2 px-2 py-2 cursor-pointer hover:bg-slate-100 rounded-md"
                         onClick={() => {

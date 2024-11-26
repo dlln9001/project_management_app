@@ -8,3 +8,5 @@ class Workspace(models.Model):
     name = models.CharField(max_length=255, default='New Workspace')
     is_main = models.BooleanField()
     color = models.CharField(max_length=255, default='bg-sky-400')
+    cover_color = models.CharField(max_length=255, default='bg-slate-100')
+    description = models.TextField(blank=True, default='')

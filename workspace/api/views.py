@@ -4,6 +4,7 @@ from rest_framework import status
 from django.db.models import Q
 from ..models import Workspace
 from .serializers import WorkspaceSerializer
+from .serializers import WorkspaceDetailedSerializer
 
 
 @api_view(['GET', 'POST'])
@@ -33,8 +34,11 @@ def create_workspace(request):
 def delete_workspace(request, id):
     try:
         workspace = Workspace.objects.get(id=id)
-        workspace.delete()
-        return Response({'status': 'success'}, status=status.HTTP_200_OK)
+        if workspace.is_main:
+            raise Exception('Cannot delete main workspace')
+        else:
+            workspace.delete()
+            return Response({'status': 'success'}, status=status.HTTP_200_OK)
     except Exception as e:
         print(e)
         return Response({'status': f'error {e}'})
@@ -47,6 +51,17 @@ def change_workspace_name(request):
         workspace.name = request.data['workspace_name']
         workspace.save()
         return Response({'status': 'success'}, status=status.HTTP_200_OK)
+    except Exception as e:
+        print(e)
+        return Response({'status': f'error {e}'})
+
+
+@api_view(['GET'])
+def get_extra_information(request, id):
+    try:
+        workspace = Workspace.objects.get(id=id)
+        workspace_serialized = WorkspaceDetailedSerializer(workspace)
+        return Response({'status': 'success', 'workspaceInfo': workspace_serialized.data}, status=status.HTTP_200_OK)
     except Exception as e:
         print(e)
         return Response({'status': f'error {e}'})

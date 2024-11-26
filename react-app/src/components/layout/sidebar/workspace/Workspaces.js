@@ -4,6 +4,7 @@ import { IoIosArrowUp } from "react-icons/io";
 import { AiOutlinePlus } from "react-icons/ai";
 import AddWorkspace from "./AddWorkspace";
 import WorkspaceOptions from "./WorkspaceOptions";
+import { useWorkspaceContext } from "../../../../contexts/WorkspaceContext";
 
 function Workspaces(props) {
     const [workspaceData, setWorkspaceData] = useState('')
@@ -12,12 +13,12 @@ function Workspaces(props) {
     const [selectedWorkspaceIndex, setSelectedWorkspaceIndex] = useState('')
 
     const [showAddWorkspace, setShowAddWorkspace] = useState(false)
-    const [updateWorkspaces, setUpdateWorkspaces] = useState(false)
 
     const [isEditingName, setIsEditingName] = useState(false)
     const [workspaceName, setWorkspaceName] = useState('')
-    const [changeWorkspaceName, setChangeWorkspaceName] = useState(false)
     const workspaceNameRef = useRef('')
+
+    const workspaceValues = useWorkspaceContext()
 
     useEffect(() => {
         document.addEventListener('click', handleDocumentClick)
@@ -29,7 +30,7 @@ function Workspaces(props) {
 
     useEffect(() => {
         getWorkspaces()
-    }, [updateWorkspaces])
+    }, [workspaceValues.updateWorkspaces])
 
 
     useEffect(() => {
@@ -58,7 +59,7 @@ function Workspaces(props) {
             .then(data => {
                 setWorkspaceData(data.workspace_data)
                 if (!localStorage.getItem('selectedWorkspaceInfo')) {
-                    localStorage.setItem('selectedWorkspaceInfo', JSON.stringify({ 'index': 0, 'id': data.workspace_data[0].id, 'is_main': data.workspace_data.is_main}))
+                    localStorage.setItem('selectedWorkspaceInfo', JSON.stringify({ 'index': 0, 'id': data.workspace_data[0].id, 'is_main': data.workspace_data[0].is_main}))
                 }
 
                 setSelectedWorkspaceIndex(JSON.parse(localStorage.getItem('selectedWorkspaceInfo')).index)
@@ -86,7 +87,7 @@ function Workspaces(props) {
                             className="flex gap-2 items-center my-2 hover:bg-slate-200 px-2 py-1 cursor-pointer mr-1 rounded-md w-[200px]" 
                             onClick={() => setWorkspacesExpanded(true)}>
 
-                            <div className={`${workspaceData[selectedWorkspaceIndex].color} text-white rounded-md min-h-5 min-w-5 flex items-center justify-center text-sm`}>
+                            <div className={`${workspaceData[selectedWorkspaceIndex].color} text-white rounded-md min-h-5 min-w-5 flex items-center justify-center text-sm relative`}>
                                 {workspaceData[selectedWorkspaceIndex].name[0].toUpperCase()}
                             </div>
                             {isEditingName
@@ -97,7 +98,7 @@ function Workspaces(props) {
                                     onChange={(e) => setWorkspaceName(e.target.value)}
                                     onBlur={() => {
                                         setIsEditingName(false)
-                                        setChangeWorkspaceName(true)
+                                        workspaceValues.setChangeWorkspaceName(true)
                                     }}
                                     onClick={(e) => e.stopPropagation()}
                                     onKeyDown={(e) => {
@@ -119,14 +120,14 @@ function Workspaces(props) {
 
                         <WorkspaceOptions 
                             userToken={props.userToken} 
-                            setUpdateWorkspaces={setUpdateWorkspaces}
+                            setUpdateWorkspaces={workspaceValues.setUpdateWorkspaces}
                             setIsEditingName={setIsEditingName}
                             isEditingName={isEditingName}
                             setWorkspaceName={setWorkspaceName}
                             workspaceName={workspaceName}
                             initialWorkspaceName={workspaceData[selectedWorkspaceIndex].name}
-                            changeWorkspaceName={changeWorkspaceName}
-                            setChangeWorkspaceName={setChangeWorkspaceName}/>
+                            changeWorkspaceName={workspaceValues.changeWorkspaceName}
+                            setChangeWorkspaceName={workspaceValues.setChangeWorkspaceName}/>
 
                     </div>
 
@@ -136,6 +137,7 @@ function Workspaces(props) {
                                 <p className="text-slate-500 mb-1 text-sm">My workspaces</p>
                                 {workspaceData.map((item, index) => {
                                     let selectedWorkspace = JSON.parse(localStorage.getItem('selectedWorkspaceInfo'))
+                                    console.log(selectedWorkspace, 'testing')
                                     return (
                                         <div key={index}
                                             className={`flex gap-2 p-2 cursor-pointer rounded-md 
@@ -162,7 +164,7 @@ function Workspaces(props) {
                     }
 
                     {showAddWorkspace &&
-                        <AddWorkspace userToken={props.userToken} setShowAddWorkspace={setShowAddWorkspace} setUpdateWorkspaces={setUpdateWorkspaces} />
+                        <AddWorkspace userToken={props.userToken} setShowAddWorkspace={setShowAddWorkspace} setUpdateWorkspaces={workspaceValues.setUpdateWorkspaces} />
                     }
                 </>
             }

@@ -10,6 +10,7 @@ import { CreateWorkspaceItemProvider } from './contexts/CreateWorkspaceItemConte
 import Board from './components/board/Board'
 import WorkspaceItemDeleted from './components/workspace_and_items/WorkspaceItemDeleted'
 import Document from './components/document/Document'
+import ManageWorkspace from './components/layout/sidebar/workspace/ManageWorkpace'
 import { BoardValuesProvider } from './contexts/BoardValuesContext'
 import { BoardViewsProvider } from './contexts/BoardViewsContext'
 import { UserContextProvider } from './contexts/UserContext'
@@ -31,6 +32,7 @@ function App() {
                   <Route path='board' element={<BoardValuesProvider> <BoardViewsProvider> <Board /> </BoardViewsProvider></BoardValuesProvider>}/>
                   <Route path='workspace-item-deleted' element={<BoardValuesProvider> <BoardViewsProvider> <WorkspaceItemDeleted /> </BoardViewsProvider></BoardValuesProvider>}/>
                   <Route path='docs' element={ <Document/> }/>
+                  <Route path='manage-workspace' element={ <ManageWorkspace/> }/>
               </Route>
             </Routes>
           </BrowserRouter>
