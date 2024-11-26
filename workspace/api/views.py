@@ -65,3 +65,15 @@ def get_extra_information(request, id):
     except Exception as e:
         print(e)
         return Response({'status': f'error {e}'})
+
+
+@api_view(['POST'])
+def change_description(request):
+    try:
+        workspace = Workspace.objects.get(id=request.data['workspace_id'])
+        workspace.description = request.data['description']
+        workspace.save()
+        return Response({'status': 'success'}, status=status.HTTP_200_OK)
+    except Exception as e:
+        print(e)
+        return Response({'status': f'error {e}'})

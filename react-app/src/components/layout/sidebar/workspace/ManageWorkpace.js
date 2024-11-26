@@ -7,6 +7,7 @@ function ManageWorkspace() {
     const userToken = JSON.parse(localStorage.getItem('userToken'))
     const [workspaceInfo, setWorkspaceInfo] = useState('')
     const [workspaceName, setWorkspaceName] = useState('')
+    const [workspaceDescription, setWorkspaceDescription] = useState('')
 
     const workspaceValues = useWorkspaceContext()
 
@@ -28,7 +29,25 @@ function ManageWorkspace() {
         .then(data => {
             setWorkspaceInfo(data.workspaceInfo)
             setWorkspaceName(data.workspaceInfo.name)
+            setWorkspaceDescription(data.workspaceInfo.description)
         })
+    }
+
+
+    function changeWorkspaceDescription(workspaceId, workspaceDescription) {
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/workspace/change-description/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${userToken}`
+            },
+            body: JSON.stringify({
+                workspace_id: workspaceId,
+                description: workspaceDescription
+            })
+        })
+        .then(res => res.json())
+        .then(data => console.log(data))
     }
 
     return (
@@ -51,8 +70,16 @@ function ManageWorkspace() {
                             }
                         }}/>
                     <input type="text" 
-                        className="border border-dashed border-transparent hover:border-slate-300 focus:outline-none w-3/5 px-1"
-                        placeholder="Add workspace description"/>
+                        className="border border-dashed border-transparent hover:border-slate-300 focus:outline-none w-3/5 px-1 focus:border-solid focus:border-slate-300 truncate"
+                        placeholder="Add workspace description"
+                        value={workspaceDescription}
+                        onChange={(e) => setWorkspaceDescription(e.target.value)}
+                        onBlur={(e) => changeWorkspaceDescription(workspaceInfo.id, e.target.value)}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                e.target.blur()
+                            }
+                        }}/>
                 </div>
             </div>
             }
