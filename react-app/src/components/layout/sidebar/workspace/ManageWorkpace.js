@@ -11,11 +11,9 @@ function ManageWorkspace() {
 
     const workspaceValues = useWorkspaceContext()
 
-    console.log(workspaceInfo)
-
     useEffect(() => {
         getExtraWorkspaceInformation()
-    }, [])
+    }, [workspaceValues.updateManageWorkspace])
     
     function getExtraWorkspaceInformation() {
         fetch(`${process.env.REACT_APP_API_BASE_URL}/workspace/get-extra-information/${selectedWorkspace.id}`, {

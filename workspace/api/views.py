@@ -77,3 +77,15 @@ def change_description(request):
     except Exception as e:
         print(e)
         return Response({'status': f'error {e}'})
+
+
+@api_view(['POST'])
+def change_color(request):
+    try:
+        workspace = Workspace.objects.get(id=request.data['workspace_id'])
+        workspace.color = request.data['color']
+        workspace.save()
+        return Response({'status': 'success'})
+    except Exception as e:
+        print(e)
+        return Response({'status': f'error {e}'})

@@ -4,7 +4,10 @@ import { FiTrash } from "react-icons/fi";
 import { IoMdArrowDropleft } from "react-icons/io";
 import { GoPencil } from "react-icons/go";
 import { GoGear } from "react-icons/go";
+import { MdOutlineColorLens } from "react-icons/md";
 import { useNavigate } from "react-router-dom"
+import WorkspaceColors from "./WorkspaceColors";
+import { useWorkspaceContext } from "../../../../contexts/WorkspaceContext";
 
 export function changeWorkspaceName(userToken, workspaceName, workspaceId, setChangeWorkspaceName, setUpdateWorkspaces) {
     fetch(`${process.env.REACT_APP_API_BASE_URL}/workspace/change-workspace-name/`, {
@@ -27,10 +30,15 @@ export function changeWorkspaceName(userToken, workspaceName, workspaceId, setCh
 }
 
 function WorkspaceOptions(props) {
-    const [showWorkpaceOptionsPopup, setShowWorkspaceOptionsPopup] = useState(false)
-    const workspaceOptionsRef = useRef('')
-    let selectedWorkspace = JSON.parse(localStorage.getItem('selectedWorkspaceInfo'))
     const navigate = useNavigate()
+    let selectedWorkspace = JSON.parse(localStorage.getItem('selectedWorkspaceInfo'))
+    const workspaceValues = useWorkspaceContext()
+
+    const [showWorkpaceOptionsPopup, setShowWorkspaceOptionsPopup] = useState(false)
+    const [showColors, setShowColors] = useState(false)
+
+    const workspaceOptionsRef = useRef('')
+    const changeColorRef = useRef('')
 
     useEffect(() => {
         document.addEventListener('click', handleDocumentClick)
@@ -49,6 +57,10 @@ function WorkspaceOptions(props) {
     function handleDocumentClick(e) {
         if (workspaceOptionsRef.current && !workspaceOptionsRef.current.contains(e.target)) {
             setShowWorkspaceOptionsPopup(false)
+        }
+
+        if (changeColorRef.current && !changeColorRef.current.contains(e.target)) {
+            setShowColors(false)
         }
     }
 
@@ -77,9 +89,11 @@ function WorkspaceOptions(props) {
             </div>
             {showWorkpaceOptionsPopup && selectedWorkspace && 
                 <div className="absolute bg-white w-64 shadow-all-sides z-40 p-2 rounded-md">
+
                     <div className="flex items-center gap-2 px-2 py-2 cursor-pointer hover:bg-slate-100 rounded-md" 
                         onClick={() => {
                             navigate('/manage-workspace')
+                            workspaceValues.setUpdateManageWorkspace(prev => !prev)
                             setShowWorkspaceOptionsPopup(false)
                             }}>
                         <div>
@@ -87,6 +101,7 @@ function WorkspaceOptions(props) {
                         </div>
                         <p className="text-sm">Manage workspace</p>
                     </div>
+
                     <div 
                         className="flex items-center gap-2 px-2 py-2 cursor-pointer hover:bg-slate-100 rounded-md"
                         onClick={() => {
@@ -99,6 +114,24 @@ function WorkspaceOptions(props) {
                         </div>
                         <p className="text-sm">Rename workspace</p>
                     </div>
+
+                    <div className="flex items-center relative" ref={changeColorRef}>
+                        <div 
+                            className="flex items-center gap-2 px-2 py-2 cursor-pointer hover:bg-slate-100 rounded-md w-full"
+                            onClick={() => setShowColors(true)}>
+                            <div>
+                                <MdOutlineColorLens />
+                            </div>
+                            <p className="text-sm">Change color</p>
+                        </div>
+                        {showColors && 
+                            <div className="absolute left-full top-0">
+                                <WorkspaceColors userToken={props.userToken} selectedWorkspace={selectedWorkspace}/>
+                            </div>
+                        }
+                    </div>
+
+
                     {selectedWorkspace.is_main
                     ?
                     <div className="flex items-center gap-2 px-2 py-1 cursor-pointer rounded-md relative group">
@@ -121,6 +154,7 @@ function WorkspaceOptions(props) {
                         <p className="text-sm">Delete workspace</p>
                     </div>
                     }
+
                 </div>
             }
         </div>

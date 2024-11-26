@@ -137,7 +137,6 @@ function Workspaces(props) {
                                 <p className="text-slate-500 mb-1 text-sm">My workspaces</p>
                                 {workspaceData.map((item, index) => {
                                     let selectedWorkspace = JSON.parse(localStorage.getItem('selectedWorkspaceInfo'))
-                                    console.log(selectedWorkspace, 'testing')
                                     return (
                                         <div key={index}
                                             className={`flex gap-2 p-2 cursor-pointer rounded-md 
