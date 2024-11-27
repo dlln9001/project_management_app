@@ -5,6 +5,7 @@ from django.db.models import Q
 from ..models import Workspace
 from .serializers import WorkspaceSerializer
 from .serializers import WorkspaceDetailedSerializer
+from user_authentication.api.serializers import SummaryUserSerializer
 
 
 @api_view(['GET', 'POST'])
@@ -85,7 +86,19 @@ def change_color(request):
         workspace = Workspace.objects.get(id=request.data['workspace_id'])
         workspace.color = request.data['color']
         workspace.save()
-        return Response({'status': 'success'})
+        return Response({'status': 'success'}, status=status.HTTP_200_OK)
+    except Exception as e:
+        print(e)
+        return Response({'status': f'error {e}'})
+
+
+@api_view(['GET'])
+def get_members(request, id):
+    try:
+        workspace = Workspace.objects.get(id=id)
+        members = workspace.members
+        members_serialized = SummaryUserSerializer(members, many=True)
+        return Response({'status': 'success', 'membersInfo': members_serialized.data}, status=status.HTTP_200_OK)
     except Exception as e:
         print(e)
         return Response({'status': f'error {e}'})
