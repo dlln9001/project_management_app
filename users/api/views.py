@@ -4,7 +4,7 @@ from rest_framework import status
 from django.shortcuts import get_object_or_404
 from user_authentication.models import User
 from user_authentication.api.serializers import UserSerializer
-
+from workspace.models import Workspace, WorkspaceInvite
 
 @api_view(['POST', 'GET'])
 def get_user_info(request):
@@ -40,3 +40,21 @@ def change_name(request):
     user.save()
     user_serialized = UserSerializer(user)
     return Response({'status': 'success', 'user': user_serialized.data}, status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+def invite_user_to_workspace(request):
+    try:
+        print(request.data)
+        user_invited = User.objects.filter(email=request.data['email'])
+        if not user_invited:
+            return Response({'status': 'The invitation has been processed successfully'})
+        elif user_invited and user_invited[0] == request.user:
+            return Response({'status': 'Cannot invite yourself'})
+        else:
+            workspace = Workspace.objects.get(id=request.data['workspace_id'])
+            workspace_invite = WorkspaceInvite.objects.create(sender=request.user, receiver=user_invited[0], status='pending', workspace=workspace)
+            return Response({'status': 'The invitation has been processed successfully'}, status=status.HTTP_200_OK)
+    except Exception as e:
+        print(e)
+        return Response({'status': 'error'})

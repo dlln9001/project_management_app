@@ -4,6 +4,8 @@ import { IoIosClose } from "react-icons/io";
 
 function WorkspaceMembers(props) {
     const [membersInfo, setMembersInfo] = useState('')
+    const [email, setEmail] = useState('')
+    const [status, setStatus] = useState('')
 
     useEffect(() => {
         getMembers()
@@ -22,6 +24,27 @@ function WorkspaceMembers(props) {
         .then(data => setMembersInfo(data.membersInfo))
     }
 
+    function inviteUser(email, workspaceId) {
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/user/invite-user-to-workspace/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${props.userToken}`
+            },
+            body: JSON.stringify({
+                email: email,
+                workspace_id: workspaceId
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log(data)
+            if (data.status !== 'success') {
+                setStatus(data.status)
+            }
+        })
+    }
+
 
     return reactDom.createPortal (
         <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center">
@@ -34,10 +57,26 @@ function WorkspaceMembers(props) {
                         <IoIosClose />
                     </div>
                 </div>
-                <input type="text" 
-                placeholder="Search by name or email" 
-                className="border-2 border-slate-300 focus:outline-none hover:border-slate-400 focus:border-sky-600 text-sm px-2 py-1 w-full rounded-sm mt-5"/>
-                <p className=" font-medium text-sm mt-5">Members</p>
+                
+                <input type="email" 
+                placeholder="Invite by email" 
+                className="border-2 border-slate-300 focus:outline-none hover:border-slate-400 focus:border-sky-600 text-sm px-2 py-1 w-full rounded-sm mt-5 mb-2"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}/>
+                {email
+                ? 
+                <button 
+                    className="w-fit p-1 px-3 bg-sky-600 hover:bg-sky-700 rounded-md text-white" 
+                    onClick={() => inviteUser(email, props.selectedWorkspace.id)}>
+                        Invite
+                </button>
+                : <button className="w-fit p-1 px-3 bg-slate-200 text-slate-400 rounded-md" disabled>Invite</button>
+                }
+                {status &&
+                    <p className="mt-1 text-sm">{status}</p>
+                }
+
+                <p className=" font-medium text-sm mt-4">Members</p>
                 <div className="mt-3">
                     {membersInfo &&
                         membersInfo.map((item, index) => {
