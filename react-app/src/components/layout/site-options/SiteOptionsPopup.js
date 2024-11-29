@@ -1,6 +1,8 @@
 import LogOut from "../../authorization/LogOut"
 import Profile from "./Profile";
 import { IoPersonOutline } from "react-icons/io5";
+import { LuInbox } from "react-icons/lu";
+import { useState } from "react";
 
 function SiteOptionsPopup(props) {
 
@@ -16,6 +18,15 @@ function SiteOptionsPopup(props) {
                     </div>
                     <p>
                         My profile
+                    </p>
+                </div>
+                <div className="hover:bg-slate-100 flex items-center gap-2 px-3 py-2 rounded-md cursor-pointer" 
+                        onClick={() => {props.setShowInvites(true)}}>
+                    <div className="text-black text-lg">
+                        <LuInbox />
+                    </div>
+                    <p>
+                        Invites
                     </p>
                 </div>
                 <div className="hover:bg-slate-100 rounded-md cursor-pointer">

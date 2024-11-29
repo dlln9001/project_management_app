@@ -12,6 +12,7 @@ function LogOut() {
         localStorage.removeItem('userInfo')
         localStorage.removeItem('userToken')
         localStorage.removeItem('selectedWorkspaceItem')
+        localStorage.removeItem('selectedWorkspaceInfo')
         navigate('/')
         setUserInfo('')
     }

@@ -83,7 +83,7 @@ function WorkspaceMembers(props) {
                             return (
                                 <div key={index} className="flex items-center gap-2">
                                     {item.is_default_profile_picture 
-                                    ? <div className=" h-7 w-7 bg-slate-400 rounded-full">{item.name[0].toUpperCase()}</div>
+                                    ? <div className=" h-7 w-7 bg-slate-400 rounded-full text-white flex justify-center items-center">{item.name[0].toUpperCase()}</div>
                                     : <img src={`${ process.env.REACT_APP_MEDIA_BASE_URL }` + item.profile_picture} alt="" className="h-7 w-7 rounded-full object-cover"/>
                                     }
                                     <p>{item.name}</p>

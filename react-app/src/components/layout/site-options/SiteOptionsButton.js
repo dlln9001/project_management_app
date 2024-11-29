@@ -1,14 +1,18 @@
 import { useState, useEffect, useRef } from 'react'
 import SiteOptionsPopup from './SiteOptionsPopup'
 import Profile from './Profile'
+import Invites from './Invites'
 
 function SiteOptionsButton() {
     const name = JSON.parse(localStorage.getItem('userInfo')).name
+    const userInfo = JSON.parse(localStorage.getItem('userInfo'))
     const is_default_profile_picture = JSON.parse(localStorage.getItem('userInfo')).is_default_profile_picture
     const [showPopup, setShowPopup] = useState(false)
     const [showProfile, setShowProfile] = useState(false)
+    const [showInvites, setShowInvites] = useState(false)
     const [pfpUrl, setPfpUrl] = useState(`${process.env.REACT_APP_MEDIA_BASE_URL}` + JSON.parse(localStorage.getItem('userInfo')).profile_picture)
     const siteOptionsButtonRef = useRef('')
+    const userToken = JSON.parse(localStorage.getItem('userToken'))
 
     useEffect(() => {
         document.addEventListener('click', handleDocumentClick)
@@ -33,11 +37,14 @@ function SiteOptionsButton() {
                     }
                 </div>
                 {showPopup &&
-                    <SiteOptionsPopup showProfile={showProfile} setShowProfile={setShowProfile}/>
+                    <SiteOptionsPopup showProfile={showProfile} setShowProfile={setShowProfile} setShowInvites={setShowInvites}/>
                 }
             </div>
             {showProfile &&
                 <Profile showProfile={showProfile} setShowProfile={setShowProfile} is_default_profile_picture={is_default_profile_picture} pfpUrl={pfpUrl} setPfpUrl={setPfpUrl}/>
+            }
+            {showInvites &&
+                <Invites setShowInvites={setShowInvites} userToken={userToken} userInfo={userInfo}/>
             }
         </>
     )

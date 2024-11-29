@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404
 from user_authentication.models import User
 from user_authentication.api.serializers import UserSerializer
 from workspace.models import Workspace, WorkspaceInvite
+from workspace.api.serializers import WorkspaceInviteSerializer
 
 @api_view(['POST', 'GET'])
 def get_user_info(request):
@@ -45,7 +46,6 @@ def change_name(request):
 @api_view(['POST'])
 def invite_user_to_workspace(request):
     try:
-        print(request.data)
         user_invited = User.objects.filter(email=request.data['email'])
         if not user_invited:
             return Response({'status': 'The invitation has been processed successfully'})
@@ -53,8 +53,24 @@ def invite_user_to_workspace(request):
             return Response({'status': 'Cannot invite yourself'})
         else:
             workspace = Workspace.objects.get(id=request.data['workspace_id'])
+            workspace_invite_check = WorkspaceInvite.objects.filter(sender=request.user, receiver=user_invited[0], status='pending', workspace=workspace)
+            if workspace_invite_check:
+                return Response({'status': 'invite already sent'})
             workspace_invite = WorkspaceInvite.objects.create(sender=request.user, receiver=user_invited[0], status='pending', workspace=workspace)
             return Response({'status': 'The invitation has been processed successfully'}, status=status.HTTP_200_OK)
+    except Exception as e:
+        print(e)
+        return Response({'status': 'error'})
+    
+
+@api_view(['GET'])
+def get_invites(request):
+    try:
+        invites_sent = WorkspaceInvite.objects.filter(sender=request.user)
+        invites_received = WorkspaceInvite.objects.filter(receiver=request.user)
+        invites_sent_serialized = WorkspaceInviteSerializer(invites_sent, many=True)
+        invites_received_serialized = WorkspaceInviteSerializer(invites_received, many=True)
+        return Response({'status': 'success', 'invites_sent': invites_sent_serialized.data, 'invites_received': invites_received_serialized.data})
     except Exception as e:
         print(e)
         return Response({'status': 'error'})
