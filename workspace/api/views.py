@@ -11,8 +11,8 @@ from user_authentication.api.serializers import SummaryUserSerializer
 @api_view(['GET', 'POST'])
 def get_workspace(request):
     try:
-        workspaces = Workspace.objects.filter(Q(author=request.user) | Q(members=request.user))
-
+        workspaces = Workspace.objects.filter(Q(author=request.user) | Q(members=request.user)).distinct()
+        
         workspace_serialized = WorkspaceSerializer(workspaces, many=True)
         return Response({'status': 'success', 'workspace_data': workspace_serialized.data}, status=status.HTTP_200_OK)
     except Exception as e:
@@ -102,3 +102,17 @@ def get_members(request, id):
     except Exception as e:
         print(e)
         return Response({'status': f'error {e}'})
+
+
+@api_view(['POST'])
+def leave_workspace(request):
+    try:
+        if request.data['author_id'] != request.user.id:
+            workspace = Workspace.objects.get(id=request.data['workspace_id'])
+            workspace.members.remove(request.user)
+            return Response({'status': 'success'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'status': 'error'})
+    except Exception as e:
+        print(e)
+        return Response({'status': 'error'})

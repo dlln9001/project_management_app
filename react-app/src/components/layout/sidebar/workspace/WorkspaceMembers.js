@@ -77,7 +77,7 @@ function WorkspaceMembers(props) {
                 }
 
                 <p className=" font-medium text-sm mt-4">Members</p>
-                <div className="mt-3">
+                <div className="mt-3 flex flex-col gap-2">
                     {membersInfo &&
                         membersInfo.map((item, index) => {
                             return (

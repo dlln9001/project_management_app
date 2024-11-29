@@ -9,5 +9,6 @@ urlpatterns = [
     path('get-extra-information/<int:id>/', views.get_extra_information),
     path('change-description/', views.change_description),
     path('change-color/', views.change_color),
-    path('get-members/<int:id>/', views.get_members)
+    path('get-members/<int:id>/', views.get_members),
+    path('leave-workspace/', views.leave_workspace)
 ] 

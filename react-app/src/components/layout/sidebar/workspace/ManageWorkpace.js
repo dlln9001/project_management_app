@@ -2,15 +2,19 @@ import { useState, useEffect } from "react"
 import { changeWorkspaceName } from "./WorkspaceOptions"
 import { useWorkspaceContext } from "../../../../contexts/WorkspaceContext"
 import WorkspaceMembers from "./WorkspaceMembers"
+import { useNavigate } from "react-router-dom";
+
 
 function ManageWorkspace() {
     let selectedWorkspace = JSON.parse(localStorage.getItem('selectedWorkspaceInfo'))
     const userToken = JSON.parse(localStorage.getItem('userToken'))
+    const userInfo = JSON.parse(localStorage.getItem('userInfo'))
     const [workspaceInfo, setWorkspaceInfo] = useState('')
     const [workspaceName, setWorkspaceName] = useState('')
     const [workspaceDescription, setWorkspaceDescription] = useState('')
     const [showWorkspaceMembers, setShowWorkspaceMembers] = useState(false)
-
+    
+    const navigate = useNavigate()
     const workspaceValues = useWorkspaceContext()
 
     useEffect(() => {
@@ -33,7 +37,6 @@ function ManageWorkspace() {
         })
     }
 
-
     function changeWorkspaceDescription(workspaceId, workspaceDescription) {
         fetch(`${process.env.REACT_APP_API_BASE_URL}/workspace/change-description/`, {
             method: 'POST',
@@ -48,6 +51,27 @@ function ManageWorkspace() {
         })
         .then(res => res.json())
         .then(data => console.log(data))
+    }
+
+    function leaveWorkspace(workspaceId, authorId) {
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/workspace/leave-workspace/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${userToken}`
+            },
+            body: JSON.stringify({
+                workspace_id: workspaceId,
+                author_id: authorId
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            localStorage.removeItem('selectedWorkspaceInfo')
+            workspaceValues.setUpdateWorkspaces(prev => !prev)
+            navigate('/home')
+            localStorage.setItem('selectedWorkspaceItem', JSON.stringify({ type: 'home', id: 0 }))
+        })
     }
 
     return (
@@ -85,6 +109,15 @@ function ManageWorkspace() {
                                 }
                             }}/>
                     </div>
+
+                    {workspaceInfo.author !== userInfo.id &&
+                        <button 
+                        className=" text-nowrap border border-red-600 text-red-600 rounded-md mr-10 w-fit h-fit px-3 py-1 mt-5"
+                        onClick={() => leaveWorkspace(workspaceInfo.id, workspaceInfo.author)}>
+                            Leave Workspace
+                        </button>
+                    }
+
                 </div>
                 <div className="flex flex-col justify-center items-center w-fit">
                     <div className="w-fit mt-4">
