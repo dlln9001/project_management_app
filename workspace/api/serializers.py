@@ -18,4 +18,4 @@ class WorkspaceInviteSerializer(serializers.ModelSerializer):
      workspace = WorkspaceSerializer()
      class Meta(object):
           model=WorkspaceInvite
-          fields = ['sender', 'receiver', 'status', 'workspace', 'created_at']
+          fields = ['id', 'sender', 'receiver', 'status', 'workspace', 'created_at']

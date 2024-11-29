@@ -7,5 +7,6 @@ urlpatterns = [
     path('delete-pfp/', views.delete_pfp),
     path('change-name/', views.change_name),
     path('invite-user-to-workspace/', views.invite_user_to_workspace),
-    path('get-invites/', views.get_invites)
+    path('get-invites/', views.get_invites),
+    path('accept-invite/', views.accept_invite)
 ]

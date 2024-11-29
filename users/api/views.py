@@ -74,3 +74,20 @@ def get_invites(request):
     except Exception as e:
         print(e)
         return Response({'status': 'error'})
+
+
+@api_view(['POST'])
+def accept_invite(request):
+    try:
+        invite = WorkspaceInvite.objects.get(id=request.data['invite_id'])
+        if invite.receiver == request.user:
+            workspace = invite.workspace
+            workspace.members.add(request.user)
+            invite.status = 'accepted'
+            invite.save()
+            return Response({'status': 'success'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'status': 'error'})
+    except Exception as e:
+        print(e)
+        return Response({'status': 'error'})
