@@ -33,6 +33,7 @@ function WorkspaceOptions(props) {
     const navigate = useNavigate()
     let selectedWorkspace = JSON.parse(localStorage.getItem('selectedWorkspaceInfo'))
     const workspaceValues = useWorkspaceContext()
+    const userInfo = JSON.parse(localStorage.getItem('userInfo'))
 
     const [showWorkpaceOptionsPopup, setShowWorkspaceOptionsPopup] = useState(false)
     const [showColors, setShowColors] = useState(false)
@@ -77,6 +78,8 @@ function WorkspaceOptions(props) {
             localStorage.removeItem('selectedWorkspaceInfo') // workspace component will detect the missing info, send a request to fill it in again. 
             selectedWorkspace = ''
             setShowWorkspaceOptionsPopup(false)
+            navigate('/home')
+            localStorage.setItem('selectedWorkspaceItem', JSON.stringify({ type: 'home', id: 0 }))
             props.setUpdateWorkspaces(prev => !prev)
         })
     }
@@ -131,28 +134,31 @@ function WorkspaceOptions(props) {
                         }
                     </div>
 
-
-                    {selectedWorkspace.is_main
-                    ?
-                    <div className="flex items-center gap-2 px-2 py-1 cursor-pointer rounded-md relative group">
-                        <div className="opacity-50">
-                            <FiTrash/>
-                        </div>
-                        <p className="text-sm opacity-50">Delete workspace</p>
-                        <div className="absolute left-[248px] text-white bg-slate-800 text-nowrap w-fit px-2 py-1 rounded-md text-sm invisible group-hover:visible">
-                            <div className="text-slate-800 absolute text-3xl right-[247px] flex items-center top-0 bottom-0">
-                                <IoMdArrowDropleft />
+                    {selectedWorkspace.author === userInfo.id && 
+                        <>
+                        {selectedWorkspace.is_main
+                        ?
+                        <div className="flex items-center gap-2 px-2 py-1 cursor-pointer rounded-md relative group">
+                            <div className="opacity-50">
+                                <FiTrash/>
                             </div>
-                            The main workspace cannot be deleted
+                            <p className="text-sm opacity-50">Delete workspace</p>
+                            <div className="absolute left-[248px] text-white bg-slate-800 text-nowrap w-fit px-2 py-1 rounded-md text-sm invisible group-hover:visible">
+                                <div className="text-slate-800 absolute text-3xl right-[247px] flex items-center top-0 bottom-0">
+                                    <IoMdArrowDropleft />
+                                </div>
+                                The main workspace cannot be deleted
+                            </div>
                         </div>
-                    </div>
-                    :
-                    <div className="flex items-center gap-2 px-2 py-2 cursor-pointer hover:bg-slate-100 rounded-md" onClick={deleteWorkspace}>
-                        <div>
-                            <FiTrash/>
+                        :
+                        <div className="flex items-center gap-2 px-2 py-2 cursor-pointer hover:bg-slate-100 rounded-md" onClick={deleteWorkspace}>
+                            <div>
+                                <FiTrash/>
+                            </div>
+                            <p className="text-sm">Delete workspace</p>
                         </div>
-                        <p className="text-sm">Delete workspace</p>
-                    </div>
+                        }
+                        </>
                     }
 
                 </div>

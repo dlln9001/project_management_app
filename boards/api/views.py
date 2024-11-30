@@ -224,10 +224,12 @@ def get_item_update(request):
 def delete_item_update(request):
     try:
         item_update = ItemUpdate.objects.get(id=request.data['item_update_id'])
-        item_update.delete()
-        return Response({'status': 'success'}, status=status.HTTP_200_OK)
+        if item_update.author == request.user:
+            item_update.delete()
+            return Response({'status': 'success'}, status=status.HTTP_200_OK)
+        return Response({'status': 'error'})
     except Exception as e:
-        return Response({'status': f'error {e}'})
+        return Response({'status': 'error'})
 
 @api_view(['GET', 'POST'])
 def create_column(request):

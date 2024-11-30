@@ -59,7 +59,8 @@ function Workspaces(props) {
             .then(data => {
                 setWorkspaceData(data.workspace_data)
                 if (!localStorage.getItem('selectedWorkspaceInfo')) {
-                    localStorage.setItem('selectedWorkspaceInfo', JSON.stringify({ 'index': 0, 'id': data.workspace_data[0].id, 'is_main': data.workspace_data[0].is_main}))
+                    localStorage.setItem('selectedWorkspaceInfo', 
+                        JSON.stringify({ 'index': 0, 'id': data.workspace_data[0].id, 'is_main': data.workspace_data[0].is_main, 'author': data.workspace_data[0].author}))
                 }
 
                 setSelectedWorkspaceIndex(JSON.parse(localStorage.getItem('selectedWorkspaceInfo')).index)
@@ -69,7 +70,7 @@ function Workspaces(props) {
     }
 
     function selectWorkspace(workspace, index) {
-        localStorage.setItem('selectedWorkspaceInfo', JSON.stringify({ 'index': index, 'id': workspace.id, 'is_main': workspace.is_main }))
+        localStorage.setItem('selectedWorkspaceInfo', JSON.stringify({ 'index': index, 'id': workspace.id, 'is_main': workspace.is_main, 'author': workspace.author }))
         setSelectedWorkspaceIndex(index)
         props.setSelectedWorkspaceId(workspace.id)
         setWorkspacesExpanded(false)

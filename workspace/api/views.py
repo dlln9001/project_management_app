@@ -12,7 +12,7 @@ from user_authentication.api.serializers import SummaryUserSerializer
 def get_workspace(request):
     try:
         workspaces = Workspace.objects.filter(Q(author=request.user) | Q(members=request.user)).distinct()
-        
+
         workspace_serialized = WorkspaceSerializer(workspaces, many=True)
         return Response({'status': 'success', 'workspace_data': workspace_serialized.data}, status=status.HTTP_200_OK)
     except Exception as e:
@@ -37,7 +37,7 @@ def delete_workspace(request, id):
         workspace = Workspace.objects.get(id=id)
         if workspace.is_main:
             raise Exception('Cannot delete main workspace')
-        else:
+        if workspace.author == request.user:
             workspace.delete()
             return Response({'status': 'success'}, status=status.HTTP_200_OK)
     except Exception as e:

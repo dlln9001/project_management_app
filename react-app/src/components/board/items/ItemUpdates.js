@@ -16,6 +16,7 @@ function ItemUpdates(props) {
     const [itemUpdatesData, setItemUpdatesData] = useState([])
     const [updateOptionsIndex, setUpdateOptionsIndex] = useState('')
     const [updateData, setUpdateData] = useState(false)
+    const userInfo = JSON.parse(localStorage.getItem('userInfo'))
 
     useEffect(() => {
         document.addEventListener('click', handleDocumentClick)
@@ -68,7 +69,6 @@ function ItemUpdates(props) {
         })
         .then(res => res.json())
         .then(data => {
-            console.log(data)
             setItemUpdatesData(data.item_updates_data)
         })
     }
@@ -147,21 +147,23 @@ function ItemUpdates(props) {
                                         <CiClock2 />
                                     </div>
                                     <p className='text-sm'>{date.toLocaleString('en-US', options)}</p>
-                                    <div className='relative' ref={updateOptionsIndex === i ? updateOptionsRef : null}>
-                                        <div className={`hover:bg-slate-100 rounded-md cursor-pointer text-xs p-1 ml-1 ${updateOptionsIndex === i && `bg-sky-100`}`}
-                                            onClick={() => {
-                                                setUpdateOptionsIndex(i)
-                                            }}>
-                                            <SlOptions />
+                                    {userInfo.id === item.author.id && 
+                                        <div className='relative' ref={updateOptionsIndex === i ? updateOptionsRef : null}>
+                                            <div className={`hover:bg-slate-100 rounded-md cursor-pointer text-xs p-1 ml-1 ${updateOptionsIndex === i && `bg-sky-100`}`}
+                                                onClick={() => {
+                                                    setUpdateOptionsIndex(i)
+                                                }}>
+                                                <SlOptions />
+                                            </div>
+                                            {updateOptionsIndex === i &&
+                                                <UpdateOptions 
+                                                    setUpdateOptionsIndex={setUpdateOptionsIndex} 
+                                                    itemUpdateId={item.id} 
+                                                    userToken={props.userToken}
+                                                    setUpdateData={setUpdateData}/>
+                                            }
                                         </div>
-                                        {updateOptionsIndex === i &&
-                                            <UpdateOptions 
-                                                setUpdateOptionsIndex={setUpdateOptionsIndex} 
-                                                itemUpdateId={item.id} 
-                                                userToken={props.userToken}
-                                                setUpdateData={setUpdateData}/>
-                                        }
-                                    </div>
+                                    }
                                 </div>
                             </div>
                             <p className='mt-6'>{item.content}</p>

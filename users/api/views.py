@@ -47,12 +47,14 @@ def change_name(request):
 def invite_user_to_workspace(request):
     try:
         user_invited = User.objects.filter(email=request.data['email'])
+        workspace = Workspace.objects.get(id=request.data['workspace_id'])
         if not user_invited:
             return Response({'status': 'The invitation has been processed successfully'})
         elif user_invited and user_invited[0] == request.user:
             return Response({'status': 'Cannot invite yourself'})
+        elif workspace.author == user_invited[0]:
+            return Response({'status': 'error'})
         else:
-            workspace = Workspace.objects.get(id=request.data['workspace_id'])
             workspace_invite_check = WorkspaceInvite.objects.filter(sender=request.user, receiver=user_invited[0], status='pending', workspace=workspace)
             if workspace_invite_check:
                 return Response({'status': 'invite already sent'})

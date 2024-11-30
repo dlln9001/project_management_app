@@ -67,7 +67,7 @@ function Sidebar(props) {
             <div className={`bar-button mb-1 flex items-center gap-2 
                  ${JSON.parse(localStorage.getItem('selectedWorkspaceItem')).type === 'home' && `bg-sky-100`}`}
                 onClick={() => {
-                    navigate('home')
+                    navigate('/home')
                     localStorage.setItem('selectedWorkspaceItem', JSON.stringify({ type: 'home', id: 0 }))
                     props.setRenderSideBar(prev => !prev)
                 }}>

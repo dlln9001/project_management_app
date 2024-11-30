@@ -11,7 +11,7 @@ from ..models import ItemUpdate
 class BoardSummarySerializer(serializers.ModelSerializer):
     class Meta(object):
         model = Board
-        fields = ['name', 'type', 'id', 'order']
+        fields = ['name', 'type', 'id', 'order', 'user']
 
 class BoardFullSerializer(serializers.ModelSerializer):
     class Meta(object):
