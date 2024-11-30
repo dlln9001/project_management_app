@@ -33,7 +33,6 @@ function ChangeEmail(props) {
                     localStorage.setItem('userInfo', JSON.stringify(data.user))
                     setUserInfo(data.user)
                 }
-                console.log(data)
             })
         }
     }

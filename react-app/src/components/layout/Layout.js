@@ -15,10 +15,10 @@ function Layout() {
         <>
             <div className="bg-gradient-to-b from-indigo-100 to-slate-50 relative h-screen">
                 <div className="h-full flex flex-col">
-                    <div className="flex-none">
-                        <Topbar />
-                    </div>
                     <WorkpaceContextProvider>
+                        <div className="flex-none">
+                            <Topbar />
+                        </div>
                         <div className="flex h-full overflow-y-hidden custom-scrollbar">
                             <Sidebar renderSideBar={renderSideBar} setRenderSideBar={setRenderSideBar} deletedWorkspaceName={deletedWorkspaceName} setDeletedWorkspaceName={setDeletedWorkspaceName} />
                             <main className="w-full">

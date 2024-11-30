@@ -80,6 +80,7 @@ function WorkspaceMembers(props) {
                 <div className="mt-3 flex flex-col gap-2">
                     {membersInfo &&
                         membersInfo.map((item, index) => {
+                            console.log(item)
                             return (
                                 <div key={index} className="flex items-center gap-2">
                                     {item.is_default_profile_picture 

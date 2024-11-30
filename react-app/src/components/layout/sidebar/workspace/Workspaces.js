@@ -76,7 +76,7 @@ function Workspaces(props) {
         props.setRenderSideBar(prev => !prev)
     }
 
-    console.log(workspaceData)
+
     return (
         <div className="relative">
             {workspaceData && selectedWorkspaceIndex !== '' &&

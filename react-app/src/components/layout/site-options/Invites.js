@@ -1,6 +1,7 @@
 import reactDom from "react-dom"
 import { useEffect, useState } from "react"
 import { useWorkspaceContext } from "../../../contexts/WorkspaceContext"
+import { IoIosClose } from "react-icons/io";
 
 function Invites(props) {
     const [invitesSentInfo, setInvitesSentInfo] = useState([])
@@ -21,7 +22,6 @@ function Invites(props) {
         })
         .then(res => res.json())
         .then(data => {
-            console.log(data)
             setInvitesSentInfo(data.invites_sent)
             setInvitesReceivedInfo(data.invites_received)
         })
@@ -40,14 +40,20 @@ function Invites(props) {
             })
         })
         .then(res => res.json())
-        .then(data => workspaceValues.setUpdateWorkspaces(prev => !prev))
+        .then(data => {
+            workspaceValues.setUpdateWorkspaces(prev => !prev)
+            getInvites()
+        })
     }
 
     return reactDom.createPortal (
         <div className="absolute top-0 left-0 flex justify-center items-center h-full w-full">
             <div className="absolute top-0 h-full w-full bg-black opacity-50 z-40" onClick={() => props.setShowInvites(false)}></div>
-            <div className="bg-white z-50 rounded-md w-[600px] h-[600px] p-7">
-                <div>
+            <div className="bg-white z-50 rounded-md w-[600px] h-[600px] p-7 relative">
+                <div className="absolute right-2 top-2 text-2xl cursor-pointer" onClick={() => props.setShowInvites(false)}>
+                    <IoIosClose />
+                </div>
+                <div className="h-[250px] overflow-auto custom-scrollbar">
                     <h2 className=" font-medium">Invites sent</h2>
                     {invitesSentInfo.length !== 0
                     ? 
@@ -58,17 +64,20 @@ function Invites(props) {
                                     <div className="flex items-center">
                                         <div className="flex items-center gap-2">
                                             {item.receiver.is_default_profile_picture
-                                            ? <div className=" min-h-7 min-w-7 bg-slate-400 rounded-full text-white flex justify-center items-center">{item.receiver.name[0].toUpperCase()}</div>
+                                            ? 
+                                            <div className=" min-h-7 max-h-7 min-w-7 max-w-7 bg-slate-400 rounded-full text-white flex justify-center items-center">
+                                                {item.receiver.name[0].toUpperCase()}
+                                            </div>
                                             : 
                                             <img src={`${ process.env.REACT_APP_MEDIA_BASE_URL }` + item.receiver.profile_picture} alt="" 
-                                                className="min-h-7 min-w-7 rounded-full object-cover"/>
+                                                className="min-h-7 max-h-7 min-w-7 max-w-7 rounded-full object-cover"/>
                                             }
                                             <p className="truncate">{item.receiver.username}</p>
                                         </div>
                                         <p className="ml-auto text-sm text-slate-500">{item.status}</p>
                                     </div>
                                     <div className="flex items-center mt-1 gap-2">
-                                        <div className={`min-h-7 min-w-7 ${item.workspace.color} flex rounded-lg text-white justify-center items-center`}>
+                                        <div className={`min-h-7 max-h-7 min-w-7 max-w-7 ${item.workspace.color} flex rounded-lg text-white justify-center items-center`}>
                                             {item.workspace.name[0].toUpperCase()}
                                         </div>
                                         <p className="truncate">{item.workspace.name}</p>
@@ -80,38 +89,43 @@ function Invites(props) {
                     : <p className="text-sm text-slate-500 mt-1">you have not invited anyone</p>
                     }
                 </div>
-                <div className="mt-[250px]">
+                <div className="mt-10">
                     <h2 className=" font-medium">Invites recieved</h2>
                     {invitesReceivedInfo.length !== 0
                     ? 
-                    <div>
+                    <div className="h-[220px] overflow-auto custom-scrollbar">
                         {invitesReceivedInfo.map((item, index) => {
                             return (
-                                <div key={index} className="border border-md rounded-md mt-2 p-2">
+                                <div key={index} className="border border-md rounded-md mt-2 p-2 bg-white">
                                     <div className="flex items-center">
                                         <div className="flex items-center gap-2">
                                             {item.sender.is_default_profile_picture
-                                            ? <div className=" min-h-7 min-w-7 bg-slate-400 rounded-full text-white flex justify-center items-center">{item.sender.name[0].toUpperCase()}</div>
+                                            ? 
+                                            <div className=" min-h-7 max-h-7 min-w-7 max-w-7 bg-slate-400 rounded-full text-white flex justify-center items-center">
+                                                {item.sender.name[0].toUpperCase()}
+                                            </div>
                                             : 
                                             <img src={`${ process.env.REACT_APP_MEDIA_BASE_URL }` + item.sender.profile_picture} alt="" 
-                                                className="min-h-7 min-w-7 rounded-full object-cover"/>
+                                                className="min-h-7 max-h-7 min-w-7 max-w-7 rounded-full object-cover"/>
                                             }
                                             <p className="truncate">{item.sender.username}</p>
                                         </div>
                                         <p className="ml-auto text-sm text-slate-500">{item.status}</p>
                                     </div>
                                     <div className="flex items-center mt-1 gap-2">
-                                        <div className={`min-h-7 min-w-7 ${item.workspace.color} flex rounded-lg text-white justify-center items-center`}>
+                                        <div className={`min-h-7 max-h-7 min-w-7 max-w-7 ${item.workspace.color} flex rounded-lg text-white justify-center items-center`}>
                                             {item.workspace.name[0].toUpperCase()}
                                         </div>
                                         <p className="truncate">{item.workspace.name}</p>
-                                        <div className="ml-auto w-fit flex gap-2">
-                                            <button 
-                                                className="border border-green-600 text-green-600 rounded-md text-sm px-3 py-1"
-                                                onClick={() => acceptInvite(item.id)}>
-                                                Accept
-                                            </button>
-                                        </div>
+                                        {item.status !== 'accepted' && 
+                                            <div className="ml-auto w-fit flex gap-2">
+                                                <button 
+                                                    className="border border-green-600 text-green-600 rounded-md text-sm px-3 py-1"
+                                                    onClick={() => acceptInvite(item.id)}>
+                                                    Accept
+                                                </button>
+                                            </div>
+                                        }
                                     </div>
                                 </div>
                             )
