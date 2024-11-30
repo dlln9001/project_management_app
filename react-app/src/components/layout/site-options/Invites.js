@@ -7,6 +7,7 @@ function Invites(props) {
     const [invitesSentInfo, setInvitesSentInfo] = useState([])
     const [invitesReceivedInfo, setInvitesReceivedInfo] = useState([])
     const workspaceValues = useWorkspaceContext()
+    const [showOnlyPending, setShowOnlyPending] = useState(true)
 
     useEffect(() => {
         getInvites()
@@ -53,12 +54,25 @@ function Invites(props) {
                 <div className="absolute right-2 top-2 text-2xl cursor-pointer" onClick={() => props.setShowInvites(false)}>
                     <IoIosClose />
                 </div>
-                <div className="h-[250px] overflow-auto custom-scrollbar">
+                <div className="flex bg-white pb-2">
                     <h2 className=" font-medium">Invites sent</h2>
+                    {showOnlyPending
+                    ? <button onClick={() => setShowOnlyPending(false)} className="w-fit ml-auto border rounded-md text-slate-500 text-sm px-3 mr-3">show all</button>
+                    : <button onClick={() => setShowOnlyPending(true)} className="w-fit ml-auto border rounded-md text-slate-500 text-sm px-3 mr-3">show pending</button>
+                    }
+                </div>
+                <div className="h-[240px] overflow-auto custom-scrollbar">
                     {invitesSentInfo.length !== 0
                     ? 
                     <div>
-                        {invitesSentInfo.map((item, index) => {
+                        {invitesSentInfo.filter((item) => {
+                            if (showOnlyPending && item.status === 'pending') {
+                                return item
+                            }
+                            else if (!showOnlyPending) {
+                                return item
+                            }
+                        }).map((item, index) => {
                             return (
                                 <div key={index} className="border border-md rounded-md mt-2 p-2">
                                     <div className="flex items-center">
@@ -94,7 +108,14 @@ function Invites(props) {
                     {invitesReceivedInfo.length !== 0
                     ? 
                     <div className="h-[220px] overflow-auto custom-scrollbar">
-                        {invitesReceivedInfo.map((item, index) => {
+                        {invitesReceivedInfo.filter((item) => {
+                                if (showOnlyPending && item.status === 'pending') {
+                                    return item
+                                }
+                                else if (!showOnlyPending) {
+                                    return item
+                                }
+                            }).map((item, index) => {
                             return (
                                 <div key={index} className="border border-md rounded-md mt-2 p-2 bg-white">
                                     <div className="flex items-center">
