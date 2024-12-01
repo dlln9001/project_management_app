@@ -1,15 +1,19 @@
 import reactDom from "react-dom"
 import { useEffect, useState } from "react"
 import { IoIosClose } from "react-icons/io";
+import { IoMdArrowDropdown } from "react-icons/io";
+
 
 function WorkspaceMembers(props) {
     const [membersInfo, setMembersInfo] = useState('')
     const [email, setEmail] = useState('')
     const [status, setStatus] = useState('')
+    const userInfo = JSON.parse(localStorage.getItem('userInfo'))
+    const [updateMembers, setUpdateMembers] = useState(false)
 
     useEffect(() => {
         getMembers()
-    }, [])
+    }, [updateMembers])
 
 
     function getMembers() {
@@ -38,11 +42,27 @@ function WorkspaceMembers(props) {
         })
         .then(res => res.json())
         .then(data => {
-            console.log(data)
             if (data.status !== 'success') {
                 setStatus(data.status)
             }
         })
+    }
+
+
+    function removeMember(memberId, workspaceId) {
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/user/remove-member-from-workspace/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${props.userToken}`
+            },
+            body: JSON.stringify({
+                member_id: memberId,
+                workspace_id: workspaceId
+            })
+        })
+        .then(res => res.json())
+        .then(data => setUpdateMembers(prev => !prev))
     }
 
 
@@ -63,6 +83,7 @@ function WorkspaceMembers(props) {
                 className="border-2 border-slate-300 focus:outline-none hover:border-slate-400 focus:border-sky-600 text-sm px-2 py-1 w-full rounded-sm mt-5 mb-2"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}/>
+
                 {email
                 ? 
                 <button 
@@ -72,6 +93,7 @@ function WorkspaceMembers(props) {
                 </button>
                 : <button className="w-fit p-1 px-3 bg-slate-200 text-slate-400 rounded-md" disabled>Invite</button>
                 }
+
                 {status &&
                     <p className="mt-1 text-sm">{status}</p>
                 }
@@ -80,14 +102,33 @@ function WorkspaceMembers(props) {
                 <div className="mt-3 flex flex-col gap-2">
                     {membersInfo &&
                         membersInfo.map((item, index) => {
-                            console.log(item)
                             return (
                                 <div key={index} className="flex items-center gap-2">
+
                                     {item.is_default_profile_picture 
                                     ? <div className=" h-7 w-7 bg-slate-400 rounded-full text-white flex justify-center items-center">{item.name[0].toUpperCase()}</div>
                                     : <img src={`${ process.env.REACT_APP_MEDIA_BASE_URL }` + item.profile_picture} alt="" className="h-7 w-7 rounded-full object-cover"/>
                                     }
                                     <p>{item.name}</p>
+
+                                    { (userInfo.id !== item.id && userInfo.id === props.selectedWorkspace.author) &&
+                                        <div className="ml-auto relative flex justify-center group cursor-pointer hover:bg-slate-100 rounded-md"
+                                            onClick={() => removeMember(item.id, props.selectedWorkspace.id)}>
+
+                                            <div className=" text-2xl">
+                                                <IoIosClose />
+                                            </div>
+
+                                            <div 
+                                                className=" invisible group-hover:visible text-sm absolute text-white bg-slate-700 
+                                                    text-nowrap rounded-md py-1 px-3 bottom-9 flex justify-center shadow-md">
+                                                <p>remove {item.name} from this workspace</p>
+                                                <div className="absolute text-slate-700 text-3xl top-4">
+                                                    <IoMdArrowDropdown />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
                                 </div>
                             )
                         })

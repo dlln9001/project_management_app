@@ -8,5 +8,6 @@ urlpatterns = [
     path('change-name/', views.change_name),
     path('invite-user-to-workspace/', views.invite_user_to_workspace),
     path('get-invites/', views.get_invites),
-    path('accept-invite/', views.accept_invite)
+    path('accept-invite/', views.accept_invite),
+    path('remove-member-from-workspace/', views.remove_member_from_workspace)
 ]

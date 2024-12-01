@@ -75,6 +75,7 @@ function Workspaces(props) {
         props.setSelectedWorkspaceId(workspace.id)
         setWorkspacesExpanded(false)
         props.setRenderSideBar(prev => !prev)
+        workspaceValues.setUpdateManageWorkspace(prev => !prev)
     }
 
 

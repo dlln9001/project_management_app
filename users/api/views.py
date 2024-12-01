@@ -93,3 +93,17 @@ def accept_invite(request):
     except Exception as e:
         print(e)
         return Response({'status': 'error'})
+
+
+@api_view(['POST'])
+def remove_member_from_workspace(request):
+    try:
+        workspace = Workspace.objects.get(id=request.data['workspace_id'])
+        if workspace.author == request.user:
+            user_to_be_removed = User.objects.get(id=request.data['member_id'])
+            workspace.members.remove(user_to_be_removed)
+            return Response({'status': 'success'})
+        return Response({'status': 'error'})
+    except Exception as e:
+        print(e)
+        return Response({'status': 'error'})
