@@ -23,7 +23,6 @@ export function changeWorkspaceName(userToken, workspaceName, workspaceId, setCh
     })
     .then(res => res.json())
     .then(data => {
-        localStorage.removeItem('selectedWorkspaceInfo')
         setChangeWorkspaceName(false)
         setUpdateWorkspaces(prev => !prev)
     })
