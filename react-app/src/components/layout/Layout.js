@@ -13,7 +13,7 @@ function Layout() {
 
     return (
         <>
-            <div className="bg-gradient-to-b from-indigo-100 to-slate-50 relative h-screen">
+            <div className="bg-gradient-to-b from-slate-200 to-slate-50 relative h-screen">
                 <div className="h-full flex flex-col">
                     <WorkpaceContextProvider>
                         <div className="flex-none">
