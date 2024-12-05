@@ -5,10 +5,14 @@ import useWebSocket, { ReadyState } from 'react-use-websocket';
 
 function NotificationButton() {
     const [showNotifications, setShowNotifications] = useState(false)
+    const userToken = JSON.parse(localStorage.getItem('userToken'))
 
-    const { sendMessage, lastMessage, readyState } = useWebSocket(process.env.REACT_APP_WS_BASE_URL)
-    
+
+    const { sendMessage, lastMessage, readyState } = useWebSocket(process.env.REACT_APP_WS_BASE_URL + '/notifications/' + `?token=${userToken}`)
+
     sendMessage('hello')
+
+    console.log(lastMessage)
 
     return (
         <>

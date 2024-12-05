@@ -1,11 +1,14 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 from django.shortcuts import get_object_or_404
 from user_authentication.models import User
 from user_authentication.api.serializers import UserSerializer
 from workspace.models import Workspace, WorkspaceInvite
 from workspace.api.serializers import WorkspaceInviteSerializer
+from notifications.models import Notifications
 
 @api_view(['POST', 'GET'])
 def get_user_info(request):
@@ -59,6 +62,24 @@ def invite_user_to_workspace(request):
             if workspace_invite_check:
                 return Response({'status': 'invite already sent'})
             workspace_invite = WorkspaceInvite.objects.create(sender=request.user, receiver=user_invited[0], status='pending', workspace=workspace)
+
+            # do web socket 
+            notification = Notifications.objects.create(user=user_invited[0], message=f'{request.user.email} invited you!', type='invite')
+            channel_layer = get_channel_layer()
+            async_to_sync(channel_layer.group_send) (
+                f'notifications_user_{user_invited[0].id}',
+                {
+                    'type': 'send_notification',
+                    'message': {
+                        'type': 'notification',
+                        'user': UserSerializer(request.user),
+                        'notification_type': 'invite',
+                        'message': f'{request.user.email} invited you!',
+                        'notification_id': notification.id
+                    }
+                }
+            )
+
             return Response({'status': 'The invitation has been processed successfully'}, status=status.HTTP_200_OK)
     except Exception as e:
         print(e)
