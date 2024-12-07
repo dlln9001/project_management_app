@@ -39,3 +39,14 @@ def mark_read(request, id):
     except Exception as e:
         print(e)
         return Response({'status': 'success'})
+    
+
+@api_view(['DELETE'])
+def delete(request, id):
+    try:
+        notification = Notifications.objects.get(id=id)
+        notification.delete()
+        return Response({'status': 'success'}, status=status.HTTP_200_OK)
+    except Exception as e:
+        print(e)
+        return Response({'status': 'success'})
