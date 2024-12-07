@@ -9,6 +9,8 @@ function NotificationButton() {
     const [unreadNotifications, setUnreadNotifications] = useState([])
     const [numOfNotificatinos, setNumOfNotifications] = useState(0)
 
+    const [updateUnreadNotifications, setUpdateUnreadNotifications] = useState(false)
+
 
     const { sendMessage, lastMessage, readyState } = useWebSocket(process.env.REACT_APP_WS_BASE_URL + '/notifications/' + `?token=${userToken}`)
 
@@ -18,7 +20,7 @@ function NotificationButton() {
 
     useEffect(() => {
         getUnreadNotifications()
-    }, [])
+    }, [updateUnreadNotifications])
 
     useEffect(() => {
         if (lastMessage && JSON.parse(lastMessage.data).type === 'notification') {
@@ -50,7 +52,10 @@ function NotificationButton() {
             <div className="w-4 h-4 bg-white rounded-full absolute top-0 right-0 text-xs flex justify-center items-center">{numOfNotificatinos}</div>
         </div>
         {showNotifications &&
-            <NotificationsPanel setShowNotifications={setShowNotifications} userToken={userToken}/>
+            <NotificationsPanel 
+                setShowNotifications={setShowNotifications} 
+                userToken={userToken}
+                setUpdateUnreadNotifications={setUpdateUnreadNotifications}/>
         }
         </>
     )

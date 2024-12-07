@@ -24,3 +24,18 @@ def get_all_notifications(request):
     except Exception as e:
         print(e)
         return Response({'status': 'error'})
+    
+
+@api_view(['POST'])
+def mark_read(request, id):
+    try:
+        notification = Notifications.objects.get(id=id)
+        notification.is_read = True
+        notification.save()
+
+        notifications = Notifications.objects.filter(user=request.user)
+        notifications_serialized = NotificationsSerializer(notifications, many=True)
+        return Response({'status': 'success', 'notifications': notifications_serialized.data}, status=status.HTTP_200_OK)
+    except Exception as e:
+        print(e)
+        return Response({'status': 'success'})

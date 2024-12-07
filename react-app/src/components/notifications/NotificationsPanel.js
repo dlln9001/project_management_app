@@ -5,6 +5,7 @@ import { IoIosClose } from "react-icons/io";
 
 function NotificationsPanel(props) {
     const [notificationsInfo, setNotificationsInfo] = useState('')
+    const [unreadOnly, setUnreadOnly] = useState(true)
 
     useEffect(() => {
         getAllNotifications()
@@ -24,6 +25,21 @@ function NotificationsPanel(props) {
         .then(data => setNotificationsInfo(data.notifications))
     }
 
+    function markRead(notification_id) {
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/notifications/mark-read/${notification_id}/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${props.userToken}`
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            setNotificationsInfo(data.notifications)
+            props.setUpdateUnreadNotifications(prev => !prev)
+        })
+    }
+
     return reactDom.createPortal(
         <div className="absolute right-0 top-[48px] shadow-all-sides bg-white w-1/3 h-[calc(100%-48px)] z-40 p-4">
             <div className="flex">
@@ -33,9 +49,21 @@ function NotificationsPanel(props) {
                 </div>
             </div>
             <div className="border border-b border-slate-300 my-7"></div>
+            {unreadOnly
+            ? <button className="text-sm border border-md text-slate-500 px-2 rounded-md mb-2" onClick={() => setUnreadOnly(false)}>Show all</button>
+            : <button className="text-sm border border-md text-slate-500 px-2 rounded-md mb-2" onClick={() => setUnreadOnly(true)}>Unread only</button>
+            }
             <div>
                 {notificationsInfo &&
-                    notificationsInfo.map((notification, index) => {
+                    notificationsInfo.filter((notification) => {
+                        if (unreadOnly && !notification.is_read) {
+                            console.log('ttrue')
+                            return notification
+                        }
+                        else if (!unreadOnly) {
+                            return notification
+                        }
+                    }).map((notification, index) => {
                         const notificationDate = new Date(notification.created_at)
                         const currentDate = new Date()
                         const diffInMs = currentDate - notificationDate
@@ -73,6 +101,7 @@ function NotificationsPanel(props) {
                                     ? <p className="px-2 rounded-md border border-green-600 text-green-600 text-xs ml-auto">read</p>
                                     : 
                                     <div className="ml-auto flex gap-2">
+                                        <button className=" text-xs border border-slate-400 px-2 rounded-md" onClick={() => markRead(notification.id)}>mark read</button>
                                         <p className="px-2 rounded-md border border-red-600 text-red-600 text-xs">not read</p>
                                     </div>
                                     }
