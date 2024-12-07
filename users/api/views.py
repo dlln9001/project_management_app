@@ -72,7 +72,6 @@ def invite_user_to_workspace(request):
                     'type': 'send_notification',
                     'message': {
                         'type': 'notification',
-                        'user': UserSerializer(request.user),
                         'notification_type': 'invite',
                         'message': f'{request.user.email} invited you!',
                         'notification_id': notification.id

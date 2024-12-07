@@ -29,5 +29,6 @@ urlpatterns = [
     path('api/user/', include('users.api.urls')),
     path('api/document/', include('document.api.urls')),
     path('api/workspace/', include('workspace.api.urls')),
+    path('api/notifications/', include('notifications.api.urls'))
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) \
   + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

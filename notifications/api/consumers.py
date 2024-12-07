@@ -13,7 +13,7 @@ class NotificationConsumer(WebsocketConsumer):
         )
 
         self.accept()
-        print(self.user, self.user.id, 'print user')
+
         self.send(text_data=json.dumps({
             'type': 'connection_established',
             'message': 'connected'
