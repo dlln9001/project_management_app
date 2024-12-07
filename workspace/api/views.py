@@ -52,9 +52,12 @@ def delete_workspace(request, id):
 def change_workspace_name(request):
     try:
         workspace = Workspace.objects.get(id=request.data['workspace_id'])
-        workspace.name = request.data['workspace_name']
-        workspace.save()
-        return Response({'status': 'success'}, status=status.HTTP_200_OK)
+        if workspace.author == request.user:
+            workspace.name = request.data['workspace_name']
+            workspace.save()
+            return Response({'status': 'success'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'status': 'error'})
     except Exception as e:
         print(e)
         return Response({'status': f'error {e}'})

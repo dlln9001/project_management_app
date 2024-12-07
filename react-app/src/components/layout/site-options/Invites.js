@@ -42,6 +42,7 @@ function Invites(props) {
         })
         .then(res => res.json())
         .then(data => {
+            localStorage.removeItem('selectedWorkspaceInfo')
             workspaceValues.setUpdateWorkspaces(prev => !prev)
             getInvites()
         })
