@@ -63,8 +63,8 @@ def invite_user_to_workspace(request):
                 return Response({'status': 'invite already sent'})
             workspace_invite = WorkspaceInvite.objects.create(sender=request.user, receiver=user_invited[0], status='pending', workspace=workspace)
 
-            # do web socket 
-            notification = Notifications.objects.create(user=user_invited[0], message=f'{request.user.email} invited you!', type='invite')
+            # do web socket for notification for receiving user
+            notification = Notifications.objects.create(user=user_invited[0], message=f'{request.user.email} invited you to their workspace!', type='invite')
             channel_layer = get_channel_layer()
             async_to_sync(channel_layer.group_send) (
                 f'notifications_user_{user_invited[0].id}',
@@ -73,7 +73,7 @@ def invite_user_to_workspace(request):
                     'message': {
                         'type': 'notification',
                         'notification_type': 'invite',
-                        'message': f'{request.user.email} invited you!',
+                        'message': f'{request.user.email} invited you to their workspace!',
                         'notification_id': notification.id
                     }
                 }

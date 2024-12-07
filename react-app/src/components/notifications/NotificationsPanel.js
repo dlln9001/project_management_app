@@ -64,7 +64,10 @@ function NotificationsPanel(props) {
             }
         })
         .then(res => res.json())
-        .then(data => getAllNotifications())
+        .then(data => {
+            getAllNotifications()
+            props.setUpdateUnreadNotifications(prev => !prev)
+        })
     }
 
     return reactDom.createPortal(
@@ -80,7 +83,7 @@ function NotificationsPanel(props) {
             ? <button className="text-sm border border-md text-slate-500 px-2 rounded-md mb-2" onClick={() => setUnreadOnly(false)}>Show all</button>
             : <button className="text-sm border border-md text-slate-500 px-2 rounded-md mb-2" onClick={() => setUnreadOnly(true)}>Unread only</button>
             }
-            <div>
+            <div className="h-[740px] overflow-auto custom-scrollbar">
                 {notificationsInfo &&
                     notificationsInfo.filter((notification) => {
                         if (unreadOnly && !notification.is_read) {
