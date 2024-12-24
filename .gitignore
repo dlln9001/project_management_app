@@ -2,8 +2,6 @@ project_management_app/settings.py
 *.sqlite3
 .env
 media/
-.dockerignore
-Dockerfile
 staticfiles/
-docker-compose.yml
 nginx
+react-app/Dockerfile

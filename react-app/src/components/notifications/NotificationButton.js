@@ -14,8 +14,7 @@ function NotificationButton() {
 
     const { sendMessage, lastMessage, readyState } = useWebSocket(process.env.REACT_APP_WS_BASE_URL + '/notifications/' + `?token=${userToken}`)
 
-    console.log(lastMessage)
-
+    
     useEffect(() => {
         getUnreadNotifications()
     }, [updateUnreadNotifications])

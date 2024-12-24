@@ -6,7 +6,7 @@ class Workspace(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='workspaces_created')
     members = models.ManyToManyField(User, related_name='workspaces_joined')
     name = models.CharField(max_length=255, default='New Workspace')
-    is_main = models.BooleanField()
+    is_main = models.BooleanField(default=False)
     color = models.CharField(max_length=255, default='bg-sky-400')
     cover_color = models.CharField(max_length=255, default='bg-slate-100')
     description = models.TextField(blank=True, default='')
