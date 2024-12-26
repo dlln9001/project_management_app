@@ -11,3 +11,4 @@ react-app/tailwind.config.js
 react-app/postcss.config.js
 
 .env
+terraform
