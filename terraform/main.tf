@@ -32,5 +32,11 @@ resource "google_compute_instance" "web-server" {
     network_interface {
     network = "default"
     }
+
+    metadata = {
+      ssh-keys = "dfcross18:${file("ssh_public_key.txt")}"
+    }
+
+    tags = ["https-server", "http-server"]
 }
 
