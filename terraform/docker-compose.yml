@@ -1,0 +1,11 @@
+
+
+services:
+  terraform:
+    build: .
+    container_name: terraform
+    volumes:
+      - ./service_account_key.json:/app/service_account_key.json
+      - ./terraform.tfvars:/app/terraform.tfvars
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/service_account_key.json
