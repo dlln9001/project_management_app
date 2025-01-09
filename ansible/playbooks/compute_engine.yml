@@ -1,0 +1,33 @@
+---
+
+- hosts: all
+  become: true
+  
+  tasks: 
+  - name: create project directory
+    file:
+      path: /home/dfcross18/project_management_app
+      state: directory
+
+  - name: copy nginx config file
+    copy:
+      src: ../copy_files/default.conf
+      dest: /home/dfcross18/project_management_app/default.conf
+
+  - name: copy docker-compose file
+    copy:
+      src: ../copy_files/docker-compose.yml
+      dest: /home/dfcross18/project_management_app/docker-compose.yml
+
+  - name: copy .env file
+    copy:
+      src: ../copy_files/.env
+      dest: /home/dfcross18/project_management_app/.env
+
+  - name: run docker containers
+    community.docker.docker_compose_v2:
+      project_src: /home/dfcross18/project_management_app
+      files:
+        - docker-compose.yml
+      state: present
+      build: never

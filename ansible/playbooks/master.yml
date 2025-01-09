@@ -1,0 +1,7 @@
+---
+
+- import_playbook: get_private_key.yml
+- import_playbook: install_docker.yml
+- import_playbook: pull_docker_images.yml
+- import_playbook: compute_engine.yml
+- import_playbook: remove_private_key.yml

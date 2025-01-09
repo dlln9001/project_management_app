@@ -1,13 +1,10 @@
-project_management_app/settings.py
 *.sqlite3
 .env
 media/
 staticfiles/
 nginx
-react-app/Dockerfile
 terraform/*.tfvars
-terraform/service_account_key.json
+service_account_key.json
 terraform/.*
 terraform/*.tfstate*
-react-app/.env
 *.env

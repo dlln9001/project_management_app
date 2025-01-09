@@ -1,0 +1,10 @@
+---
+
+- hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: remove private key file
+      ansible.builtin.file:
+        path: "/app/ssh_private_key_file"
+        state: absent
+      run_once: true

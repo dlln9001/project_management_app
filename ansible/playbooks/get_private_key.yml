@@ -1,0 +1,27 @@
+---
+
+- hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Get SSH private key from Secrets Manager
+      google.cloud.gcp_secret_manager:
+        secret: ssh-secret-key
+        auth_kind: serviceaccount
+        service_account_file: /app/service_account_key.json
+        project: "{{ lookup('ansible.builtin.env', 'GOOGLE_PROJECT_ID') }}"
+      register: secret_result
+      run_once: true
+
+    - name: Store private key in a temporary file
+      ansible.builtin.copy:
+        content: "{{ secret_result.value }}\n"
+        dest: "/app/ssh_private_key_file"
+        mode: "600"
+      run_once: true
+
+    - name: Replace \r\n with \n in the private key file
+      ansible.builtin.replace:
+        path: "/app/ssh_private_key_file"
+        regexp: '\r\n'
+        replace: '\n'
+      run_once: true

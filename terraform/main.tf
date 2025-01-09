@@ -30,7 +30,11 @@ resource "google_compute_instance" "web-server" {
     }
 
     network_interface {
-    network = "default"
+        network = "default"
+
+        access_config {
+          
+        }
     }
 
     metadata = {

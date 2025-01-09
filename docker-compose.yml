@@ -48,15 +48,15 @@ services:
       POSTGRES_PASSWORD: ${POSTGRESQL_PASS}
       POSTGRES_USER: postgres
 
-  certbot:
-   image: certbot/certbot
-   container_name: certbot
-   depends_on:
-     - nginx
-   volumes:
-     - ./certbot/conf:/etc/letsencrypt
-     - ./certbot/www:/var/www/certbot
-   command: certonly --webroot -w /var/www/certbot --force-renewal --email placeholder@gmail.com -d task-track.ddns.net --agree-tos
+  # certbot:
+  #  image: certbot/certbot
+  #  container_name: certbot
+  #  depends_on:
+  #    - nginx
+  #  volumes:
+  #    - ./certbot/conf:/etc/letsencrypt
+  #    - ./certbot/www:/var/www/certbot
+  #  command: certonly --webroot -w /var/www/certbot --force-renewal --email placeholder@gmail.com -d task-track.ddns.net --agree-tos
 
 
 volumes:

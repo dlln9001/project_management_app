@@ -1,0 +1,21 @@
+---
+
+- name: pull docker images from google artifact registry
+  hosts: all
+  become: true
+  tasks:
+    - name: login to google artifact registry
+      community.docker.docker_login:
+        registry_url: https://us-central1-docker.pkg.dev
+        username: _json_key_base64
+        password: "{{ lookup('file', '/app/service_account_key.json') | b64encode }}"
+    
+    - name: pull docker images
+      community.docker.docker_image_pull:
+        name: "{{ item }}"
+        pull: always
+      loop: 
+        - us-central1-docker.pkg.dev/single-patrol-444420-s3/project-management-app-docker/project_management_app-backend/latest
+        - us-central1-docker.pkg.dev/single-patrol-444420-s3/project-management-app-docker/project_management_app-nginx/latest
+        - us-central1-docker.pkg.dev/single-patrol-444420-s3/project-management-app-docker/postgres/latest
+        
