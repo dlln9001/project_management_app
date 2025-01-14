@@ -4,6 +4,9 @@ media/
 staticfiles/
 terraform/*.tfvars
 service_account_key.json
-terraform/.*
+terraform/.terraform
+terraform/.terraform.lock.hcl
+terraform/.~lock*
 terraform/*.tfstate*
 *.env
+.secrets

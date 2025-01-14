@@ -1,0 +1,5 @@
+*.tfstate
+*.tfvars
+service_account_key.json
+.terraform
+

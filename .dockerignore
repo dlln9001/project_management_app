@@ -1,12 +1,8 @@
 react-app/node_modules
-react-app/src
 react-app/cypress
-react-app/public
 react-app/.dockerignore
 react-app/Dockerfile
 react-app/.gitignore
-react-app/package-lock.json
-react-app/package.json
 react-app/tailwind.config.js
 react-app/postcss.config.js
 

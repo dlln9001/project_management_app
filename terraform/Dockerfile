@@ -6,4 +6,4 @@ COPY . .
 
 ENTRYPOINT []
 
-CMD ["sh", "-c", "terraform init && terraform plan && terraform apply -auto-approve"]
+CMD ["sh", "-c", "echo $SA_KEY > /app/service_account_key.json && terraform init && terraform plan && terraform apply -auto-approve"]

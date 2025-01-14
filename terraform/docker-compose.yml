@@ -4,8 +4,10 @@ services:
   terraform:
     build: .
     container_name: terraform
-    volumes:
-      - ./service_account_key.json:/app/service_account_key.json
-      - ./terraform.tfvars:/app/terraform.tfvars
+    # volumes:
+    #   - ./service_account_key.json:/app/service_account_key.json
+    #   - ./terraform.tfvars:/app/terraform.tfvars
     environment:
       - GOOGLE_APPLICATION_CREDENTIALS=/app/service_account_key.json
+      - SA_KEY=${GCP_SA_KEY}
+      - TF_VAR_project_id=${TF_VAR_project_id}

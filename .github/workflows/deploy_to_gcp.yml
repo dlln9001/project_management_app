@@ -1,0 +1,110 @@
+name: CI/CD
+
+on:
+  push:
+    branches: 
+      - main
+  pull_request:
+    branches: 
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies in react-app
+        working-directory: ./react-app
+        run: npm ci
+
+      - name: Run tests in react-app
+        working-directory: ./react-app
+        run: npm test
+    
+  build-images:
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Install gcloud
+        run: |
+          echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+          curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
+          apt-get update && apt-get install -y google-cloud-cli
+      
+      - name: authenticate with Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+      
+      - name: Verify gcloud Authentication (Temporary)
+        run: |-
+            gcloud auth list
+            gcloud config list
+
+      - name: Docker Login to GAR
+        run: gcloud auth configure-docker --quiet us-central1-docker.pkg.dev
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build and push backend Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: . # path to Dockerfile
+          push: true
+          tags: us-central1-docker.pkg.dev/single-patrol-444420-s3/project-management-app-docker/project_management_app-backend/latest
+      
+      - name: Build and push nginx Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./nginx/Dockerfile
+          push: true
+          tags: us-central1-docker.pkg.dev/single-patrol-444420-s3/project-management-app-docker/project_management_app-nginx/latest
+      
+      - name: Pull, tag, and push official Postgres image
+        run: |
+          docker pull postgres:latest
+          docker tag postgres:latest us-central1-docker.pkg.dev/single-patrol-444420-s3/project-management-app-docker/postgres/latest
+          docker push us-central1-docker.pkg.dev/single-patrol-444420-s3/project-management-app-docker/postgres/latest
+    
+  setup-vm:
+    runs-on: ubuntu-latest
+
+    env:
+      TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }}
+      GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: build terraform image
+        working-directory: ./terraform
+        run: docker compose build
+
+      - name: Create service account key file
+        working-directory: ./terraform
+        run: | 
+          echo "${{ secrets.GCP_SA_KEY }}" > service_account_key.json
+
+      - name: run terraform container
+        working-directory: ./terraform
+        run: docker compose up
+      
+      - name: Remove service account key file
+        working-directory: ./terraform
+        run: rm service_account_key.json
+
