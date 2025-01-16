@@ -82,6 +82,7 @@ jobs:
     
   setup-vm:
     runs-on: ubuntu-latest
+    needs: build-images
 
     env:
       TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }}
@@ -106,5 +107,37 @@ jobs:
       
       - name: Remove service account key file
         working-directory: ./terraform
+        run: rm service_account_key.json
+
+  configure-vm-ansible:
+    runs-on: ubuntu-latest
+    needs: setup-vm
+
+    env:
+      ANSIBLE_GCP_SA_KEY: ${{ secrets.ANSIBLE_GCP_SA_KEY }}
+      GOOGLE_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: build ansible image
+        working-directory: ./ansible
+        run: docker compose build
+      
+      - name: create .env file from secret
+        run: echo "{{ secrets.DJANGO_VARS }}" > .env
+      
+      - name: Create service account key file
+        working-directory: ./ansible
+        run: | 
+          echo "${{ secrets.ANSIBLE_GCP_SA_KEY }}" > service_account_key.json
+      
+      - name: run ansible container
+        working-directory: ./ansible
+        run: docker compose up
+
+      - name: Remove service account key file
+        working-directory: ./ansible
         run: rm service_account_key.json
 

@@ -5,10 +5,11 @@ services:
     build: .
     container_name: ansible
     volumes:
-      - ./service_account_key.json:/app/service_account_key.json
+      # - ./service_account_key.json:/app/service_account_key.json
       - ../nginx/default.conf:/app/copy_files/default.conf
       - ../.env:/app/copy_files/.env
       - ../docker-compose.yml:/app/copy_files/docker-compose.yml
     environment:
       - GOOGLE_APPLICATION_CREDENTIALS=/app/service_account_key.json
       - GOOGLE_PROJECT_ID=${GOOGLE_PROJECT_ID}
+      - ANSIBLE_GCP_SA_KEY=${ANSIBLE_GCP_SA_KEY}
