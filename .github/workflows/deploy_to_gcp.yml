@@ -121,7 +121,7 @@ jobs:
         run: docker compose build
       
       - name: create .env file from secret
-        run: echo "{{ secrets.DJANGO_VARS }}" > .env
+        run: echo "${{ secrets.DJANGO_VARS }}" > .env
       
       - name: Create service account key file
         working-directory: ./ansible
