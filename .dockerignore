@@ -1,10 +1,5 @@
 react-app/node_modules
 react-app/cypress
 react-app/.dockerignore
-react-app/Dockerfile
-react-app/.gitignore
-react-app/tailwind.config.js
-react-app/postcss.config.js
 
-.env
 terraform
