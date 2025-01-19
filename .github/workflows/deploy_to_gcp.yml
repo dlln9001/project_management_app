@@ -106,7 +106,7 @@ jobs:
 
   configure-vm-ansible:
     runs-on: ubuntu-latest
-    # needs: setup-vm
+    needs: setup-vm
 
     env:
       ANSIBLE_GCP_SA_KEY: ${{ secrets.ANSIBLE_GCP_SA_KEY }}
